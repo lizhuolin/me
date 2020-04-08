@@ -1,0 +1,136 @@
+package com.poobo.reportwarn.service.impl;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Service;
+
+import com.poobo.core.entity.TblLog;
+import com.poobo.core.entity.TblPlan;
+import com.poobo.core.entity.TblReportwarn;
+import com.poobo.core.entity.TblTask;
+import com.poobo.core.enums.EnumDataStatus;
+import com.poobo.core.enums.EnumReportWarnType;
+import com.poobo.core.service.impl.BaseServiceImpl;
+import com.poobo.core.util.DateTimeUtil;
+import com.poobo.core.util.GetSessionData;
+import com.poobo.core.util.PageController;
+import com.poobo.reportwarn.dao.IReportWarnDao;
+import com.poobo.reportwarn.service.IReportWarnService;
+
+@Service("reportWarnService")
+public class ReportWarnServiceImpl extends BaseServiceImpl<TblReportwarn> implements IReportWarnService{
+	private IReportWarnDao reportWarnDao;
+	@Resource 
+	public void setReportwarnDao(IReportWarnDao reportWarnDao) {
+		super.setBaseDao(reportWarnDao);
+		this.reportWarnDao =reportWarnDao;
+	}
+	
+	
+
+
+	@Override
+	public PageController<TblReportwarn> findReportwarnList(TblReportwarn reportwarn, int pageNow,int pageSize) {
+		Criteria criteria = reportWarnDao.createCriteria(TblReportwarn.class);
+		criteria.add(Restrictions.eq("dataStatus", EnumDataStatus.NORMAL.getValue()));
+		if(!GetSessionData.getUser().getIsUserPlatform()){
+			criteria.add(Restrictions.eq("tblUser.tblCompany.companyId", GetSessionData.getUser().getTblCompany().getCompanyId()));
+		}
+		criteria.addOrder(Order.desc("createTime"));
+		
+		/*if(null != reportwarn){
+			if(!StringUtils.isEmpty(reportwarn.getreportwarnName())){//解决输入%查询出所有
+				 if(!reportwarn.getreportwarnName().equals("%")){
+		      criteria.add(Restrictions.ilike("reportwarnName", "%"  + reportwarn.getreportwarnName() +"%"));
+				 }else{
+				criteria.add(Restrictions.ilike("reportwarnName", "%"  + "\\%"  +"%"));
+				 }
+			}*/
+		return reportWarnDao.findPageByCriteria(criteria, pageNow, pageSize);
+	}
+	
+	/**
+	 * 每日生成提醒报告
+	 * @author hao.wang 2016年4月13日11:19:48
+	 */
+	public void doReportWarn(){
+		List<TblTask> taskList = reportWarnDao.findTasks();
+		List<TblPlan> planList = reportWarnDao.findPlans();
+		List<TblLog> logList = reportWarnDao.findLog4Yesterday(false);
+		
+		
+		TblReportwarn reportwarn = null;
+		for (TblTask task : taskList) {
+			reportwarn = new TblReportwarn();
+			reportwarn.setCreateTime(DateTimeUtil.getNowTimestamp());
+			reportwarn.setDataStatus(EnumDataStatus.NORMAL.getValue());
+			reportwarn.setTblTask(task);
+			reportwarn.setTblUser(task.getTaskResponsible());
+			reportwarn.setType(EnumReportWarnType.TASK.getValue());
+			reportWarnDao.save(reportwarn);
+		}
+		
+		for (TblPlan plan : planList) {
+			reportwarn = new TblReportwarn();
+			reportwarn.setCreateTime(DateTimeUtil.getNowTimestamp());
+			reportwarn.setDataStatus(EnumDataStatus.NORMAL.getValue());
+			reportwarn.setTblPlan(plan);
+			reportwarn.setTblUser(plan.getPlanManager());
+			reportwarn.setType(EnumReportWarnType.PLAN.getValue());
+			reportWarnDao.save(reportwarn);
+		}
+		for (TblLog log : logList) {
+			reportwarn = new TblReportwarn();
+			reportwarn.setCreateTime(DateTimeUtil.getNowTimestamp());
+			reportwarn.setDataStatus(EnumDataStatus.NORMAL.getValue());
+			reportwarn.setTblLog(log);
+			reportwarn.setTblUser(log.getTblUser());
+			reportwarn.setType(EnumReportWarnType.LOG.getValue());
+			reportWarnDao.save(reportwarn);
+		}
+		
+	}
+
+
+	
+
+
+
+
+
+	@Override
+	public List<TblLog> findLog4Yesterday(boolean isHome) {
+		return reportWarnDao.findLog4Yesterday(isHome);
+	}
+
+
+	/**
+	 * 查找在消息主页显示的提醒报告
+	 * @return
+	 */
+	public List<TblReportwarn> findReportWarns() {
+		return reportWarnDao.findReportWarns();
+	}
+
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+}

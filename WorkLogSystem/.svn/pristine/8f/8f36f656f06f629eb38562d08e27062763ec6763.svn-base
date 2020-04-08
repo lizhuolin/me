@@ -1,0 +1,108 @@
+<!DOCTYPE html >
+<html>
+<head lang = "en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no;">
+    <title>项目详细信息</title>
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+ </head>
+
+<body>
+
+<div id="header_wrapper">
+    <div class="title">
+    	<span class="title_button"><a href="index.html"><input type="button" ></a></span>
+ 		 <span class="title_text"><div class="text">项目详细信息</div></span>
+  </div>
+  <div class="explain">
+        <h1>飞天赛车</h1>
+        <div class="explain_content">
+         <p>负责人：<input type="text" value="李天赐"readonly></p>
+         <p>项目目标：<input type="text" value="项目展览"readonly></p>
+         <p>计划开始－结束时间：</p><p><input type="date" readonly>-<input type="date" readonly></p>
+         <p>实际开始－结束时间：</p><p><input type="date" readonly>-<input type="date" readonly></p>
+         <p>创建时间：<input type="date" readonly></p>
+    	</div>
+        </div>
+</div><!--header_wrapper结束-->
+<div id="body_wrapper">
+    	<div class="z_bj">
+    	<section class="form1">
+        	<div class="pj_name">
+            <input type="text"  value="赛场选择"  readonly/>
+            </div>
+            <div class="pj_plan">
+            <input type="text" value="责任人：董良"  readonly/>
+            </div>
+            
+            <a href="subproject.html"><div class="dt_other2">
+            <div class="pj_other_left">
+               	 <p>任务优先级：<select disabled="disabled">              
+                	<option>高</option>
+                    <option>中</option>
+                    <option>低</option>
+                </select></p>
+                <p>子项目：<input type="text" value="显示计划内容"readonly>
+                <p>项目简介:</p><p><textarea type="text" rows="5" cols="25"value="显示任务内容"readonly></textarea></p>
+                <p>计划开始－结束时间：</p><p><input type="date" readonly>-<input type="date" readonly></p></a>
+         		</div>
+                 <div class="pj_other_right" >
+    				<div class="splash-inner">
+         			 <div class="loading-circle" >
+            			<p><span id="loadedNum"></span>%</p>
+            			<canvas class="mask" id="loadingProgress" width="100" height="100"></canvas>
+           				 <canvas class="bg" width="100" height="100"></canvas>
+        				</div>
+    			</div>
+			</div>
+               
+            </div>
+         
+        </section>
+        <section class="form2">
+        	<div class="pj_name">
+            <input type="text"  value="赛车备用" readonly/>
+            </div>
+            <div class="pj_plan">
+            <input type="text" value="责任人：宋岩" readonly/>
+            </div>
+            
+            <div class="dt_other">
+            <div class="pj_other_left">
+            	<p>任务优先级：<select disabled="disabled">              
+                	<option>高</option>
+                    <option>中</option>
+                    <option>低</option>
+                </select></p>
+                <p>子项目：<input type="text" value="显示计划内容"readonly>
+                <p>项目简介:</p><p><textarea type="text" rows="5" cols="25"value="显示任务内容"readonly></textarea></p>
+                <p>计划开始－结束时间：<input type="date" readonly>-<input type="date" readonly></p>
+                </div>
+                 <div class="pj_other_right" >
+    				<div class="splash-inner">
+         			 <div class="loading-circle" >
+            			<p><span id="loadedNum"></span>%</p>
+            			<canvas class="mask" id="loadingProgress" width="100" height="100"></canvas>
+           				 <canvas class="bg" width="100" height="100"></canvas>
+        				</div>
+    			</div>
+			</div>
+               
+            </div>
+         
+        </section>
+        </div>
+</div>
+<div id="footer_wrapper">
+    	<footer>
+  			<div class="message"><a href="message.html">消息</a></div>
+  			<div class="project"><a class="select">项目</a></div>
+  			<div class="log"><a href="log.html">日志</a></div>
+  			<div class="task"><a href="task.html">任务</a></div>
+  			<div class="user"><a href="user.html">个人</a></div>
+  			<div class="clear"></div>
+		</footer>
+</div><!--footer_wrapper结束-->
+   
+</body>
+</html>

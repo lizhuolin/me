@@ -1,0 +1,224 @@
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+
+<!DOCTYPE html >
+<html>
+<head lang = "en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>注册</title>
+    <script src="<%=basePath %>/js/jquery/jquery-1.8.3.min.js"></script>
+    <script src="<%=basePath %>common/ajaxfileupload.js"></script>
+    <link href="<%=basePath%>css/mobileStyle.css" rel="stylesheet" type="text/css">
+    <script src="<%=basePath %>common/comm.js"></script>
+    
+    <!-- 只需要引入自己独有的js即可    js统一放到js文件夹下面，并按模块建立单独文件夹-->
+    
+ </head>
+<script type="text/javascript">
+    	//提交表单
+    	/* function doSubmit(){
+	    		//提交表单
+	    		//$("#form").submit();
+	    		document.forms[0].submit();
+	    		 alert("修改成功"); 
+    	} */
+    	function ajaxFileUpload1(){
+    		  $.ajaxFileUpload({
+    	            url:'mobile_imageUpload.action',//用于文件上传的服务器端请求地址
+    	            secureuri:false,//一般设置为false
+    	            fileElementId:'image',//文件上传空间的id属性  <input type="file" id="file" name="file" />
+    	            dataType: 'json',//返回值类型 一般设置为json
+    	            success: function (data, status){  //服务器成功响应处理函数
+    	               alert(data.message);//从服务器返回的json中取出message中的数据,其中message为在struts2中action中定义的成员变量
+    	             	$("#headImg").val(data.imagePath);
+    	            },
+    	            error: function (data, status, e){//服务器响应失败处理函数
+    	             alert("上传失败11！");
+    	            }
+    	        });
+    	    return false;
+    	}
+
+    	function ajaxFileUpload2() {
+    	    $("#loading").ajaxStart(function(){
+    	    	addCover();
+    	    }).ajaxComplete(function(){
+    	    	removeCover();
+    	    });//文件上传完成将图片隐藏起来
+    	    $.ajaxFileUpload({
+    	            url:'company_registerImageUpload.action',//用于文件上传的服务器端请求地址
+    	            secureuri:false,//一般设置为false
+    	            fileElementId:'image2',//文件上传空间的id属性  <input type="file" id="file" name="file" />
+    	            dataType: 'json',//返回值类型 一般设置为json
+    	            success: function (data, status){  //服务器成功响应处理函数
+    	                alert(data.message);//从服务器返回的json中取出message中的数据,其中message为在struts2中action中定义的成员变量
+    	                alert(data.imagePath);
+    	             	$("#companyLogo").val(data.imagePath);
+    	            },
+    	            error: function (data, status, e){//服务器响应失败处理函数
+    	             alert("上传失败！");
+    	            }
+    	        });
+    	    return false;
+    	}
+    	$(function($){
+
+    		$("#form").validate({
+    			rules:{
+    				"tblcompany.companyName":{
+    					required:true,
+    					isLoginname:true,
+    					remote: {
+    						    url: "json_mobile_checkCompanyname.action",     //后台处理程序
+    						    type: "post",               //数据发送方式
+    						    dataType: "json",           //接受数据格式   
+    						    data: {                     //要传递的数据
+    						        "tblcompany.companyId": function() {
+    						            return $("#companyId").val();
+    						        }
+    						    }
+    					}
+    				},
+    				"tblcompany.companyMobile":{
+    					required:true,
+    					isPhone:true
+    				},
+    					"tblcompany.companyAdress":{
+    						required:true
+    					},
+    					"tblcompany.companyType":{
+    						required:true
+    					},
+    						/*"tblcompany.charter":{
+    							required:true
+    						},*/
+    					"tblcompany.companyAdmin":{
+    						required:true
+    					}
+    			},
+    			messages:{
+    				"tblcompany.companyName":{
+    					required:"账号必填",
+    					/* isLoginname:"账号格式不正确,登陆名须为长度为4-16位的字母或数字！", */
+    					remote:"该账号已被注册,请更换其他账号"
+    				},
+    				"tblcompany.companyMobile":{
+    					required:"号码必填"
+    				},
+    				"tblcompany.companyAdress":{
+    					required:"公司地址必填"
+    				},
+    				/*"tblcompany.charter":{
+    					required:"营业执照必选"
+    				},*/
+    				"tblcompany.companyAdmin":{
+    					required:"公司管理员必填"
+    				},
+    				"tblcompany.companyType":{
+    					required:"服务类型必填"
+    				}
+    			}
+    			,success : function(label) {
+    				//label.addClass("success").text("输入正确");
+    			}
+    			//,errorPlacement : function(error, element) {
+    				//error.appendTo(element.next("span").next("span"));
+    			//}
+    			,onkeyup : false
+    			});
+    		
+    	});
+    	function formSubmit(){
+    		if($("#form").validate().form()){
+    			//显示遮罩
+    			addCover();
+    			$.ajax({
+    				type: "POST",
+    				url: "json_company_edit.action",
+    				data: $("#form").serialize(),
+    				success: function(data){
+    					if(data.resultFlag){
+    						parent.$('.zc.btn').click();
+    						//成功关闭
+    						successClose("操作成功");
+    					}else{
+    						//失败提示
+    						failAlert(data);
+    					}
+    					//隐藏遮罩
+    					removeCover();
+    				}
+    			});
+    		}
+    	}
+    </script>
+<body style="background-color:#f0f0f0">
+
+	<div id="header_wrapper">
+    	<div class="index_text">注册</div>
+    	
+    </div><!--header_wrapper结束-->
+    <div id="body_wrapper">
+    	<section>
+        	<div class="company">
+            公司信息
+            </div>
+        </section>	
+        <section>
+        	<div class="register_form">
+            <form id="form" name="form" <%-- action="<%=basePath %>mobile/company/mobile_mobileEdit.action" --%> method="post" enctype="multipart/form-data">
+            	<s:hidden name="tblcompany.companyId"/>
+            	
+            	<p><span>公司名称：</span><input type="text" name="tblcompany.companyName" value="${tblcompany.companyName }"></p>
+                <hr size="1" width="100%" color="#cacaca" noshade="noshade" />
+                <p><span>服务类型：</span><input type="text" name="tblcompany.companyType" value="${tblcompany.companyType }"></p>
+                <hr size="1" width="100%" color="#cacaca" noshade="noshade" />
+                <p><span>公司地址：</span><input type="text" name="tblcompany.companyAdress" value="${tblcompany.companyAdress }"></p>
+            	<hr size="1" width="100%" color="#cacaca" noshade="noshade" />
+                
+                <p><span>公司电话：</span><input type="text" name="tblcompany.companyMobile" value="${tblcompany.companyMobile }"></p>
+                <hr size="1" width="100%" color="#cacaca" noshade="noshade" />
+            	
+                <p><span>管理员姓名：</span><input type="text" name="tblcompany.companyAdmin" value="${tblcompany.companyAdmin }"></p>
+                <hr size="1" width="100%" color="#cacaca" noshade="noshade" />
+                <p><span>公司简介：</span></p>
+                <hr size="1" width="100%" color="#cacaca" noshade="noshade" />
+                <p><textarea type="text"rows="4" cols="35" name="tblcompany.companyIntroduction"></textarea></p>
+                <%-- <p><span>营业执照：</span> <a href="javascript:;" class="file">浏览<input type="file" name="tblcompany.charter"  value="<s:property value='tblcompany.charter'/>"></a></p>
+                <hr size="1" width="100%" color="#cacaca" noshade="noshade" /> --%>
+                
+                <p>
+                
+                <span>营业执照：</span>
+                <a class="file">选择文件<input type="file" name="image" id="image1" onchange="ajaxFileUpload1()"/></a>
+                <img src="<%=basePath %>images/loading.gif" id="loading" style="display: none;">
+                <input type="hidden"  id="charter" name="tblcompany.charter"  value="<s:property value='tblcompany.charter'/>"/> 
+                
+                <%-- <s:if test='tblcompany.charter!=null&&tblcompany.charter!=""'>
+	         		<img id="showImg" src="<%=basePath %><s:property value='tblcompany.charter'/>" width="100px" height="100px">
+	            </s:if> --%>
+                </p>  
+                <hr size="1" width="100%" color="#cacaca" noshade="noshade" />
+                
+                
+                <p><span>公司LOGO：</span> <a href="javascript:;" class="file">浏览<input type="file" name="tblcompany.companyLogo"></a></p>
+                <hr size="1" width="100%" color="#cacaca" noshade="noshade" />
+         </form>
+            </div>
+        </section>
+        <section>
+        	<div class="re_button">
+            	<input id="zc.btn" type="button" value="注册" onClick="formSubmit()">
+            </div>
+        </section>
+        </div><!--body_wrapper结束-->  
+    
+
+    </div><!--footer_wrapper结束-->
+   
+</body>
+</html>

@@ -1,0 +1,118 @@
+
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<%@ taglib prefix="s" uri="/struts-tags"%>
+
+
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
+
+<html>
+<head>
+<link href="<%=basePath%>/css/style.css" rel="stylesheet" />
+<script type="text/javascript" src="<%=basePath%>common/comm.js"></script>
+<script>
+	$(function() {
+		//var formDom= document.getElementById("home");
+		// var input = document.createElement("input");
+		//input.setAttribute("name","pageSize");
+		//input.setAttribute("type","hidden");
+		//input.setAttribute("value",$("#pageSizeId").val());
+		//formDom.appendChild(input);
+		var totalPage = Number($("#totalPage").val());
+		$(".notice_left").click(function() {
+			var newPageNow = Number($("#pageNow").val()) - Number(1);
+			changeNotice(newPageNow);
+		});
+
+		$(".notice_right").click(function() {
+			var newPageNow = Number($("#pageNow").val()) + Number(1);
+			changeNotice(newPageNow);
+		});
+
+		function changeNotice(newPageNow) {
+			$.ajax({
+				type : "POST",
+				url : "notice/notice_changeNotice.action",
+				data : {
+					"pageNow" : $("#pageNow").val()
+				},
+				dataType : "html",
+				success : function(data) {
+					$("#noticeDetail").html(data);
+					if (newPageNow > (totalPage + 1)) {
+						layer.msg("超过总页数");
+						return;
+					}
+					if (newPageNow == (totalPage + 1)) {
+						layer.msg("已是最后一页");
+						return;
+					}
+					if (newPageNow <= 0) {
+						layer.msg("已是第一页");
+						return;
+					}
+					$("#pageNow").val(newPageNow);
+				}
+			});
+		}
+
+	});
+</script>
+
+</head>
+<link href="<%=basePath%>/css/style.css" rel="stylesheet" />
+<body>
+	<input type="hidden" name="pageNow" id="pageNow" value="<s:property value="pageNow"/>"> 
+	<input type="hidden" value="<s:property value="pageList.totalPage"/>"
+		id="totalPage">
+	<div class="index" id="home">
+		<div class="home_left">
+			<span id="noticetext"> 公告信息</span>
+			<div id="list" class="list">
+				<div id="noticeDetail">
+					<div class="fcon">
+						<p>
+							<span class="title" id="title">${notice.noticeTitle }</span>
+						</p>
+						<div class="noticeText">${notice.noticeMsg }</div>
+					</div>
+
+				</div>
+			</div>
+
+			<div class="notice_left">
+				<img src="images/l_btn.png">
+			</div>
+			<div class="notice_right">
+				<img src="images/r_btn.png">
+			</div>
+
+		</div>
+		<div class="home_right">
+        <span id="remindtext">提醒信息</span>
+        <div class="table">暂无<%--
+            <div class="remindtext">
+                酒会策划</div>
+            <p><span>责任人:</span><input type="text" value="小星星"></p>
+            <p><span>创建时间:</span><input type="text" value="2016/04/01"></p>
+            <p id="datep">开始时间-结束时间:<input type="text" value="2016/04/01">-<input type="text" value="2016/04/01"></p>
+            <p><span>任务内容:</span>  <input type="text"></p>
+            <div class="taskText">阿萨德法师了法哈是覅阿卡丽舒服哈市了开发和爱上了房间爱死了快发货</div>
+        --%></div>
+        <div class="remind_left" >
+            <img src="images/l_btn.png">
+        </div>
+        <div class="remind_right">
+            <img src="images/r_btn.png">
+        </div>
+
+	</div>
+
+
+</body>
+</html>

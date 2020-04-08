@@ -1,0 +1,80 @@
+$(function($) {
+	$('#users').change(function(){
+		searchForm();
+	});
+	$('#projectName').change(function(){
+		searchForm();
+	});
+	
+});
+
+
+function searchForm(){
+	$.ajax({
+		   type: "POST",
+		   url: "mobile/project/mobile_ajaxprojectList4Mobile.action",
+		   data:$("#searchForm").serialize(),
+		   dataType:"html",
+		   success: function(data){
+			   $("#projects").html(data);
+		   }
+		});
+	
+	
+}
+
+
+
+
+
+
+/*$('#users').change(function(){
+	var userId = $(this).children('option:selected').val();
+	$.ajax({
+		url: "json_task_searchTaskByUserId.action?userId="+userId,
+		dataType:'html',
+		success: function(data){
+			alert("返回搜索结果："+data);
+			$("#tasks").html(data);
+		}
+	});
+});
+*/
+var slots={},c=document.getElementById('loadingProgress'),ctx=c.getContext('2d');
+window.hasLoaded = 0;
+window.loading = false;
+window.ulp = ulp;
+function ulp(percent){
+    window.loading = true;
+    var i = 0, draw = null;
+    draw = setInterval(function(){
+        if (window.hasLoaded > 100) {
+            window.loading = false;
+            clearInterval(draw);
+            draw = null;
+            return true;
+        }
+
+        if (i<=percent) {
+            d();
+            i++;
+            window.hasLoaded += 1;
+        } else {
+            clearInterval(draw);
+            draw = null;
+        }
+    }, 100);
+}
+
+function d(){
+    var lp = document.getElementById('loadedNum');
+    lp.innerHTML = window.hasLoaded;
+
+    var loaded = window.hasLoaded * 2 / 100 * Math.PI, cw = 102, hcw = 51;
+    ctx.clearRect (0,0,cw,cw);
+    ctx.beginPath();
+    ctx.arc(hcw,hcw,hcw-4, 0, loaded, false);
+    ctx.lineWidth = 8;
+    ctx.strokeStyle = '#ff6000';
+    ctx.stroke();
+}

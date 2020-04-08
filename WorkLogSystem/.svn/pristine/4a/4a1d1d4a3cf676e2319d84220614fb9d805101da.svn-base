@@ -1,0 +1,101 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+ <%@ taglib prefix="s" uri="/struts-tags" %>
+
+<html>
+<head>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>   
+ 
+
+
+
+<html>
+<head>
+
+<jsp:include page="/common/common.jsp"></jsp:include>
+
+<!-- 只需要引入自己独有的js即可    js统一放到js文件夹下面，并按模块建立单独文件夹-->
+<script src="<%=basePath %>js/project/editChild.js"></script>  
+</head>
+<body>
+  <form id="editForm">
+  <div class="edit">
+    <ul>
+    
+    <li>
+    <input type="hidden" name="tblProjectChild.tblProject.projectId" value="${tblProject.projectId }"/>
+    <input type="hidden" name="tblProjectChild.projectChildRealId" value="${tblProjectChild.projectChildRealId }"/>
+    </li>
+     <li>
+        <span><i>子项目名称</i><samp>:</samp>
+        <input  type="text"  name="tblProjectChild.projectName" value="${tblProjectChild.projectName }"/><samp></samp>
+          <div class="d_list"></div>
+        </span>
+        
+      </li>
+     <li>
+        <span><i>子项目开始时间</i><samp>:</samp>
+        <input  id="startTime5"  type="text"  name="tblProjectChild.projectChildStarttime" value="${tblProjectChild.projectChildStarttime }"/><samp></samp>
+          <div class="d_list"></div>
+        </span>
+        <span><i>子项目结束时间</i><samp>:</samp>
+        <input  id="endTime5"  type="text"  name="tblProjectChild.projectChildEndtime" value="${tblProjectChild.projectChildEndtime  }"/><samp></samp>
+          <div class="d_list"></div>
+        </span>
+      </li>
+      <li>
+        <span><i>子项目目标</i><samp>:</samp>
+        <input  type="text"  name="tblProjectChild.projectChildTarget" value="${tblProjectChild.projectChildTarget }"/><samp></samp>
+          <div class="d_list"></div>
+        </span>
+        <span><i>计划工时</i><samp>:</samp>
+        <input type="text" name="tblProjectChild.planTime" value="${tblProjectChild.planTime }"/><samp></samp>
+        </span>
+      </li>
+      <li>
+      <span><i>子项目状态</i><samp>:</samp>
+            <select name="tblProjectChild.projectChildStatus">
+            <option value="0" <s:if test="tblProjectChild.projectChildStatus==0">selected="selected"</s:if>>未开始</option>
+            <option value="1"<s:if test="tblProjectChild.projectChildStatus==1">selected="selected"</s:if>>已结束</option>
+            <option value="2"<s:if test="tblProjectChild.projectChildStatus==2">selected="selected"</s:if>>进行中</option>
+            </select>
+        </span>
+        <span>
+        <i>子项目等级</i><samp>:</samp>
+        <select name="tblProjectChild.projectLevel">
+            
+            <option value="0" <s:if test="tblProjectChild.projectLevel==0">selected="selected"</s:if>>低</option>
+            <option value="1"<s:if test="tblProjectChild.projectLevel==1">selected="selected"</s:if>>一般</option>
+            <option value="2"<s:if test="tblProjectChild.projectLevel==2">selected="selected"</s:if>>高</option>
+            </select>
+        </span>
+      </li>
+      <li>
+      	<span>
+			<i>子项目进度</i><samp>:</samp>
+			<input type="text" name="tblProjectChild.projectProgress" value="${tblProjectChild.projectProgress }"/><samp></samp>
+          <div class="d_list"></div>      	
+      	</span>
+      </li>
+      <li>
+      <span>
+      	<i>子项目负责人人</i><samp>:</samp>
+      	<s:select name="tblProjectChild.projectResponsibleId" list="userList" listKey="userId" listValue="name" />
+      	<div class="d_list"></div>
+      	</span>
+      </li>
+    </ul>
+  </div>
+</form>
+
+
+  <div class="edit_btn"><a id="edit">保存</a><a id="close" class="btn_cancel" >取消</a></div>
+  
+ <!-- 保存遮罩层-->
+  <!--<div class="edit_cover"><p><img src="images/loading.gif"></p></div>-->
+
+</body>
+</html>

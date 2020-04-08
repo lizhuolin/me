@@ -1,0 +1,121 @@
+package com.poobo.core.entity;
+
+import java.sql.Timestamp;
+
+/**
+ * TblChangelog entity. @author MyEclipse Persistence Tools
+ */
+
+public class TblChangelog implements java.io.Serializable {
+
+	// Fields
+	private String changelogId;
+	private TblUser tblUser;
+	private TblCompany tblCompany;
+	private String changelogmodel;
+	private String changelogContent;
+	private Integer changelogType;
+	private String changelogRemaks;
+	private Integer dataStatus;
+	private Timestamp changelogTime;
+	private Timestamp createTime;
+
+	// Constructors
+
+	/** default constructor */
+	public TblChangelog() {
+	}
+
+
+
+	public String getChangelogId() {
+		return changelogId;
+	}
+
+
+
+	public void setChangelogId(String changelogId) {
+		this.changelogId = changelogId;
+	}
+
+
+
+	public TblUser getTblUser() {
+		return this.tblUser;
+	}
+
+	public void setTblUser(TblUser tblUser) {
+		this.tblUser = tblUser;
+	}
+
+	public String getChangelogContent() {
+		return this.changelogContent;
+	}
+
+	public void setChangelogContent(String changelogContent) {
+		this.changelogContent = changelogContent;
+	}
+	
+
+
+
+	public Integer getChangelogType() {
+		return this.changelogType;
+	}
+
+	public void setChangelogType(Integer changelogType) {
+		this.changelogType = changelogType;
+	}
+
+	public String getChangelogRemaks() {
+		return this.changelogRemaks;
+	}
+
+	public void setChangelogRemaks(String changelogRemaks) {
+		this.changelogRemaks = changelogRemaks;
+	}
+
+	public Integer getDataStatus() {
+		return this.dataStatus;
+	}
+
+	public void setDataStatus(Integer dataStatus) {
+		this.dataStatus = dataStatus;
+	}
+
+	public Timestamp getChangelogTime() {
+		return this.changelogTime;
+	}
+
+	public void setChangelogTime(Timestamp changelogTime) {
+		this.changelogTime = changelogTime;
+	}
+
+	public Timestamp getCreateTime() {
+		return this.createTime;
+	}
+
+	public void setCreateTime(Timestamp createTime) {
+		this.createTime = createTime;
+	}
+
+	public TblCompany getTblCompany() {
+		return tblCompany;
+	}
+
+	public void setTblCompany(TblCompany tblCompany) {
+		this.tblCompany = tblCompany;
+	}
+
+
+	public String getChangelogmodel() {
+		return changelogmodel;
+	}
+
+
+	public void setChangelogmodel(String changelogmodel) {
+		this.changelogmodel = changelogmodel;
+	}
+	
+
+}

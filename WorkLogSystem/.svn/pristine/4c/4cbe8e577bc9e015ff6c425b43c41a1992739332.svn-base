@@ -1,0 +1,20 @@
+package com.poobo.user.dao;
+
+import java.util.List;
+
+import com.poobo.core.dao.IBaseDao;
+import com.poobo.core.entity.TblUser;
+
+public interface IUserDao extends IBaseDao<TblUser>{
+	//通过用户名密码查找用户列表
+	public List<TblUser> findUserByUsernameAndPassword(String username,String password);
+
+	public List<TblUser> findAllByCompanyId(String CompanyId);
+
+	public void removeUserRoles(String userId);
+
+	public TblUser findUserByToken(String token);
+
+	public TblUser findUserByOpenId(String openId);
+
+}

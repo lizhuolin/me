@@ -1,0 +1,92 @@
+package com.poobo.plan.service.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
+
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Service;
+
+import com.poobo.core.entity.TblPlan;
+import com.poobo.core.enums.EnumDataStatus;
+import com.poobo.core.service.impl.BaseServiceImpl;
+import com.poobo.core.util.ExcelUtil;
+import com.poobo.core.util.PageController;
+import com.poobo.plan.dao.IPlanDao;
+import com.poobo.plan.service.IPlanService;
+
+
+@Service("planService")
+public class PlanServiceImpl extends BaseServiceImpl<TblPlan> implements IPlanService{
+	private IPlanDao planDao;
+	
+	@Resource
+	public void setPlanDao(IPlanDao planDao) {
+		super.setBaseDao(planDao);
+		this.planDao = planDao;
+	}
+
+	@Override
+	public PageController<TblPlan> getPageList(TblPlan tblPlan, int pageNow,
+			int pageSize) {
+		
+		return null;
+	}
+
+	@Override
+	public PageController <TblPlan> getPlanListByProjectId(TblPlan tblPlan,String projectId, int pageNow,
+			int pageSize) {
+		StringBuffer sb=new StringBuffer();
+		sb.append(" from TblPlan where 1=1 ");
+		Map<String, Object> namedParam = new HashMap<String, Object>();
+		if(projectId!=null){
+			sb.append(" and tblProject.projectId=:projectId");
+			namedParam.put("projectId", projectId);
+		}else {
+			sb.append(" and tblProject.projectId=:projectId");
+			namedParam.put("projectId", tblPlan.getTblProject().getProjectId());
+		}
+		if(tblPlan!=null){
+			if (StringUtils.isNotEmpty(tblPlan.getPlanName())&& !tblPlan.getPlanName().equals("%")) {
+				namedParam.put("planName", "%"+tblPlan.getPlanName()+"%");
+				sb.append(" and planName like :planName");
+			}if (tblPlan.getPlanManager()!=null&&StringUtils.isNotEmpty(tblPlan.getPlanManager().getName()) && !tblPlan.getPlanManager().getName().equals("%")){
+				sb.append(" and planManager.name like :ManagerName");
+				namedParam.put("ManagerName","%"+ tblPlan.getPlanManager().getName()+"%");
+			}
+		}
+		sb.append(" and dataStatus=:dataStatus");
+		namedParam.put("dataStatus", EnumDataStatus.NORMAL.getValue());
+		
+		return planDao.findPageByHql(sb.toString(), namedParam, pageNow, pageSize);
+	}
+
+	@Override
+	public void delPlanByIds(String[] idList) {
+		for(String id:idList){
+			TblPlan tblPlan=super.findObjectById(id);
+			tblPlan.setDataStatus(EnumDataStatus.DEL.getValue());
+			
+			super.merge(tblPlan);
+		}
+	}
+
+	@Override
+	public List<TblPlan> findAllbyProjectid(String projectId) {
+		
+		return planDao.findAllByProjectId(projectId);
+	}
+
+	@Override
+	public void exportExcel(List<TblPlan> findAllbyProjectid,
+			ServletOutputStream outputStream) {
+		ExcelUtil.exportPlanExcel(findAllbyProjectid, outputStream);
+		
+	}
+
+}

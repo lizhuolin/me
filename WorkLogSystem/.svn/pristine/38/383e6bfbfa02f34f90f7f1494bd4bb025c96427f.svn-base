@@ -1,0 +1,213 @@
+package com.poobo.notice.action;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.struts2.ServletActionContext;
+
+import com.poobo.company.service.CompanyService;
+import com.poobo.core.action.BaseAction;
+import com.poobo.core.entity.TblCompany;
+import com.poobo.core.entity.TblNotice;
+import com.poobo.core.entity.TblTask;
+import com.poobo.core.entity.TblUser;
+import com.poobo.core.util.DateUtils;
+import com.poobo.core.util.GetSessionUser;
+import com.poobo.core.util.ResultData;
+import com.poobo.notice.service.INoticeService;
+import com.poobo.user.service.IUserService;
+
+
+public class NoticeAction extends BaseAction<TblNotice> {
+	@Resource
+	private INoticeService noticeService;
+	@Resource
+	private CompanyService companyService;
+	@Resource
+	private IUserService userService;
+	
+	private TblNotice notice;
+	private ResultData resultData;
+	private String ids;
+	private List<TblNotice> noticeList;
+	private List<TblNotice> noticedetialList;
+	
+	public String listUI() {
+		TblUser user =GetSessionUser.getUser();
+		if(user.getIsUserPlatform()) 	 
+		{
+			pageList = noticeService.findNoticeList(notice, pageNow, pageSize);	
+			
+		}
+		else{
+			List<TblNotice> List = noticeService.getNoticeListByUserId(user.getUserId());
+		}
+		//pageList = noticeService.getPageList(notice, pageNow, pageSize);
+		
+		/*List<TblNotice> list = pageList.getDataList();
+		*//***
+		 * 获取公司名称
+		 *//*
+		for (int i = 0; i < list.size(); i++) {
+			TblCompany company = companyService.findObjectById(list.get(i).getTblCompany().getCompanyId());
+			list.get(i).setTblCompany(company);
+		}
+		for (int i = 0; i < list.size(); i++) {
+			TblUser user = userService.findObjectById(list.get(i).getTblUser().getUserId());
+			list.get(i).setTblUser(user);
+		}
+		pageList.setDataList(list);*/
+		return "listUI";
+	}
+
+	
+	public String noticeList() {
+		TblUser user =GetSessionUser.getUser();
+		
+			pageList = noticeService.findNoticeList(notice, pageNow, pageSize);	
+			noticeList = noticeService.findAll();
+		
+		//pageList = noticeService.getPageList(notice, pageNow, pageSize);
+		
+		/*List<TblNotice> list = pageList.getDataList();
+		*//***
+		 * 获取公司名称
+		 *//*
+		for (int i = 0; i < list.size(); i++) {
+			TblCompany company = companyService.findObjectById(list.get(i).getTblCompany().getCompanyId());
+			list.get(i).setTblCompany(company);
+		}
+		for (int i = 0; i < list.size(); i++) {
+			TblUser user = userService.findObjectById(list.get(i).getTblUser().getUserId());
+			list.get(i).setTblUser(user);
+		}
+		pageList.setDataList(list);*/
+		return "noticeList";
+	}
+	
+	
+	public String noticedetialList() {
+		TblUser user =GetSessionUser.getUser();
+		
+			pageList = noticeService.findNoticeList(notice, pageNow, pageSize);	
+			noticedetialList = noticeService.findAll();
+		
+		//pageList = noticeService.getPageList(notice, pageNow, pageSize);
+		
+		/*List<TblNotice> list = pageList.getDataList();
+		*//***
+		 * 获取公司名称
+		 *//*
+		for (int i = 0; i < list.size(); i++) {
+			TblCompany company = companyService.findObjectById(list.get(i).getTblCompany().getCompanyId());
+			list.get(i).setTblCompany(company);
+		}
+		for (int i = 0; i < list.size(); i++) {
+			TblUser user = userService.findObjectById(list.get(i).getTblUser().getUserId());
+			list.get(i).setTblUser(user);
+		}
+		pageList.setDataList(list);*/
+		return "noticedetialList";
+	}
+	
+	/**
+	 * 调到编辑界面
+	 * @return
+	 */
+	public String editUI(){
+		if(null!=notice && StringUtils.isNotEmpty(notice.getNoticeId())){
+			//编辑
+			notice = noticeService.findObjectById(notice.getNoticeId());
+			/*TblCompany company = companyService.findObjectById(notice.getTblCompany().getCompanyId());
+			notice.setTblCompany(company);*/
+		}
+		return "editUI";
+	}
+	/**
+	 * 执行编辑部门
+	 * @return
+	 */
+	public String edit(){
+		resultData = new ResultData();
+		if(notice != null ){
+			notice.setNoticeCreatetime(DateUtils.getCurrentDateTimeStamp());
+			notice.setDataStatus(1);
+			TblUser user =  (TblUser)ServletActionContext.getRequest().getSession().getAttribute("USER");
+			TblCompany company = companyService.findObjectById(user.getTblCompany().getCompanyId());
+			notice.setTblCompany(company);
+			notice.setTblUser(user);
+			noticeService.merge(notice);	
+			resultData.setResultFlag(true);		
+		}
+		resultData.setResultFlag(true);
+		return SUCCESS;
+	}
+	public String noticeDelete()
+	{
+		resultData=new ResultData();
+		if(StringUtils.isNotEmpty(ids))
+		{//更新数据状态
+			String[]  idList=ids.split("@");
+			noticeService.delNoticeByIds(idList);
+			resultData.setResultFlag(true);
+		}
+		
+		return SUCCESS;
+		
+	}
+
+	
+
+	public ResultData getResultData() {
+		return resultData;
+	}
+
+
+	public TblNotice getNotice() {
+		return notice;
+	}
+
+	public void setNotice(TblNotice notice) {
+		this.notice = notice;
+	}
+
+	public void setResultData(ResultData resultData) {
+		this.resultData = resultData;
+	}
+
+	public String getIds() {
+		return ids;
+	}
+
+	public void setIds(String ids) {
+		this.ids = ids;
+	}
+
+
+	public List<TblNotice> getNoticeList() {
+		return noticeList;
+	}
+
+
+	public void setNoticeList(List<TblNotice> noticeList) {
+		this.noticeList = noticeList;
+	}
+
+
+	public List<TblNotice> getNoticedetialList() {
+		return noticedetialList;
+	}
+
+
+	public void setNoticedetialList(List<TblNotice> noticedetialList) {
+		this.noticedetialList = noticedetialList;
+	}
+
+	
+
+
+
+	
+}

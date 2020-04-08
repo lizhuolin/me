@@ -1,0 +1,145 @@
+package com.poobo.core.entity;
+
+import java.sql.Timestamp;
+
+/**
+ * TblNotice entity. @author MyEclipse Persistence Tools
+ */
+
+public class TblNotice implements java.io.Serializable {
+
+	// Fields
+
+	private String noticeId;
+	private TblUser tblUser;
+	private TblCompany tblCompany;
+	private Timestamp noticeCreatetime;
+	private String noticeMsg;
+	private Integer noticeType;
+	private Integer dataStatus;
+	private Timestamp noticeTime;
+	private String noticeCreaterId;
+	private String noticeIntroduction;
+	private String noticeTitle;
+
+	// Constructors
+
+	/** default constructor */
+	public TblNotice() {
+	}
+
+	/** minimal constructor */
+	public TblNotice(TblUser tblUser, TblCompany tblCompany) {
+		this.tblUser = tblUser;
+		this.tblCompany = tblCompany;
+	}
+
+	/** full constructor */
+	public TblNotice(TblUser tblUser, TblCompany tblCompany,
+			Timestamp noticeCreatetime, String noticeMsg, Integer noticeType,
+			Integer dataStatus, Timestamp noticeTime,
+			String noticeCreaterId, String noticeIntroduction,
+			String noticeTitle) {
+		this.tblUser = tblUser;
+		this.tblCompany = tblCompany;
+		this.noticeCreatetime = noticeCreatetime;
+		this.noticeMsg = noticeMsg;
+		this.noticeType = noticeType;
+		this.dataStatus = dataStatus;
+		this.noticeTime = noticeTime;
+		this.noticeCreaterId = noticeCreaterId;
+		this.noticeIntroduction = noticeIntroduction;
+		this.noticeTitle = noticeTitle;
+	}
+
+	// Property accessors
+
+	public String getNoticeId() {
+		return this.noticeId;
+	}
+
+	public void setNoticeId(String noticeId) {
+		this.noticeId = noticeId;
+	}
+
+	public TblUser getTblUser() {
+		return this.tblUser;
+	}
+
+	public void setTblUser(TblUser tblUser) {
+		this.tblUser = tblUser;
+	}
+
+	public TblCompany getTblCompany() {
+		return this.tblCompany;
+	}
+
+	public void setTblCompany(TblCompany tblCompany) {
+		this.tblCompany = tblCompany;
+	}
+
+	public Timestamp getNoticeCreatetime() {
+		return this.noticeCreatetime;
+	}
+
+	public void setNoticeCreatetime(Timestamp noticeCreatetime) {
+		this.noticeCreatetime = noticeCreatetime;
+	}
+
+	public String getNoticeMsg() {
+		return this.noticeMsg;
+	}
+
+	public void setNoticeMsg(String noticeMsg) {
+		this.noticeMsg = noticeMsg;
+	}
+
+	public Integer getNoticeType() {
+		return this.noticeType;
+	}
+
+	public void setNoticeType(Integer noticeType) {
+		this.noticeType = noticeType;
+	}
+
+	public Integer getDataStatus() {
+		return this.dataStatus;
+	}
+
+	public void setDataStatus(Integer dataStatus) {
+		this.dataStatus = dataStatus;
+	}
+
+	public Timestamp getNoticeTime() {
+		return this.noticeTime;
+	}
+
+	public void setNoticeTime(Timestamp noticeTime) {
+		this.noticeTime = noticeTime;
+	}
+
+	public String getNoticeCreaterId() {
+		return this.noticeCreaterId;
+	}
+
+	public void setNoticeCreaterId(String noticeCreaterId) {
+		this.noticeCreaterId = noticeCreaterId;
+	}
+
+	public String getNoticeIntroduction() {
+		return this.noticeIntroduction;
+	}
+
+	public void setNoticeIntroduction(String noticeIntroduction) {
+		this.noticeIntroduction = noticeIntroduction;
+	}
+
+	public String getNoticeTitle() {
+		return this.noticeTitle;
+	}
+
+	public void setNoticeTitle(String noticeTitle) {
+		this.noticeTitle = noticeTitle;
+	}
+
+}

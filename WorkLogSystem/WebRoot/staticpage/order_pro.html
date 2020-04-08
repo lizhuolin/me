@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="css/style.css" rel="stylesheet"  />
+<script src="js/jquery-1.10.2.min.js"></script>
+<script src="layer/layer.js"></script>
+<script src="js/bg.js"></script>
+<title>订单参数</title>
+</head>
+<script>
+$(function(){
+  
+  $(".ord_til").children("a").click(function(){
+	  $(this).toggleClass("select");
+	  if($(this).hasClass("select")){
+		  $(this).parent(".ord_til").siblings(".ord_pro").find("a").not(".ord_btn").addClass("select");
+	  }else{
+		  $(this).parent(".ord_til").siblings(".ord_pro").find("a").not(".ord_btn").removeClass("select");
+	  }
+	  
+  });
+  
+  $(".ord_pro").find("a").not(".ord_btn").click(function(){
+	  $(this).toggleClass("select");
+  });
+  
+  $(".tog_icon").click(function(){
+	  $(this).toggleClass("up");
+	  $(this).toggleClass("down");
+	  $(this).siblings(".ord_pro").slideToggle();
+  });
+  
+  
+    
+
+})
+</script>
+<body>
+  <header class="font0">
+    <span class="head_sp1"></span>
+    <span class="head_sp2">订单参数</span>
+    <span class="head_sp3">2015.11.30<br>10:23</span>
+  </header>
+  
+  <aside>
+    <div class="per_info">
+      <div class="tr"><a>个人信息</a>&nbsp;&#124&nbsp;<a>退出</a></div>
+      <div class="photo"><img src="images/photo.jpg"></div>
+      <div class="name">admin</div>
+    </div>
+    <ul class="menu">
+      <li><a><img src="images/pingtai.png">平台管理<i class="iconfont icon-you fr"></i></a></li>
+      <li><a><img src="images/dingdan.png">订单管理<i class="iconfont icon-you fr"></i></a></li>
+      <li><a><img src="images/kucun.png">库存管理<i class="iconfont icon-circle_down_on fr"></i></a>
+        <ul class="sub_menu">
+          <li><a>库存统计</a></li>
+          <li><a>库存操作</a></li>
+          <li><a>操作记录</a></li>
+          <li class="select"><a>机柜统计</a></li>
+          <li><a>机柜监控</a></li>
+        </ul>
+      </li>
+      <li><a><img src="images/caiwu.png">财务管理<i class="iconfont icon-you fr"></i></a></li>
+      <li><a><img src="images/fuwu.png">服务管理<i class="iconfont icon-you fr"></i></a></li>
+      <li><a><img src="images/kefu.png">客服中心<i class="iconfont icon-you fr"></i></a></li>
+    </ul>
+  </aside>
+  <a class="flex_menu"><i class="iconfont icon-jiantouzuo"></i></a>
+
+  <div class="main">
+    <div class="main_top">
+      <div class="mian_top_btn"><a id="edit">编辑</a></div>
+    </div> 
+     
+    <div class="content">
+      <div class="ord_type">
+        <div class="ord_til"><a class="select"><img src="images/pingtai.png"><span>平台管理</span></a></div>
+        <div class="ord_pro">
+          <a class="select">个人代理</a>
+          <a class="select">机构代理</a>
+          <a class="select">自营电商</a>
+          <a>自营网点</a>
+          <a>个人客户</a>
+          <a class="ord_btn">+</a>
+        </div>
+        <a class="tog_icon up"></a>
+      </div>
+      <div class="ord_type">
+        <div class="ord_til"><a><img src="images/dingdan.png"><span>订单管理</span></a></div>
+        <div class="ord_pro">
+          <a>正常订单</a>
+          <a>取消订单</a>
+          <a>无效订单</a>
+          <a>免费订单</a>
+          <a>退款订单</a>
+          <a class="ord_btn">+</a>
+        </div>
+        <a class="tog_icon up"></a>
+      </div>
+    </div>
+    
+  </div>
+  
+
+
+</body>
+</html>

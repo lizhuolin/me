@@ -1,0 +1,745 @@
+package com.poobo.core.util;
+
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
+
+/**
+ * @Description:日期工具
+ * @author zhangjl
+ * @date 2014年9月3日上午11:06
+ * @version 0.0.1
+ * @since [ake停车场/ 停车管理]
+ */
+public class DateUtils {
+
+	// private static final Log log = Log.getInstance(DateUtils.class);
+
+	private static final Logger log = Logger.getLogger(DateUtils.class);
+
+	/**
+	 * 这个DateUtils写的很传统，但是现在大部分代码都在用，已经用到了其中的一些方法。 如果彻底改变，多个地方代码要跟着改。
+	 * 所以不必是装饰模式重写SimpleDateFormat 应该要考虑兼容性：所以要保持原来的方法。
+	 * 
+	 */
+
+	// 新增代码 2014-12－12 linianjun
+	// 新增多线程安全解决方方案。
+
+	private static Object lockObj = new Object();
+	private static Map<String, ThreadLocal<SimpleDateFormat>> sdfMap = new HashMap<String, ThreadLocal<SimpleDateFormat>>();
+
+	private static SimpleDateFormat getSdf(final String pattern) {
+		ThreadLocal<SimpleDateFormat> tl = sdfMap.get(pattern);
+
+		// 此处的双重判断和同步是为了防止sdfMap这个单例被多次put重复的sdf
+		if (tl == null) {
+			synchronized (lockObj) {
+				tl = sdfMap.get(pattern);
+				if (tl == null) {
+
+					// 使用ThreadLocal<SimpleDateFormat>替代原来直接new SimpleDateFormat
+					tl = new ThreadLocal<SimpleDateFormat>() {
+
+						@Override
+						protected SimpleDateFormat initialValue() {
+							// System.out.println("thread: " +
+							// Thread.currentThread() + " init pattern: " +
+							// pattern);
+							return new SimpleDateFormat(pattern);
+						}
+					};
+					sdfMap.put(pattern, tl);
+				}
+			}
+		}
+
+		return tl.get();
+	}
+
+	/**
+	 * 是用ThreadLocal<SimpleDateFormat>来获取SimpleDateFormat,
+	 * 这样每个线程只会有一个SimpleDateFormat
+	 * 
+	 * @param date
+	 * @param pattern
+	 * @return
+	 */
+	public static String format(Date date, String pattern) {
+		return getSdf(pattern).format(date);
+	}
+
+	public static Date parse(String dateStr, String pattern)
+			throws ParseException {
+		return getSdf(pattern).parse(dateStr);
+	}
+	
+	// 新增代码结束 2014-12－12 linianjun
+
+	/**
+	 * 以下是兼容性的修改
+	 */
+
+	private int weeks = 0;
+
+	// 各种需要用到的时间格式
+	private static final SimpleDateFormat SDF = new SimpleDateFormat(
+			"yyyy-MM-dd HH:mm:ss");
+	// private static final SimpleDateFormat SDF_YMD = new
+	// SimpleDateFormat("yyyy-MM-dd");
+	// private static final SimpleDateFormat SDF_MS = new
+	// SimpleDateFormat("yyyyMMddmmss");
+	// private static final SimpleDateFormat SDFYMD = new
+	// SimpleDateFormat("yyyyMMdd");
+	// private static final SimpleDateFormat SDF_HMS = new
+	// SimpleDateFormat("yyyyMMddHHmmss");
+	// private static final SimpleDateFormat SDF_MD = new
+	// SimpleDateFormat("MM-dd");
+
+	private static final String SDFPATTEN = "yyyy-MM-dd HH:mm:ss";
+	public static final String SDF_YMDPATTEN = "yyyy-MM-dd";
+	private static final String SDF_MSPATTEN = "yyyyMMddmmss";
+	public static final String SDFYMDPATTEN = "yyyyMMdd";
+	private static final String SDF_HMSPATTEN = "yyyyMMddHHmmss";
+	private static final String SDF_MDPATTEN = "MM-dd";
+	public static final String SDF_YMDHM = "yyyyMMddHHmm";
+
+	/**
+	 * 获取前一天凌晨时间(2014-09-02 00:00:00)
+	 * 
+	 * @return
+	 */
+	public static String getPreviousDayZero(int hour) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DATE, -1);
+		calendar.set(Calendar.HOUR_OF_DAY, hour);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		Date date = new Date();
+		date = calendar.getTime();
+
+		return DateUtils.format(date, SDFPATTEN);
+
+		// return DateUtils.format(date, SDFPATTEN);
+	}
+
+	/**
+	 * 获取当前时间(String)
+	 * 
+	 * @return
+	 */
+	public static String getCurrentDate() {
+		Calendar calendar = Calendar.getInstance();
+		Date date = new Date();
+		date = calendar.getTime();
+
+		return DateUtils.format(date, SDF_YMDPATTEN);
+	}
+
+	/**
+	 * 获取当前时间(String)
+	 * 
+	 * @return
+	 */
+	public static String getDayFromDate(Date date) {
+
+		// return SDF_MD.format(date);
+		return DateUtils.format(date, SDF_MDPATTEN);
+	}
+
+	/**
+	 * 获取当前时间--流水号(String)
+	 * 
+	 * @return
+	 */
+	public static String getCurrentDateString() {
+		Calendar calendar = Calendar.getInstance();
+		Date date = new Date();
+		date = calendar.getTime();
+		// 四位随机数
+		int num = (int) (Math.random() * 9000 + 1000);
+		// return SDF_MS.format(date)+String.valueOf(num);
+		return DateUtils.format(date, SDF_MSPATTEN) + num;
+
+	}
+
+	/**
+	 * 获取当前时间(Date)
+	 * 
+	 * @return
+	 */
+	public static Date getCurrentDateTime() {
+
+		Calendar calendar = Calendar.getInstance();
+		Date date = new Date();
+		date = calendar.getTime();
+
+		Date d = null;
+
+		try {
+			// d = SDF.parse(SDF.format(date));
+			// 不明上一句什么意思，为了确保正确性，也跟着使用这个方法吧。这个修改为保证兼容性
+			d = DateUtils.parse(DateUtils.format(date, SDFPATTEN), SDFPATTEN);
+		} catch (ParseException e) {
+			log.error("日期格式转换错误");
+		}
+		return d;
+	}
+	
+	
+	public static Date getCurrentDate1() {
+
+		Calendar calendar = Calendar.getInstance();
+		Date date = new Date();
+		date = calendar.getTime();
+
+		Date d = null;
+
+		try {
+			// d = SDF.parse(SDF.format(date));
+			// 不明上一句什么意思，为了确保正确性，也跟着使用这个方法吧。这个修改为保证兼容性
+			d = DateUtils.parse(DateUtils.format(date, SDF_YMDPATTEN), SDF_YMDPATTEN);
+		} catch (ParseException e) {
+			log.error("日期格式转换错误");
+		}
+		return d;
+	}
+	
+	public static Timestamp getCurrentDateTimeStamp(){
+		return new Timestamp(getCurrentDateTime().getTime());
+		
+	}
+
+	/**
+	 * convert string to date
+	 * 
+	 * @return
+	 */
+	public static Date convertStrToDate(String input) {
+		try {
+			// return SDF_HMS.parse(input);
+			return DateUtils.parse(input, SDF_HMSPATTEN);
+		} catch (ParseException e) {
+			log.error("日期格式转换错误");
+			return null;
+		}
+	}
+
+	/**
+	 * 字符串转换为日期，格式为yyyy-mm-dd
+	 * 
+	 * @param input
+	 * @return
+	 */
+	public static Date convertStrToDateShort(String input) {
+		try {
+			// return SDF_YMD.parse(input);
+			return DateUtils.parse(input, SDF_YMDPATTEN);
+		} catch (ParseException e) {
+			return null;
+		}
+	}
+
+	/**
+	 * 字符串转换为日期时间，格式为yyyy-mm-dd HH:mm:ss
+	 * 
+	 * @param input
+	 * @return
+	 */
+	public static Date convertStrToDateLong(String input) {
+		try {
+			// return SDF.parse(input);
+			return DateUtils.parse(input, SDFPATTEN);
+		} catch (ParseException e) {
+			return null;
+		}
+	}
+
+	/**
+	 * 日期转换为字符串，格式为yyyy-MM-dd
+	 * 
+	 * @param input
+	 * @return
+	 */
+	public static String convertDateToStrShort(Date input) {
+		// return SDF_YMD.format(input);
+		return DateUtils.format(input, SDF_YMDPATTEN);
+	}
+
+	/**
+	 * 日期时间转换为字符串，格式为yyyy-MM-dd HH:mm:ss
+	 * 
+	 * @param input
+	 * @return
+	 */
+	public static String convertDateToStrLong(Date input) {
+		// return SDF.format(input);
+
+		if (input == null) {
+			return null;
+		}
+		return DateUtils.format(input, SDFPATTEN);
+	}
+
+	/**
+	 * 字符串转换为第二天的日期，格式为yyyy-mm-dd
+	 * 
+	 * @param input
+	 * @return
+	 */
+	public static Date convertTomorrowToDateShort(String input) {
+		if (StringUtils.isEmpty(input)) {
+			return null;
+		}
+		try {
+			// Date date = SDF_YMD.parse(input);
+			Date date = DateUtils.parse(input, SDF_YMDPATTEN);
+			Calendar calendar = new GregorianCalendar();
+			calendar.setTime(date);
+			calendar.add(Calendar.DATE, 1);
+			date = calendar.getTime();
+			return date;
+		} catch (ParseException e) {
+			log.error("日期格式转换错误");
+			return null;
+		}
+	}
+
+	/**
+	 * 
+	 * @param sdate
+	 * @return
+	 */
+
+	public static String getWeek(String sdate) {
+		Date date = null;
+		try {
+			date = strToDate(sdate);
+		} catch (ParseException e) {
+			log.error("日期格式转换错误");
+			e.printStackTrace();
+		}
+
+		Calendar c = Calendar.getInstance();
+
+		c.setTime(date);
+
+		// return new SimpleDateFormat("EEEE").format(c.getTime());
+		return DateUtils.format(c.getTime(), "EEEE");
+
+	}
+
+	/**
+	 * 
+	 * @param strDate
+	 * @return
+	 */
+	public static Date strToDate(String strDate) throws ParseException {
+
+		ParsePosition pos = new ParsePosition(0);
+
+		try {
+			return DateUtils.parse(strDate, SDF_YMDPATTEN);
+		} catch (ParseException e) {
+			log.error("日期格式转换错误");
+			throw e;
+		}
+	}
+
+	/**
+	 * 
+	 * @param date1
+	 * @param date2
+	 * @return
+	 */
+	public static long getDays(String date1, String date2) {
+		if (StringUtils.isEmpty(date1)) {
+			return 0L;
+		}
+		if (StringUtils.isEmpty(date2)) {
+			return 0L;
+		}
+
+		Date date = null;
+
+		Date mydate = null;
+		try {
+			// date = SDF_YMD.parse(date1);
+			date = DateUtils.parse(date1, SDF_YMDPATTEN);
+
+			// mydate = SDF_YMD.parse(date2);
+			mydate = DateUtils.parse(date2, SDF_YMDPATTEN);
+		} catch (Exception e) {
+			log.error("日期格式转换错误");
+		}
+
+		long day = (date.getTime() - mydate.getTime()) / 86400000L;
+
+		return day;
+	}
+
+	/**
+	 * 获取昨天日期，格式:2014-10-17
+	 * 
+	 * @return
+	 */
+	public static String getyd() {
+		Calendar cal = Calendar.getInstance();
+		cal.add(5, -1);
+		// String yesterday = SDF_YMD.format(cal.getTime());
+		// return yesterday;
+		return DateUtils.format(cal.getTime(), SDF_YMDPATTEN);
+	}
+
+	/**
+	 * 获取本月最后一天日期:2014-10-31
+	 * 
+	 * @return
+	 */
+	public static String getDefaultDay() {
+		// String str = "";
+		Calendar lastDate = Calendar.getInstance();
+		lastDate.set(5, 1);
+		lastDate.add(2, 1);
+		lastDate.add(5, -1);
+		// str = SDF_YMD.format(lastDate.getTime());
+		// return str;
+		return DateUtils.format(lastDate.getTime(), SDF_YMDPATTEN);
+	}
+
+	/**
+	 * 获取上月第一天日期:2014-09-01
+	 * 
+	 * @return
+	 */
+	public static String getPreviousMonthFirst() {
+		// String str = "";
+
+		Calendar lastDate = Calendar.getInstance();
+
+		lastDate.set(5, 1);
+
+		lastDate.add(2, -1);
+		//
+		// str = SDF_YMD.format(lastDate.getTime());
+		//
+		// return str;
+		return DateUtils.format(lastDate.getTime(), SDF_YMDPATTEN);
+	}
+
+	/**
+	 * 获取下月第一天日期:2014-09-01
+	 * 
+	 * @return
+	 */
+	public static String getNextMonthFirst() {
+		// String str = "";
+		Calendar lastDate = Calendar.getInstance();
+		lastDate.set(5, 1);
+		lastDate.add(2, 1);
+		// str = SDF_YMD.format(lastDate.getTime());//
+		// return str;
+		return DateUtils.format(lastDate.getTime(), SDF_YMDPATTEN);
+	}
+
+	/**
+	 * 获取本月第一天日期:2014-10-01
+	 * 
+	 * @return
+	 */
+
+	public static String getFirstDayOfMonth() {
+		// String str = "";
+
+		Calendar lastDate = Calendar.getInstance();
+
+		lastDate.set(5, 1);
+
+		// str = SDF_YMD.format(lastDate.getTime());
+		//
+		// return str;
+		return DateUtils.format(lastDate.getTime(), SDF_YMDPATTEN);
+	}
+
+	/**
+	 * 获取本周日的日期~:2014-10-19
+	 * 
+	 * @return
+	 */
+	public String getCurrentWeekday() {
+		this.weeks = 0;
+
+		int mondayPlus = getMondayPlus();
+
+		GregorianCalendar currentDate = new GregorianCalendar();
+
+		currentDate.add(5, mondayPlus + 6);
+
+		// Date monday = currentDate.getTime();
+
+		// String preMonday = SDF_YMD.format(monday);
+		//
+		// return preMonday;
+		return DateUtils.format(currentDate.getTime(), SDF_YMDPATTEN);
+	}
+
+	/**
+	 * 获取当天日期:2014-10-18
+	 * 
+	 * @param dateformat
+	 * @return
+	 */
+	public static String getNowTime(String dateformat) {
+		Date now = new Date();
+
+		// 此处日期格式化由外部调用处决定
+		SimpleDateFormat dateFormat = new SimpleDateFormat(dateformat);
+
+		String nowStr = dateFormat.format(now);
+
+		return nowStr;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	private int getMondayPlus() {
+		Calendar cd = Calendar.getInstance();
+
+		int dayOfWeek = cd.get(7) - 1;
+
+		if (dayOfWeek == 1) {
+			return 0;
+		}
+
+		return (1 - dayOfWeek);
+	}
+
+	/**
+	 * 获取本周一日期:2014-10-13
+	 * 
+	 * @return
+	 */
+	public String getMondayOFWeek() {
+		// this.weeks = 0;
+
+		int mondayPlus = getMondayPlus();
+
+		GregorianCalendar currentDate = new GregorianCalendar();
+
+		currentDate.add(5, mondayPlus);
+
+		// Date monday = currentDate.getTime();
+		//
+		// String preMonday = SDF_YMD.format(monday);
+		//
+		// return preMonday;
+		return DateUtils.format(currentDate.getTime(), SDF_YMDPATTEN);
+	}
+
+	/**
+	 * 获取上周日日期:2014-10-12
+	 * 
+	 * @return
+	 */
+	public String getPreviousWeekSunday() {
+		this.weeks = 0;
+
+		this.weeks -= 1;
+
+		int mondayPlus = getMondayPlus();
+
+		GregorianCalendar currentDate = new GregorianCalendar();
+
+		currentDate.add(5, mondayPlus + this.weeks);
+		//
+		// Date monday = currentDate.getTime();
+		// String preMonday = SDF_YMD.format(monday);
+		//
+		// return preMonday;
+		return DateUtils.format(currentDate.getTime(), SDF_YMDPATTEN);
+	}
+
+	/**
+	 * 获取上周一日期:2014-10-06
+	 * 
+	 * @return
+	 */
+	public String getPreviousWeekday() {
+		this.weeks -= 1;
+
+		int mondayPlus = getMondayPlus();
+
+		GregorianCalendar currentDate = new GregorianCalendar();
+
+		currentDate.add(5, mondayPlus + 7 * this.weeks);
+
+		// Date monday = currentDate.getTime();
+		//
+		// String preMonday = SDF_YMD.format(monday);
+		//
+		// return preMonday;
+		return DateUtils.format(currentDate.getTime(), SDF_YMDPATTEN);
+	}
+
+	/**
+	 * 获取上月最后一天的日期:2014-09-30
+	 * 
+	 * @return
+	 */
+	public String getPreviousMonthEnd() {
+		String str = "";
+		Calendar lastDate = Calendar.getInstance();
+		lastDate.add(2, -1);
+		lastDate.set(5, 1);
+		lastDate.roll(5, -1);
+		// str = SDF_YMD.format(lastDate.getTime());
+		// return str;
+		return DateUtils.format(lastDate.getTime(), SDF_YMDPATTEN);
+	}
+
+	/**
+	 * 获取当前日期 yyyy-MM-dd格式的日期的字符串 by sunhp 2014-11-13 18:59:22
+	 * 
+	 * @return
+	 */
+	public static String getYYYY_MM_ddString() {
+		// String date = SDF_YMD.format(new Date());
+		// return date;
+		return DateUtils.format(new Date(), SDF_YMDPATTEN);
+	}
+
+	/**
+	 * 获取当前日期 yyyy-MM-dd HH:mm:ss 格式的日期的字符串 by sunhp 2014-11-13 18:59:22
+	 * 
+	 * @return
+	 */
+	public static String getYYYY_MM_dd_HH_mm_ssString() {
+
+		// return SDF.format(new Date());
+		return DateUtils.format(new Date(), SDFPATTEN);
+	}
+
+	/**
+	 * 获取当前日期 yyyyMMdd格式的日期的字符串 by wuting 2014-11-25 14:59:22
+	 * 
+	 * @return
+	 */
+	public static String getYYYYMMddString() {
+		// String date = SDFYMD.format(new Date());
+		// return date;
+		return DateUtils.format(new Date(), SDFYMDPATTEN);
+	}
+
+	/**
+	 * 获取当前日期 yyyyMMdd格式的日期的字符串 by wuting 2014-11-25 14:59:22
+	 * 
+	 * @return
+	 */
+	// public static SimpleDateFormat getyyyyMMddHHmmssFormat() {
+	// SimpleDateFormat df = SDF_HMS;
+	// SimpleDateFormat df = new SimpleDateFormat
+	// return df;
+	// }
+
+	/**
+	 * 日期字符串转换为Date ，格式为 yyyy-MM-dd hh:mm:ss
+	 * 
+	 * @author malei @2015年2月7日 下午1:47:40
+	 * @param str
+	 * @return
+	 */
+	public static Date strToDateTimeYYYYMMDDHHMMSS(String str) {
+		try {
+			return SDF.parse(str);
+		} catch (ParseException e) {
+
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static Long getMinutesBetween2Date(Date date1, Date date2) {
+		Long diff = date1.getTime() - date2.getTime();
+
+		long day = diff / (24 * 60 * 60 * 1000);
+		long hour = (diff / (60 * 60 * 1000) - day * 24);
+		long min = ((diff / (60 * 1000)) - day * 24 * 60 - hour * 60);
+		long s = (diff / 1000 - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60);
+		diff = diff / (1000 * 60);
+		if (s > 0) {
+			diff += 1;
+		}
+		return diff;
+	}
+
+	/**
+	 * cal1是否大于cal2
+	 * 
+	 * @author malei @2015年2月7日 下午2:30:54
+	 * @param cal1
+	 * @param cal2
+	 * @return
+	 */
+	public static final boolean isBeffor(Calendar cal1, Calendar cal2) {
+
+		int i = cal1.compareTo(cal2);
+		if (i == 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public static String getDateTimeYYYYMMDDHHMMSS(Calendar freeStartCal1) {
+		return freeStartCal1.get(Calendar.YEAR) + "-"
+				+ (freeStartCal1.get(Calendar.MONTH) + 1) + "-"
+				+ freeStartCal1.get(Calendar.DATE) + " "
+				+ freeStartCal1.get(Calendar.HOUR_OF_DAY) + ":"
+				+ freeStartCal1.get(Calendar.MINUTE);
+	}
+
+	public static String addDate(String date, int day) {
+		Calendar lastDate = Calendar.getInstance();
+		lastDate.setTime(strToDateTimeYYYYMMDDHHMMSS(date));
+		lastDate.add(Calendar.DAY_OF_MONTH, day);
+		return convertDateToStrLong(lastDate.getTime());
+	}
+
+	/**
+	 * 求取时间差，返回天 endTime - startTime
+	 * 
+	 * @return
+	 */
+	public static long diffDate(Date startTime, Date endTime) {
+		return (endTime.getTime() - startTime.getTime())
+				/ (24 * 60 * 60 * 1000);
+	}
+
+	
+	/**
+	 * 传过来的日期加上n天
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public static Date addAnyDay(Date date, int number) {
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(date);
+		calendar.add(Calendar.DATE, number);// 把日期往后增加一天.整数往后推,负数往前移动
+		date = calendar.getTime(); // 这个时间就是日期往后推一天的结果
+		return date;
+	}
+
+}

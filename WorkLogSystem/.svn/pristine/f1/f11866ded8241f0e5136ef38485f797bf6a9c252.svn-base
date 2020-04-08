@@ -1,0 +1,42 @@
+package com.poobo.reportwarn.action;
+
+import javax.annotation.Resource;
+
+import com.poobo.core.action.BaseAction;
+import com.poobo.core.entity.TblReportwarn;
+import com.poobo.reportwarn.service.IReportWarnService;
+
+public class ReportWarnAction extends BaseAction<TblReportwarn> {
+
+	@Resource
+	private IReportWarnService reportwarnService;
+	private TblReportwarn reportwarn;
+
+	public String reportwarnList() {
+		pageList = reportwarnService.findReportwarnList(reportwarn, pageNow, pageSize);
+		return "reportwarnList";
+	}
+	
+	/**
+	 * 改变主页提醒信息
+	 * @return
+	 */
+	public String changeReportWarn(){
+		pageList = reportwarnService.getPageList(reportwarn, pageNow, 1);
+		if(pageList.getDataList()!=null && pageList.getDataList().size() >0){
+			reportwarn = pageList.getDataList().get(0);
+		}
+		return "ajaxHome";
+	}
+
+	
+	public TblReportwarn getReportwarn() {
+		return reportwarn;
+	}
+
+	public void setReportwarn(TblReportwarn reportwarn) {
+		this.reportwarn = reportwarn;
+	}
+	
+	
+}

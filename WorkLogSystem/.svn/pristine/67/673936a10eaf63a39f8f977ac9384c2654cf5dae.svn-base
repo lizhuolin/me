@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<package name="log" namespace="/log" extends="struts-default,json-default">
+		<action name="log_*" class="com.poobo.log.action.LogAction" method="{1}">
+			<result name="{1}">/WEB-INF/jsp/log/{1}.jsp</result>
+			<result name="list" type="redirectAction">
+				<param name="actionName">log_logList</param>
+			</result>
+			 <result type="json" name="success">
+                <param name="contentType">
+                    text/html
+                </param>
+            </result>
+            <result type="json" name="error">
+                <param name="contentType">
+                    text/html
+                </param>
+               </result>
+		</action>
+		
+		<action name="json_log_*" class="com.poobo.log.action.LogAction" method="{1}">
+			<result type="json">
+				<!-- 这里指定将被Struts2序列化的属性，该属性在action中必须有对应的getter方法 -->
+				<param name="root">resultData</param>
+			</result>
+		</action>
+	
+		<action name="logDetail_*" class="com.poobo.log.action.LogDetailsAction" method="{1}">
+			<result name="{1}">/WEB-INF/jsp/log/{1}.jsp</result>
+			<result name="list" type="redirectAction">
+				<param name="actionName">log_logList</param>
+			</result>
+		</action>
+		<action name="json_logDetail_*" class="com.poobo.log.action.LogDetailsAction" method="{1}">
+			<result type="json">
+				<!-- 这里指定将被Struts2序列化的属性，该属性在action中必须有对应的getter方法 -->
+				<param name="root">resultData</param>
+			</result>
+		</action>
+	</package>
+	<package name="mobileLog" namespace="/mobile/log" extends="json-default">
+		<action name="mobile_*" class="com.poobo.log.action.LogAction" method="{1}">
+			<result name="{1}">/WEB-INF/jsp/mobile/{1}.jsp</result>
+		</action>
+		
+	</package>
+
+</struts>

@@ -1,0 +1,21 @@
+package com.poobo.task.dao.impl;
+
+import java.util.List;
+
+import org.hibernate.Query;
+
+import com.poobo.core.dao.impl.BaseDaoImpl;
+import com.poobo.core.entity.TblTask;
+import com.poobo.task.dao.ITaskDao;
+
+public class TaskDaoImpl extends BaseDaoImpl<TblTask> implements ITaskDao{
+
+	@Override
+	public List<TblTask> findTaskByCompanyId(String companyId) {
+		Query query = getSession().createQuery("FROM TblTask WHERE tblCompany.companyId= ?");
+		query.setParameter(0, companyId);
+		return query.list();
+	}
+
+
+}

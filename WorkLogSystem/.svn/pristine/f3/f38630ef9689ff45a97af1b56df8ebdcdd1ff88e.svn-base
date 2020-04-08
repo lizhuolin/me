@@ -1,0 +1,72 @@
+package com.poobo.log.service.impl;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Service;
+
+import com.poobo.core.entity.TblLog;
+import com.poobo.core.enums.EnumDataStatus;
+import com.poobo.core.enums.EnumRole;
+import com.poobo.core.service.impl.BaseServiceImpl;
+import com.poobo.core.util.GetSessionData;
+import com.poobo.core.util.PageController;
+import com.poobo.log.dao.ILogDao;
+import com.poobo.log.service.ILogService;
+
+@Service("logService")
+public class LogServiceImpl extends BaseServiceImpl<TblLog> implements ILogService {
+
+	private ILogDao logDao;
+	@Resource
+	public void setLogDao(ILogDao logDao){
+		super.setBaseDao(logDao);
+		this.logDao=logDao;
+	}
+	/**
+	 * 根据用户名查找日志
+	 */
+	@Override
+	public PageController<TblLog> getPageListByUserid(String userId,int pageNow, int pageSize) {
+		
+		Criteria criteria=logDao.createCriteria(TblLog.class);
+		criteria.add(Restrictions.eq("tblUser.userId", userId));
+		criteria.add(Restrictions.eq("dataStatus", EnumDataStatus.NORMAL.getValue()));
+		return logDao.findPageByCriteria(criteria, pageNow, pageSize);
+	}
+	
+	@Override
+	public PageController<TblLog> findLogList(TblLog tblLog, int pageNow,
+			int pageSize) {
+		StringBuffer sb=new StringBuffer();
+		sb.append(" from TblLog where 1=1 ");
+		Map<String, Object> namedParam = new HashMap<String, Object>();
+		if(tblLog!=null){
+			if (tblLog.getLogTime()!=null) {
+				sb.append(" and logTime =:logTime");
+				Date d=tblLog.getLogTime();
+				namedParam.put("logTime", d);
+			}if (tblLog.getTblUser()!=null&&StringUtils.isNotEmpty(tblLog.getTblUser().getName()) && !tblLog.getTblUser().getName().equals("%")){
+				sb.append(" and tblUser.name like :ManagerName");
+				namedParam.put("ManagerName","%"+ tblLog.getTblUser().getName()+"%");
+			}if (tblLog.getTblCompany()!=null&&StringUtils.isNotEmpty(tblLog.getTblCompany().getCompanyName()) && !tblLog.getTblCompany().getCompanyName().equals("%")){
+				sb.append(" and tblCompany.companyName like :ManagerName");
+				namedParam.put("ManagerName","%"+ tblLog.getTblUser().getName()+"%");
+			}
+		}
+		if(!GetSessionData.getUser().getIsUserPlatform()){
+			sb.append(" and tblCompany.companyId=:tblCompany");
+			namedParam.put("tblCompany",GetSessionData.getUser().getTblCompany().getCompanyId());
+			}
+		sb.append(" and dataStatus=:dataStatus");
+		namedParam.put("dataStatus", EnumDataStatus.NORMAL.getValue());
+		return logDao.findPageByHql(sb.toString(), namedParam, pageNow, pageSize);
+	}
+
+}

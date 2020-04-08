@@ -1,0 +1,9 @@
+package com.poobo.log.dao.impl;
+
+import com.poobo.core.dao.impl.BaseDaoImpl;
+import com.poobo.core.entity.TblLog;
+import com.poobo.log.dao.ILogDao;
+
+public class LogDaoImpl extends BaseDaoImpl<TblLog>implements ILogDao{
+
+}

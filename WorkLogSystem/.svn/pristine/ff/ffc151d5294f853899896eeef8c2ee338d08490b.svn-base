@@ -1,0 +1,20 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"  pageEncoding="utf-8"%>
+<%@ taglib prefix="s" uri="/struts-tags" %>    
+
+
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+
+        <div  class="fcon" >
+	    <p><span class="title" id="title">${notice.noticeTitle }</span></p>
+	    <div class="noticeText">
+	      ${notice.noticeMsg }
+	    </div>
+	    </div>
+	
+        
+       
+        

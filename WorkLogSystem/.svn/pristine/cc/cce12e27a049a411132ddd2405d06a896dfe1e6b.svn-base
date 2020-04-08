@@ -1,0 +1,169 @@
+
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<%@ taglib prefix="s" uri="/struts-tags"%>
+
+
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
+
+<html>
+<head>
+<link href="<%=basePath%>/css/style.css" rel="stylesheet" />
+<script type="text/javascript" src="<%=basePath%>common/comm.js"></script>
+<script>
+	$(function() {
+		var nindex = 0;
+		var rindex = 0;
+		var nlen = $(".fcon").length;
+		var rlen = $(".reportwarn").length;
+		$(".fcon").eq(0).show();
+		$(".reportwarn").eq(0).show();
+		$(".notice_right").click(function() {
+			$(".fcon").eq(nindex).hide();
+			nindex++;
+			if (nindex == nlen) {
+				nindex = 0;
+			}
+			$(".fcon").eq(nindex).show();
+
+		});
+		$(".notice_left").click(function() {
+			$(".fcon").eq(nindex).hide();
+			nindex--;
+			if (nindex < 0) {
+				nindex = nlen - 1;
+			}
+			$(".fcon").eq(nindex).show();
+
+		});
+
+		$(".remind_right").click(function() {
+			$(".reportwarn").eq(rindex).hide();
+			rindex++;
+			if (rindex == rlen) {
+				rindex = 0;
+			}
+			$(".reportwarn").eq(rindex).show();
+
+		});
+		$(".remind_left").click(function() {
+			$(".reportwarn").eq(rindex).hide();
+			rindex--;
+			if (rindex < 0) {
+				rindex = rlen - 1;
+			}
+			$(".reportwarn").eq(rindex).show();
+
+		});
+
+	});
+</script>
+
+</head>
+<link href="<%=basePath%>/css/style.css" rel="stylesheet" />
+<body>
+	<input type="hidden" name="pageNow" id="pageNow"
+		value="<s:property value="pageNow"/>">
+	<input type="hidden" value="<s:property value="pageList.totalPage"/>"
+		id="totalPage">
+	<div class="index" id="home">
+		<div class="home_left">
+			<span id="noticetext"> 公告信息</span>
+			<div id="list" class="list">
+				<s:iterator value="noticeList">
+					<div class="fcon" style="display: none;">
+						<p>
+							<span class="title">${noticeTitle}</span>
+						</p>
+						<div class="noticeText">${noticeMsg}</div>
+					</div>
+				</s:iterator>
+			</div>
+
+			<div class="notice_left">
+				<img src="images/l_btn.png">
+			</div>
+			<div class="notice_right">
+				<img src="images/r_btn.png">
+			</div>
+
+		</div>
+		<div class="home_right">
+			<span id="remindtext">提醒信息</span>
+
+			<div class="table">
+				<s:iterator value="reportwarnList">
+					<div class="reportwarn" style="display: none;">
+						<s:if test='type == "0"'>
+							<div class="remindtext">任务:${tblTask.taskMsg}</div>
+							<p>
+								<span>责任人:</span><input type="text" value="${tblTask.taskResponsible.name}">
+							</p>
+							<p>
+								<span>创建时间:</span><input type="text" value="${tblTask.createTime}">
+							</p>
+							<p id="datep">
+								开始时间-结束时间:<input type="text" value='<s:date name="tblTask.taskStartTime" format="yyyy/MM/dd"/>'>-<input
+									type="text" value='<s:date name="tblTask.taskEndTime" format="yyyy/MM/dd"/>'>
+							</p>
+							<p>
+								<span>任务内容:</span> <input type="text">
+							</p>
+							<div class="taskText">${tblTask.taskDesc}</div>
+						</s:if>
+						<s:elseif test='type == "1"'>
+						
+							<div class="remindtext">计划:${tblPlan.planMsg}</div>
+							<p>
+								<span>责任人:</span><input type="text" value="${tblPlan.planManager.name}" >
+							</p>
+							<p>
+								<span>创建时间:</span><input type="text" value="${tblPlan.createTime}">
+							</p>
+							<p id="datep">
+								计划开始时间-计划结束时间:<input type="text" value='<s:date name="tblPlan.planStartTime" format="yyyy/MM/dd"/>' >-<input
+									type="text" value='<s:date name="tblPlan.planEndTime" format="yyyy/MM/dd"/>'>
+							</p>
+							<p>
+								<span>计划进度:</span> <input type="text" value="${tblPlan.projectProgress}%">
+							</p>
+						
+						
+						
+						</s:elseif>
+						<s:elseif test='type == "2"'>
+						<s:if test="tblLog != null">
+						<div class="remindtext">${tblLog.tblUser.name}昨日日志</div>
+							<p>
+								<s:if test='tblLog.logPicture!=null && tblLog.logPicture!=""'>
+									<span>日志图片:</span><img id="remindImg" src="${tblLog.logPicture}">
+								</s:if>
+							</p>
+							<p>
+								<span>日志内容:</span></p><div class="noticeText">${tblLog.logMsg}</div>
+							
+						</s:if><s:else>
+						<div class="remindtext">昨日日志未完成</div>
+						</s:else>
+						</s:elseif>
+					</div>
+					
+				</s:iterator>
+			</div>
+
+			<div class="remind_left">
+				<img src="images/l_btn.png">
+			</div>
+			<div class="remind_right">
+				<img src="images/r_btn.png">
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

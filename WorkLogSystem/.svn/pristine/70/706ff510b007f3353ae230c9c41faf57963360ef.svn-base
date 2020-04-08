@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="css/style.css" rel="stylesheet"  />
+<script src="js/jquery-1.10.2.min.js"></script>
+<script src="layer/layer.js"></script>
+<script src="js/bg.js"></script>
+<title>滞纳金管理</title>
+</head>
+<script>
+$(function(){
+
+  $("#edit").click(function(){
+	 //iframe层-父子操作
+	  layer.open({
+		  type: 2,
+		  area: ['800px', '600px'],//弹出层宽高
+		  title: ['文本', 'font-size:16px;'],
+		  fix: false, //不固定
+		  maxmin: true,
+		  content: 'edit.html',//加载页面
+		  btn:['保存','取消'],
+		  yes:function(index, layero){ //或者使用btn1
+			  //按钮【保存】的回调
+		  },
+		  cancel:function(index){ //或者使用btn2
+			  return null;//按钮【取消】的回调
+		  }
+	  });
+  
+  });
+
+})
+</script>
+<body>
+  <header class="font0">
+    <span class="head_sp1"></span>
+    <span class="head_sp2">滞纳金管理</span>
+    <span class="head_sp3">2015.11.30<br>10:23</span>
+  </header>
+  
+  <aside>
+    <div class="per_info">
+      <div class="tr"><a>个人信息</a>&nbsp;&#124&nbsp;<a>退出</a></div>
+      <div class="photo"><img src="images/photo.jpg"></div>
+      <div class="name">admin</div>
+    </div>
+    <ul class="menu">
+      <li><a><img src="images/pingtai.png">平台管理<i class="iconfont icon-you fr"></i></a></li>
+      <li><a><img src="images/dingdan.png">订单管理<i class="iconfont icon-you fr"></i></a></li>
+      <li><a><img src="images/kucun.png">库存管理<i class="iconfont icon-circle_down_on fr"></i></a>
+        <ul class="sub_menu">
+          <li><a>库存统计</a></li>
+          <li><a>库存操作</a></li>
+          <li><a>操作记录</a></li>
+          <li class="select"><a>机柜统计</a></li>
+          <li><a>机柜监控</a></li>
+        </ul>
+      </li>
+      <li><a><img src="images/caiwu.png">财务管理<i class="iconfont icon-you fr"></i></a></li>
+      <li><a><img src="images/fuwu.png">服务管理<i class="iconfont icon-you fr"></i></a></li>
+      <li><a><img src="images/kefu.png">客服中心<i class="iconfont icon-you fr"></i></a></li>
+    </ul>
+    
+  </aside>
+  <a class="flex_menu"><i class="iconfont icon-jiantouzuo"></i></a>
+  
+  <div class="main">
+     <div class="main_top"></div>
+     
+    <div class="content">
+    
+      <div class="rules">
+        <div class="rule_title">滞纳金收费标准</div>
+        <div class="rule_disc">
+          <p>&diams;回国日期加上配置的日期，不收费</p>
+          <p>&diams;次日开始按列表收取滞纳金</p>
+          <p>&diams;默认延期天数从第<span><input class="mini" type="text"><label class="error">输入的格式不正确</label></span>天到第<span><input class="mini" type="text"></span>天，每天收费<span><input class="mini" type="text"></span>元</p>
+        </div>
+        <div class="rule_btn"><a>确定</a></div>
+      </div>
+      
+      <div class="rules">
+        <div class="rule_title">退款期限设置</div>
+        <div class="rule_disc">
+          <p>默认订单中回国日期开始的<span><input class="mini" type="text"></span>天之内允许申请退款</p>
+        </div>
+        <div class="rule_btn"><a>确定</a></div>
+      </div>
+      
+      <div class="con_disc">
+        <table border="1" bordercolor="#ccc">
+          <tr>
+            <th><input type="checkbox" ></th>
+            <th>操作</th>
+            <th>序号</th>
+            <th>仓位</th>
+            <th>机柜数量</th>
+            <th>机柜编码</th>
+            <th>机柜类型</th>
+            <th>机柜状态</th>
+            <th>备注</th>
+          </tr>
+          <tr>
+            <td><input type="checkbox" ></td>
+            <td class="btn"><a>编辑</a></td>
+            <td>12</td>
+            <td>fgdhhnxdhdddddddddddddddd</td>
+            <td>bvdncvmgd</td>
+            <td>fshdfjdfffff</td>
+            <td>dhdtjty</td>
+            <td>jfkyufk</td>
+            <td>fjftyk</td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" ></td>
+            <td class="btn"><a>编辑</a><a>编辑</a></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          
+          <tr>
+            <td><input type="checkbox" ></td>
+            <td class="btn"><a>编辑</a></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          
+        </table>
+      </div>
+    </div>
+    
+    <div class="main_bottom">
+      <div class="con_bottom">
+        <div class="bottom_disc">
+          <span>当前页：1/8</span>
+          <span><a><i class="iconfont icon-caretleft"></i></a><a><i class="iconfont icon-caretright"></i></a></span>
+          <span>跳到<input type="text" ></span>
+        </div>
+        <div class="search_btn"><a>GO</a></div>
+      </div>
+    </div> 
+  </div>
+  
+
+
+</body>
+</html>

@@ -1,0 +1,352 @@
+var overList;
+var fullYear=new Date().getFullYear();
+var month=new Date().getMonth();
+$(function($){
+//    	drawTemp( $("#dateId").val());
+    	getLog4Today($("#dateId").val());
+    	
+    });
+     
+    //*********************日历控件     开始
+    var $ = function (id) {
+        return "string" == typeof id ? document.getElementById(id) : id;
+    };
+
+    var Class = {
+      create: function() {
+        return function() {
+          this.initialize.apply(this, arguments);
+        }
+      }
+    }
+
+    Object.extend = function(destination, source) {
+        for (var property in source) {
+            destination[property] = source[property];
+        }
+        return destination;
+    }
+
+    var Calendar = Class.create();
+    Calendar.prototype = {
+      initialize: function(container, options) {
+        this.Container = $(container);//容器(table结构)
+        this.Days = [];//日期对象列表
+       
+        this.SetOptions(options);
+       
+        this.Year = this.options.Year;
+        this.Month = this.options.Month;
+        this.SelectDay = this.options.SelectDay ? new Date(this.options.SelectDay) : null;
+        this.onSelectDay = this.options.onSelectDay;
+        this.taskOver = this.options.taskOver;
+        this.taskWait = this.options.taskWait;
+        this.onToday = this.options.onToday;
+        this.onFinish = this.options.onFinish;   
+       
+        this.Draw();
+      },
+      //设置默认属性
+      SetOptions: function(options) {
+        this.options = {//默认值
+            Year:            new Date().getFullYear(),//显示年
+            Month:            new Date().getMonth() + 1,//显示月
+            SelectDay:        null,//选择日期
+            onSelectDay:    function(){},//在选择日期触发
+            taskOver:    function(o){ },//在选择日期触发
+            onToday:        function(){},//在当天日期触发
+            onFinish:        function(){}//日历画完后触发
+        };
+        Object.extend(this.options, options || {});
+      },
+      //上一个月
+      PreMonth: function() {
+        //先取得上一个月的日期对象
+        var d = new Date(this.Year, this.Month - 2, 1);
+        //再设置属性
+        this.Year = d.getFullYear();
+        this.Month = d.getMonth() + 1;
+        //重新画日历
+        this.Draw();
+      }, 
+      //下一个月
+      NextMonth: function() {
+        var d = new Date(this.Year, this.Month, 1);
+        this.Year = d.getFullYear();
+        this.Month = d.getMonth() + 1;
+        this.Draw();
+      },
+      //画日历
+      Draw: function() {
+        //用来保存日期列表
+        var arr = [];
+        //用当月第一天在一周中的日期值作为当月离第一天的天数
+        for(var i = 1, firstDay = new Date(this.Year, this.Month - 1, 1).getDay(); i <= firstDay; i++){ arr.push("&nbsp;"); }
+        //用当月最后一天在一个月中的日期值作为当月的天数
+        for(var i = 1, monthDay = new Date(this.Year, this.Month, 0).getDate(); i <= monthDay; i++){ arr.push(i); }
+       
+        var frag = document.createDocumentFragment();
+       
+        this.Days = [];
+       
+        while(arr.length > 0){
+            //每个星期插入一个tr
+            var row = document.createElement("tr");
+            //每个星期有7天
+            for(var i = 1; i <= 7; i++){
+                var cell = document.createElement("td");
+                cell.innerHTML = "&nbsp;";
+               
+                if(arr.length > 0){
+                    var d = arr.shift();
+                    cell.innerHTML = d;
+                    if(d > 0){
+                        this.Days[d] = cell;
+                        //判断是否今日
+                        if(this.IsSame(new Date(this.Year, this.Month - 1, d), new Date())){ this.onToday(cell); }
+                        //判断是否选择日期
+                       // if(this.SelectDay && this.IsSame(new Date(this.Year, this.Month - 1, d), this.SelectDay)){ this.onSelectDay(cell); }
+                       if(taskOver(d)){
+                           this.taskOver(cell);
+                      }
+                       if(taskWait(this.Year, this.Month,d)){
+                           this.taskWait(cell);
+                      }
+                        
+                    }
+                }
+                row.appendChild(cell);
+            }
+            frag.appendChild(row);
+        }
+       
+        //先清空内容再插入(ie的table不能用innerHTML)
+/*        
+        while(container.hasChildNodes()){
+        	container.removeChild(this.Container.firstChild);
+        }*/
+//        var container = this.Container;
+//        container.appendChild(frag);
+        $("#idCalendar").empty();
+        $("#idCalendar").append(frag);
+        this.onFinish();
+      },
+      //判断是否同一日
+      IsSame: function(d1, d2) {
+        return (d1.getFullYear() == d2.getFullYear() && d1.getMonth() == d2.getMonth() && d1.getDate() == d2.getDate());
+      }
+    };
+
+
+    function taskOver(data){
+    	
+     var flag=false;
+    var list= overList.split(",");
+    	for(var i=0;i<list.length;i++){
+//    		alert(list[i]);
+    		if(list[i]==data){
+    			//alert(data);
+    			flag= true;
+    			break;
+    		}
+    	}
+    	return flag;
+    }
+    
+    function taskWait(oY, oM,data){
+     var flag=false;
+     var list= overList.split(",");
+ 	for(var i=0;i<list.length;i++){
+    		if(list[i]==data){
+    			//alert(data);
+    			flag= true;
+    			break;
+    		}
+    	}
+ 	     
+ 	    if(isNowMonth(new Date().getFullYear(), new Date().getMonth()+1, oY, oM)){
+ 	    	//是当月
+ 	    	if(!flag&&data<=jQuery("#dateId").val().split("-")[2]){
+ 	    		return true;
+ 	    	}else{
+ 	    		return false;
+ 	    	}
+ 	    }else{
+ 	    	if(overList==""){
+ 	    		return true;
+ 	    	}
+ 	    	
+ 	    	if(!flag){
+ 	    		return true;
+ 	    	}else{
+ 	    		return false;
+ 	    	}
+ 	    	
+ 	    }
+ 	    
+    	
+    	
+    }   
+    
+    
+    //*********************日历控结束    
+    
+    
+    
+    
+   
+  
+  function drawTemp(data){
+	    //ajax请求后台返回已写日志的天
+	  jQuery.ajax({
+				type: "POST",
+				url: rooPath+"/log/json_log_findDateList.action",
+				data: {"date":data},
+				dataType:'json',
+				success: function(data){
+					if(data.resultFlag){
+						overList=data.resultData;
+					 var cale = new Calendar("idCalendar", {
+						    Year: fullYear,//显示年
+				            Month: month+1,
+					        SelectDay: new Date().setDate(10),
+					        onSelectDay: function(o){ o.className = "onSelect"; },
+					        taskOver: function(o){ o.className = "taskOver"; },
+					        taskWait: function(o){ o.className = "taskWait"; },
+					        onToday: function(o){ o.className = "onToday"; },
+					        onFinish: function(){
+					            $("#idCalendarYear").html(this.Year); 
+					            $("#idCalendarMonth").html(this.Month);
+					            
+					            if(isNowMonth(new Date().getFullYear(), new Date().getMonth()+1, this.Year, this.Month)){
+					            	//如果是当月
+					            	for(var i = 0; i <jQuery("#dateId").val().split("-")[2]; i++){
+						            	this.Days[i+1].innerHTML = '<a href="javascript:getLog4Today(\''+this.Year+'-'+this.Month+'-'+(i+1)+'\')">' + (i+1) + '</a>';           
+						             }
+					            }else{
+					            	var d = new Date(this.Year, this.Month, 0);
+//					            	alert(d.getDate());
+					            	for(var i = 0; i <d.getDate(); i++){
+					            		this.Days[i+1].innerHTML = '<a href="javascript:getLog4Today(\''+this.Year+'-'+this.Month+'-'+(i+1)+'\')">' + (i+1) + '</a>';      
+					            	}
+					            	
+					            }
+					            
+					        }  
+					    });
+					    $("#idCalendarPre").click("click",function(){ 
+					    	 jQuery("#dateId").val(cale.Year+'-'+(cale.Month-1)+'-'+'01');
+					    	 var d = new Date(cale.Year, cale.Month-2, 1);
+					    	 fullYear = d.getFullYear();
+					    	 month = d.getMonth();
+					    	 
+					    	drawTemp(jQuery("#dateId").val());
+//					    	cale.PreMonth(); 
+					    	});
+					    $("#idCalendarNext").click("click",function(){ 
+					    	if(isNowMonth(new Date().getFullYear(), new Date().getMonth()+1, cale.Year, cale.Month+1)){
+	                               //是当月
+						    		jQuery("#dateId").val(cale.Year+'-'+(cale.Month+1)+'-'+new Date().getDay());
+						    }else{
+						    	jQuery("#dateId").val(cale.Year+'-'+(cale.Month+1)+'-'+'01');
+						    }
+					    	
+					    	 var d = new Date(cale.Year, cale.Month, 1);
+					    	 fullYear = d.getFullYear();
+					    	 month = d.getMonth();
+					    	 alert(jQuery("#dateId").val());
+					    	 drawTemp(jQuery("#dateId").val());
+//					    	cale.NextMonth(); 
+					    	});
+					}
+				}
+			});
+	    
+  }
+  function goNewPage(url){
+	  window.location.href=url;
+  } 
+ 
+    
+    
+    function getLog4Today(data){
+    	jQuery("#dateId").val(data);
+    	jQuery.ajax({
+			type: "POST",
+			url: rooPath+"/mobile/log/mobile_logDetail.action",
+			data: {"date":data},
+			dataType:'html',
+			success: function(data){
+				jQuery(".log_below").html(data);
+			}
+		});
+    	
+    }
+    
+    
+
+    function ajaxFileUpload() {
+        $.ajaxFileUpload({
+                url:rooPath + '/fileoperate/fileoperate_imageUpload.action',//用于文件上传的服务器端请求地址
+                secureuri:false,//一般设置为false
+                fileElementId:'image',//文件上传空间的id属性  <input type="file" id="file" name="file" />
+                dataType: 'json',//返回值类型 一般设置为json
+                data : {"childPath" : "log"},
+                success: function (data, status){  //服务器成功响应处理函数
+                	 if (typeof(data.error) != 'undefined') {
+                         if (data.error != '') {
+                        	 opFail(data.error);
+                         } else {
+                        	 $("#headImg").val(data.imagePath);
+                         	$("#showImg").attr("src",rooPath + "/" +data.imagePath);
+                          	opSuccess(data.message);
+                         }
+                     }
+                 	
+                },
+                error: function (data, status, e){//服务器响应失败处理函数
+                	opFail(data.message);
+                }
+            });
+        return false;
+    }
+  //提交表单
+  function doSubmit(date){
+  		//提交表单
+  	//	document.write("运行了？");
+  		//$("#form").submit();
+//  		document.forms[0].submit();
+  			$.ajax({
+  				type: "POST",
+  				url: rooPath + "/mobile/log/mobile_mobileEdit.action?date="+date,
+  				data: $("#form1").serialize(),
+  				success: function(data){
+  					alert("保存成功");
+  					location.replace(rooPath + "/mobile/log/mobile_log.action?date="+date);
+  				}
+  			});
+//  		getLog4Today(data);
+  }
+ //更新
+  function update(date){
+	  $.ajax({
+			type: "POST",
+			url: rooPath + "/mobile/log/mobile_mobileEdit.action",
+			data: $("#form2").serialize(),
+			success: function(data){
+				alert("保存成功");
+				location.replace(rooPath + "/mobile/log/mobile_log.action?date="+date);
+			}
+		});
+  }
+
+  function isNowMonth(nowY,nowM,oY,oM){
+	  
+	  if(nowY==oY&&nowM==oM){
+		  return true;
+	  }else{
+		  return false;
+	  }
+  }  
+
+

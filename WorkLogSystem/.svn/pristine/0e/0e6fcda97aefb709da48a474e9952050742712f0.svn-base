@@ -1,0 +1,86 @@
+var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+$(function($){
+
+	$("#editForm").validate({
+		rules:{
+		   "tblcompany.companyName":{
+			required:true,
+			isNickName:true
+		  }
+			,"tblcompany.companyMobile":{
+				required:true,
+				isPhone:true
+			}
+			,"tblcompany.companyAdress":{
+				required:true,
+				isAdredss:true
+			}
+			,"tblcompany.charter":{
+				required:true,
+				isImage:true
+			}
+		},
+		messages:{
+			"tblcompany.companyName":{
+				required:"公司名必填",
+				isNickName:"公司名格式错误"
+			}
+			,"tblcompany.companyMobile":{
+				required:"公司电话必填"
+			}
+			,"tblcompany.companyAdress":{
+				required:"公司地址不正确"
+			}
+			,"tblcompany.charter":{
+				required:"图片格式不正确"
+			}
+		}
+		,success : function(label) {
+			//label.addClass("success").text("输入正确");
+		}
+		//,errorPlacement : function(error, element) {
+			//error.appendTo(element.next("span").next("span"));
+		//}
+		,onkeyup : false
+		});
+	
+	//弹出页面
+	$("#edit").click(function(){
+		formSubmit();
+	 });
+	$(".btn_cancel").click(function(){
+		location.assign("../user/user_loginUI.action");
+	});
+	
+});
+
+
+
+
+
+function formSubmit(){
+	if($("#editForm").validate().form()){
+		//显示遮罩
+		addCover();
+		$.ajax({
+			type: "POST",
+			url: "json_company_edit.action",
+			data: $("#editForm").serialize(),
+			success: function(data){
+				if(data.resultFlag){
+					parent.$('.search_btn').click();
+					//成功关闭
+					successClose("操作成功");
+					location.assign("../user/user_loginUI.action");
+					
+				}else{
+					//失败提示
+					failAlert(data);
+				}
+				//隐藏遮罩
+				removeCover();
+			}
+		});
+	}
+}
+

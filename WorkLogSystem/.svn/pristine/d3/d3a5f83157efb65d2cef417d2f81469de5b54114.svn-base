@@ -1,0 +1,166 @@
+
+ <%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%><%@ taglib prefix="s" uri="/struts-tags" %>
+
+<html>
+<head>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>   
+ 
+
+
+
+<html>
+<head>
+
+<jsp:include page="/common/common.jsp"></jsp:include>
+<script src="<%=basePath %>common/ajaxfileupload.js"></script>
+<!-- 只需要引入自己独有的js即可    js统一放到js文件夹下面，并按模块建立单独文件夹-->
+<script src="<%=basePath %>js/company/edit.js"></script> 
+<script src="<%=basePath %>common/comm.js"></script>
+
+<script type="text/javascript">
+function ajaxFileUpload1() {
+    $("#loading").ajaxStart(function(){
+    	addCover();
+    }).ajaxComplete(function(){
+    	removeCover();
+    });//文件上传完成将图片隐藏起来
+    $.ajaxFileUpload({
+            url:'company_imageUpload.action',//用于文件上传的服务器端请求地址
+            secureuri:false,//一般设置为false
+            fileElementId:'image1',//文件上传空间的id属性  <input type="file" id="file" name="file" />
+            dataType: 'json',//返回值类型 一般设置为json
+            success: function (data, status){  //服务器成功响应处理函数
+               alert(data.message);//从服务器返回的json中取出message中的数据,其中message为在struts2中action中定义的成员变量
+             	$("#charter").val(data.imagePath);
+            },
+            error: function (data, status, e){//服务器响应失败处理函数
+             alert("上传失败！");
+            }
+        });
+    return false;
+}
+
+function ajaxFileUpload2() {
+    $("#loading").ajaxStart(function(){
+    	addCover();
+    }).ajaxComplete(function(){
+    	removeCover;
+    });//文件上传完成将图片隐藏起来
+    $.ajaxFileUpload({
+            url:'company_imageUpload.action',//用于文件上传的服务器端请求地址
+            secureuri:false,//一般设置为false
+            fileElementId:'image1',//文件上传空间的id属性  <input type="file" id="file" name="file" />
+            dataType: 'json',//返回值类型 一般设置为json
+            success: function (data, status){  //服务器成功响应处理函数
+                alert(data.message);//从服务器返回的json中取出message中的数据,其中message为在struts2中action中定义的成员变量
+                alert(data.imagePath);
+             	$("#charter").val(data.imagePath);
+            },
+            error: function (data, status, e){//服务器响应失败处理函数
+             alert("上传失败！");
+            }
+        });
+    return false;
+}
+
+</script>
+
+ 
+</head>
+<body>
+  <form id="editForm">
+  <div class="edit">
+    <ul>
+    <s:hidden name="tblcompany.companyId"/>
+    <s:hidden name="tblcompany.dataStatus"/>
+    <s:hidden name="tblcompany.isVerification"/>
+    <s:hidden name="tblcompany.createTime"/>
+    
+     <li>
+        <span><i>公司名称</i><samp>:</samp>
+        <input  type="text" name="tblcompany.companyName" value="${tblcompany.companyName }"/><label class="require_lab"></label><samp></samp>
+        </samp>
+          <div class="d_list"></div>
+        </span>
+     
+        <span><i>公司电话</i><samp>:</samp>
+        <input  type="text" name="tblcompany.companyMobile" value="${tblcompany.companyMobile }"/><label class="require_lab"></label><samp></samp>
+          <div class="d_list"></div>
+        </span>
+      <li>
+      
+      <li>
+      <span><i>公司地址</i><samp>:</samp>
+        <input  type="text" name="tblcompany.companyAdress" value="${tblcompany.companyAdress }"/><label class="require_lab"></label><samp></samp>
+          <div class="d_list"></div>
+        </span>
+      
+      <span><i>公司管理员</i><samp>:</samp>
+        <input  type="text" name="tblcompany.companyAdmin" value="${tblcompany.companyAdmin }"/><label class="require_lab"></label><samp></samp>
+          <div class="d_list"></div>
+        </span>
+      </li>
+      
+      <li>
+	        <span><i>营业执照</i><samp>:</samp>
+	            <a class="upload_btn">选择文件</a>
+		        <input type="file" name="image" id="image1" onchange="ajaxFileUpload1()"/>
+		        <img src="<%=basePath %>images/loading.gif" id="loading" style="display: none;">
+		        <input type="hidden" id="charter" name="tblcompany.charter"  value="<s:property value='tblcompany.charter'/>"/>
+	        </span>
+	        <s:if test='tblcompany.charter!=null&&tblcompany.charter!=""'>
+	         		<img id="showImg" src="<%=basePath %><s:property value='tblcompany.charter'/>" width="100px" height="100px">
+	         </s:if>
+       </li>
+
+      <li>
+      <span>
+      <i>公司类型</i>
+      <samp>:</samp>
+      <input  type="text" name="tblcompany.companyType" value="${tblcompany.companyType }"/><samp></samp>
+          <div class="d_list"></div>
+      <%-- <select name="tblcompany.companyType">
+      
+      <option value="0" <s:if test="tblcompany.companyType==0">selected="selected"</s:if>>大型</option>
+      <option value="1"<s:if test="tblcompany.companyType==1">selected="selected"</s:if>>中型</option>
+      <option value="2"<s:if test="tblcompany.companyType==2">selected="selected"</s:if>>小型</option>
+      </select> --%>
+      </span>
+      </li> 
+      
+      
+      <li>
+        <span><i>公司简介</i><samp>:</samp>
+        <textarea name="tblcompany.companyIntroduction">
+        <s:property value='tblcompany.companyIntroduction'/>
+        </textarea >
+        </span>
+        </li>
+        
+       <li>
+	        <span><i>公司logo</i><samp>:</samp>
+	            <a class="upload_btn">选择文件</a>
+		        <input type="file" name="uploadFiles" id="file_upload1" />
+	             <input type="hidden" id="headImg1" name="tblcompany.companyLogo"  value="<s:property value='tblcompany.companyLogo'/>"/>
+	        </span>
+	        <s:if test='tblcompany.companyLogo!=null&&tblcompany.companyLogo!=""'>
+	        	<img id="showImg" src="<%=basePath %><s:property value='tblcompany.companyLogo'/>" width="20px" height="20px">
+	        </s:if>
+	      </li> 
+  
+</form>
+    </ul>
+  </div>
+</form>
+
+
+  <div class="edit_btn"><a id="edit">保存</a><a id="close" class="btn_cancel" >取消</a></div>
+  
+ <!-- 保存遮罩层-->
+  <!--<div class="edit_cover"><p><img src="images/loading.gif"></p></div>-->
+
+</body>
+</html>

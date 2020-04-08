@@ -1,0 +1,109 @@
+@charset "utf-8";
+/* CSS Document */
+
+.zc_bg{
+position:absolute; 
+top:0; 
+left:0; 
+height:100%; 
+width:100%; 
+background-image:url(../images/zc_bg.png); 
+background-position: center 0; 
+background-repeat: no-repeat; 
+background-attachment:fixed; 
+background-size: cover; 
+-webkit-background-size: cover;/* 兼容Webkit内核浏览器如Chrome和Safari */ 
+-o-background-size: cover;/* 兼容Opera */ 
+zoom: 1; 
+}
+img#zclogo {
+    margin-top: 10%;
+    width: 80%;
+}
+img#zcpoobo {
+        width: 50%;
+    margin-top: 20%;
+}
+.zc_logo {
+	text-align: center; 	
+   	float: left;
+    margin-left: 3%;
+    margin-right: 40px;
+}
+.zc_text {
+    color: #fff;
+    font-size: 35px;
+    margin-top: 2%;
+}
+.zc_form {
+    background-color: #ceeeed;
+    /* height: 650px; */
+    width: 750px;
+    margin-left: 25%;
+    border-radius: 15px;
+    padding-left: 50px;
+	padding-top: 20px;
+    padding-bottom: 20px;
+    margin-top: 10%;
+}
+
+.zc_form span{width:6em;display:block;float:left; font-size:23px;
+line-height:25px;color: #535353; text-align: right;padding-left: 3%; margin-top: 15px;}
+.zc_form input[type=file] {
+    position: absolute;
+    font-size: 100px;
+    right: 0;
+    top: 0;
+    opacity: 0;
+}
+.zc_form input[type=file]:hover {
+    background: #1E88C7;
+    border-color: #78C3F3;
+    color: #004974;
+    text-decoration: none;
+}
+
+.file {
+   position: relative;
+    display: inline-block;
+    background: #c9c9c9;
+    border-radius: 100px;
+    padding: 4px 12px;
+    overflow: hidden;
+    color: #535353;
+    text-decoration: none;
+    text-indent: 0;
+    line-height: 20px;
+    margin-left: 10px;
+    margin-bottom: 4px;
+}
+.zc_form input {
+    border: none;
+	height:30px;
+	width:453px;
+	border-radius: 5px;
+	margin-top: 10px;
+	color:#959595;
+	padding-left: 10px;
+}
+.zc_save {
+    text-align: center;
+    float: left;
+    margin-left: 35%;
+	margin-top: 30px;
+}
+.zc_canel {
+       text-align: center;
+    margin-top: 30px;
+    margin-right: 10%;
+    /* margin-left: 300px; */
+}
+input[type=button] {
+    background-color: #535353;
+    border: none;
+    border-radius: 10px;
+    width: 120px;
+    height: 35px;
+    color: #fff;
+    font-size: 24px;
+}

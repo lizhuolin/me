@@ -1,0 +1,135 @@
+var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+$(function($){
+
+	$("#editForm").validate({
+		rules:{
+			"user.username":{
+				required:true,
+				isLoginname:true,
+				remote: {
+					    url: "json_user_checkUsername.action",     //后台处理程序
+					    type: "post",               //数据发送方式
+					    dataType: "json",           //接受数据格式   
+					    data: {                     //要传递的数据
+					        "user.userId": function() {
+					            return $("#userId").val();
+					        }
+					    }
+				}
+			}
+		   ,"user.name":{
+			required:true,
+			isNickName:true
+		  }
+			,"user.mobile":{
+				required:true,
+				isPhone:true
+			}
+			,"user.password":{
+				required:true,
+				isPassword:true
+			}
+			,"user.email":{
+				required:true,
+				isContact:true
+			}
+			,"user.idcard":{
+				required:true,
+				isIdcard:true
+			}
+		},
+		messages:{
+			"user.username":{
+				required:"账号必填",
+				isLoginname:"账号格式不正确！",
+				remote:"该账号已被注册,请更换其他账号"
+			}
+			,"user.name":{
+				required:"姓名必填",
+				isNickName:"姓名格式错误"
+			}
+			,"user.mobile":{
+				required:"手机号必填"
+			}
+			,"user.password":{
+				required:"密码必填"
+			}
+			,"user.email":{
+				required:"邮箱必填",
+				isContact:"邮箱格式错误"
+			}
+			,"user.idcard":{
+				required:"身份证必填",
+				isContact:"身份证格式错误"
+			}
+		}
+		,success : function(label) {
+			//label.addClass("success").text("输入正确");
+		}
+		//,errorPlacement : function(error, element) {
+			//error.appendTo(element.next("span").next("span"));
+		//}
+		,onkeyup : false
+		});
+	
+	$("#edit").click(function(){
+		formSubmit();
+	 });
+	$("#doEditUserInfo").click(function(){
+		userEditformSubmit();
+	});
+	
+});
+
+
+
+
+function formSubmit(){
+	if($("#editForm").validate().form()){
+		//显示遮罩
+		addCover();
+		$.ajax({
+			type: "POST",
+			url: "json_user_edit.action",
+			data: $("#editForm").serialize(),
+			success: function(data){
+				if(data.resultFlag){
+					parent.$('.search_btn').click();
+					//成功关闭
+					successClose("操作成功");
+					
+				}else{
+					//失败提示
+					failAlert(data);
+				}
+				//隐藏遮罩
+				removeCover();
+			}
+		});
+	}
+}
+function userEditformSubmit(){
+	if($("#editForm").validate().form()){
+		//显示遮罩
+		addCover();
+		$.ajax({
+			type: "POST",
+			url: "json_user_doEditUserInfo.action",
+			data: $("#editForm").serialize(),
+			success: function(data){
+				if(data.resultFlag){
+					parent.location.reload(true);
+					//成功关闭
+					successClose("操作成功");
+					
+
+				}else{
+					//失败提示
+					failAlert(data);
+				}
+				//隐藏遮罩
+				removeCover();
+			}
+		});
+	}
+}

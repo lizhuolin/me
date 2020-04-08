@@ -1,0 +1,106 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+ <%@ taglib prefix="s" uri="/struts-tags" %>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>   
+
+<html>
+<head>
+
+<jsp:include page="/common/common.jsp"></jsp:include>
+
+<!-- 只需要引入自己独有的js即可    js统一放到js文件夹下面，并按模块建立单独文件夹-->
+<script src="<%=basePath %>js/project/edit.js"></script>  
+</head>
+<body>
+  <form id="editForm">
+  <div class="edit">
+    <ul>
+        <input  type="hidden" name="tblProject.projectId" value="${tblProject.projectId }"/>
+        <input type="hidden" name="tblProject.projectCreater.userId" value="${tblProject.projectCreater.userId }"/>
+        <input type="hidden" name="tblProject.tblCompany.companyId" value="${tblProject.tblCompany.companyId }"/>
+      
+      <li>
+        <span><i>项目名称</i><samp>:</samp>
+        <input  type="text" name="tblProject.projectName" value="${tblProject.projectName }"/><samp></samp>
+          <div class="d_list"></div>
+        </span>
+         <span><i>项目负责人</i><samp>:</samp>
+       		<s:select name="tblProject.projectManager.userId" list="userList" listKey="userId" listValue="name" />
+          <div class="d_list"></div>
+        </span>
+      </li>
+     
+      <li>
+         <span><i>项目状态</i><samp>:</samp>
+            <select name="tblProject.projectStatus">
+            <option value="0" <s:if test="tblProject.projectStatus==0">selected="selected"</s:if>>未开始</option>
+            <option value="1"<s:if test="tblProject.projectStatus==1">selected="selected"</s:if>>进行中</option>
+            <option value="2"<s:if test="tblProject.projectStatus==2">selected="selected"</s:if>>已结束</option>
+            </select>
+        </span>
+        <span><i>项目目标</i><samp>:</samp>
+        <input  type="text" name="tblProject.projectTarget" value="${tblProject.projectTarget }"/><samp></samp>
+          <div class="d_list"></div>
+        </span>
+      </li>
+      <li>
+        <span><i>项目开始时间</i><samp>:</samp>
+        <input id="startTime5"  type="text" name="tblProject.projectStartTime" value="${tblProject.projectStartTime }"/><samp></samp>
+          <div class="d_list"></div>
+        </span>
+        <span><i>项目结束时间</i><samp>:</samp>
+        <input id="endTime5" type="text" name="tblProject.projectEndTime" value="${tblProject.projectEndTime }"/><samp></samp>
+          <div class="d_list"></div>
+        </span>
+      </li>
+       <li>
+        <span><i>项目实际开始时间</i><samp>:</samp>
+        <input id="startTime4"  type="text" name="tblProject.projectRealStartTime" value="${tblProject.projectRealStartTime }"/><samp></samp>
+          <div class="d_list"></div>
+        </span>
+        <span><i>项目实际结束时间</i><samp>:</samp>
+        <input id="endTime4" type="text" name="tblProject.projectRealEndTime" value="${tblProject.projectRealEndTime }"/><samp></samp>
+          <div class="d_list"></div>
+        </span>
+      </li>
+      <li>
+        <span><i>项目进度</i><samp>:</samp>
+        <select  name="tblProject.projectProgress" >
+        <option value="0" <s:if test="tblProject.projectProgress==0">selected="selected"</s:if>>0%</option>
+        <option value="10"<s:if test="tblProject.projectProgress==10">selected="selected"</s:if>>10%</option>
+        <option value="20"<s:if test="tblProject.projectProgress==20">selected="selected"</s:if>>20%</option>
+        <option value="30"<s:if test="tblProject.projectProgress==20">selected="selected"</s:if>>30%</option>
+        <option value="40"<s:if test="tblProject.projectProgress==20">selected="selected"</s:if>>40%</option>
+        <option value="50"<s:if test="tblProject.projectProgress==20">selected="selected"</s:if>>50%</option>
+        <option value="60"<s:if test="tblProject.projectProgress==20">selected="selected"</s:if>>60%</option>
+        <option value="70"<s:if test="tblProject.projectProgress==20">selected="selected"</s:if>>70%</option>
+        <option value="80"<s:if test="tblProject.projectProgress==20">selected="selected"</s:if>>80%</option>
+        <option value="90"<s:if test="tblProject.projectProgress==20">selected="selected"</s:if>>90%</option>
+        <option value="100"<s:if test="tblProject.projectProgress==20">selected="selected"</s:if>>100%</option>
+        </select>
+        <samp></samp>
+          <div class="d_list"></div>
+        </span>
+      </li>
+      <li>
+        <span><i>项目备注</i><samp>:</samp>
+        <textarea  type="text" name="tblProject.projectRemaks" value="${tblProject.projectRemaks }" ></textarea>
+        <label class="require_lab"></label>
+        </span>
+      </li>
+      
+    </ul>
+  </div>
+</form>
+
+
+  <div class="edit_btn"><a id="edit" >保存</a><a id="close" class="btn_cancel" >取消</a></div>
+  
+ <!-- 保存遮罩层-->
+  <!--<div class="edit_cover"><p><img src="images/loading.gif"></p></div>-->
+
+</body>
+</html>

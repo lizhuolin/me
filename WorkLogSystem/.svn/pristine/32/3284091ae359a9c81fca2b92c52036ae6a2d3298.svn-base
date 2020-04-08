@@ -1,0 +1,83 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+ <%@ taglib prefix="s" uri="/struts-tags" %>
+
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"+ request.getServerName() + ":" + request.getServerPort()+ path + "/";
+%>
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="<%=basePath%>css/style.css" rel="stylesheet" />
+<script src="<%=basePath%>js/jquery-1.10.2.min.js"></script>
+<script src="<%=basePath%>layer/layer.js"></script>
+<script src="<%=basePath%>js/bg.js"></script>
+<jsp:include page="/common/common.jsp"></jsp:include>
+
+<script type="text/javascript">
+
+ if ($("aside").size() != 0 ){
+	 location.assign(location.href); 
+ }
+
+ 
+   $(function($){
+	   
+	   $(".lg_btn").click(function(){
+		   
+		   $("#form").submit();
+		   
+	   });
+	   
+	 $(".zc_btn").click(function() {
+		 location.assign("<%=basePath%>company/company_companyEdit.action");
+      });
+	   
+	   $(window).keydown(function(event){
+		   switch(event.keyCode) {
+		   case 13:
+			   $("#form").submit();
+		   }
+		 });
+	   
+   });
+
+</script>
+<title>登录</title>
+</head>
+
+<body>
+  <form id="form" action="<%=basePath %>user/user_login.action" method="post" >
+	<div class="lg_bg">
+		<div class="lg_logo">
+			<img src="<%=basePath%>images/logo1.png">
+		</div>
+		<div class="lg_disc">
+			<ul>
+				<li><span><img src="<%=basePath%>images/yonghu.png"></span><input
+					type="text" name="user.username" placeholder="请输入用户名" /></li>
+				<li><span><img src="<%=basePath%>images/mima.png"></span><input
+					type="password" name="user.password" placeholder="请输入密码" /></li>
+			</ul>
+			<div class="lg_pwd">
+				<input type="checkbox" /><span>记住密码</span>
+			</div>
+			<label><s:property value="loginResult"/></label>
+			<div class="lg_btn">
+				<a>登&nbsp;录</a>
+			</div>
+			<div class="ZC_btn">
+				<a>注&nbsp;册</a>
+			</div>
+		</div>
+		<div class="lg_bgs"></div>
+	</div>
+</form>
+
+</body>
+ 
+</html>
+</body>
+</html>

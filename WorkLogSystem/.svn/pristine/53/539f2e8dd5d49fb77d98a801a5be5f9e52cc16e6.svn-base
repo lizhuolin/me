@@ -1,0 +1,71 @@
+package com.poobo.core.service.impl;
+
+import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
+import java.util.List;
+import java.util.Map;
+
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+
+import com.poobo.core.dao.IBaseDao;
+import com.poobo.core.entity.TblDept;
+import com.poobo.core.entity.TblRole;
+import com.poobo.core.entity.TblUser;
+import com.poobo.core.enums.EnumDataStatus;
+import com.poobo.core.service.IBaseService;
+import com.poobo.core.util.PageController;
+
+public class BaseServiceImpl<T> implements IBaseService<T>{
+
+	private Class<T> clazz;
+	//通过反射的得到T的类型
+	public BaseServiceImpl(){
+		 ParameterizedType pt = (ParameterizedType) getClass().getGenericSuperclass();
+		 clazz = (Class<T>) pt.getActualTypeArguments()[0];
+	}
+	private IBaseDao<T> baseDao;
+	public void setBaseDao(IBaseDao baseDao) {
+		this.baseDao = baseDao;
+	}
+	@Override
+	public void save(T entity) {
+		baseDao.save(entity);
+	}
+	
+	@Override
+	public void delete(Serializable id) {
+		baseDao.delete(id);
+	}
+
+	@Override
+	public void update(T entity) {
+		baseDao.update(entity);
+	}
+
+	@Override
+	public T findObjectById(Serializable id) {
+		return  baseDao.findObjectById(id);
+	}
+
+	@Override
+	public List findAll() {
+		return baseDao.findAll();
+	}
+	
+	
+	public T merge(T entity){
+		return baseDao.merge(entity);
+	}
+	@Override
+	public PageController<T> getPageList(
+			T t, int pageNow, int pageSize) {
+		Criteria criteria=baseDao.createCriteria(clazz);
+		criteria.add(Restrictions.eq("dataStatus", EnumDataStatus.NORMAL.getValue()));
+		//criteria.addOrder(Order.desc("createTime"));
+		return baseDao.findPageByCriteria(criteria, pageNow, pageSize);
+	}
+}
+

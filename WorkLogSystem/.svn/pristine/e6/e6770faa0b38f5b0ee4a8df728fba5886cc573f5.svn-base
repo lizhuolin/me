@@ -1,0 +1,99 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<%@ taglib prefix="s" uri="/struts-tags"%>
+
+<html>
+<head>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<html>
+<head>
+
+
+<jsp:include page="/common/common.jsp"></jsp:include>
+<script src="<%=basePath %>js/notice/edit.js"></script>
+<script type="text/javascript"  charset="utf-8" src="<%=basePath %>js/ueditor/ueditor.config.js"></script>
+<script type="text/javascript"  charset="utf-8"  src="<%=basePath %>js/ueditor/ueditor.all.min.js"></script>
+<script type="text/javascript"  charset="utf-8"  src="<%=basePath %>js/ueditor/lang/zh-cn/zh-cn.js"></script>
+<script>
+	window.UEDITOR_HOME_URL = "${basePath }js/ueditor/";
+	var ue = UE.getEditor('editor');
+</script>
+<!-- 只需要引入自己独有的js即可    js统一放到js文件夹下面，并按模块建立单独文件夹-->
+
+</head>
+<body>
+	<form id="editForm">
+		<div class="edit">
+			<input type="hidden" name="notice.noticeId"
+				value="<s:property value="notice.noticeId"/>" />
+		<s:hidden name="notice.noticeCreatetime"/>
+	    <s:hidden name="notice.dataStatus"/>
+	    <s:hidden name="notice.tblCompany.companyId"/>
+	    <s:hidden name="notice.tblUser.userId"/>
+			<ul>
+			    <li>
+			     <span><i>公告标题</i><samp>:</samp>
+			     <input  type="text" name="notice.noticeTitle" value="${notice.noticeTitle }"/><samp></samp></span>
+                 <div class="d_list"></div>
+			    </li>
+			    <li>
+			     <span><i>公告简介</i><samp>:</samp>
+			     <input  type="text" name="notice.noticeIntroduction" value="${notice.noticeIntroduction }"/><samp></samp></span>
+                 <div class="d_list"></div>
+			    </li>
+				<li><span id="Msg"><i>公告内容</i><samp>:</samp>
+				 <s:textarea id="editor" name="notice.noticeMsg"  cssStyle="width:95%;height:160px;" ><s:property value="notice.noticeMsg" /></s:textarea> </span>
+			    </li>
+			   
+			    <li>
+			    <%-- <span><i>公告推送方式</i><samp>:</samp>
+                <span class="prop_sp">
+	            <em><input type="radio" name="notice.noticeType"/>短信</em>
+	            <em><input type="radio" name="notice.noticeType"/>APP信息</em>
+	            <em><input type="radio" name="notice.noticeType"/>邮件</em>
+	            <em><input type="radio" name="notice.noticeType"/>平台消息</em>
+			     </span>
+			     </span> --%>
+			     <span><i>公告推送方式</i> <samp>:</samp> 
+				  <span class="prop_sp">
+					<em><s:radio list="#{'0':'APP','1':'平台'}" name="notice.noticeType" /></em> 
+					<!-- <em><input type='radio' name='notice.noticeType' value='男'/>男</em> -->
+				</span>
+				</span> 
+			     </li>
+			    
+			    <li>
+			    <%-- <span><i>公告推送时间</i><samp>:</samp>
+                <span class="prop_sp">
+	            <em><input type="radio" />及时推送</em>
+	            <em><input type="radio" />定时推送</em>
+			    </span>
+			    </span> --%>
+			    <span>
+               <i>公告推送时间</i><samp>:</samp>
+               <input id="startTime5" class="middle" value="${notice.noticeTime }" name="notice.noticeTime" type="text" />
+                </span>
+			    </li>
+				<%-- <li>
+				<span><i>公告创建人</i><samp>:</samp>
+			     <input  type="text" name="notice.noticeCreaterId" value="${notice.noticeCreaterId }"/><samp></samp></span>
+                 <div class="d_list"></div>
+				</li> --%>
+			</ul>
+		</div>
+	</form>
+
+
+	<div class="edit_btn">
+		<a id="edit">保存</a><a id="close" class="btn_cancel">取消</a>
+	</div>
+
+	<!-- 保存遮罩层-->
+	<!--<div class="edit_cover"><p><img src="images/loading.gif"></p></div>-->
+
+</body>
+</html>

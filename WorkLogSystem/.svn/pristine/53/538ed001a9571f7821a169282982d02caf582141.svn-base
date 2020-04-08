@@ -1,0 +1,69 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+ <%@ taglib prefix="s" uri="/struts-tags" %>
+
+<!DOCTYPE html >
+<html>
+<head lang = "en">
+
+<%@include file="/common/mobileCommon.jsp"%>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no;">
+    <title>项目</title>
+    <link href="<%=basePath%>css/mobileStyle.css" rel="stylesheet" type="text/css">
+ </head>
+
+<body style="background-color:#e6e6e6">
+	<div id="header_wrapper">
+    	<div class="index_text">项目</div>
+		<form  id="searchForm">
+    	<div class="selected">
+        <s:select id="users" list="userList" name="tblProject.projectManager.userId" listKey="userId" listValue="name" headerKey="" headerValue="负责人"></s:select>
+        <s:select id="projectName" list="projectList" listKey="projectId" name="tblProject.projectId"  listValue="projectName"  headerKey=""  headerValue ="项目名称"></s:select>
+        </div>
+		</form>
+    </div><!--header_wrapper结束-->
+    <div id="body_wrapper">
+    	<section class="form" id="projects">
+    	<s:iterator value="projectList" status="st">
+    	<div class="data">
+        <div class="pj_name">
+            <div class="dian">●</div>
+			<input type="text"  value="<s:property value="projectName"/>" readonly />
+            </div>
+          <a href="<%=basePath%>mobile/project/mobile_projectDetail4mobile.action?tblProject.projectId=<s:property value="projectId"/>"><div class="pj_other">
+            	<div class="pj_other_left">
+                <p><span>负责人：</span><input type="text" value="<s:property value="projectManager.name"/>"  readonly/></p>
+            	<p><span>项目状态:</span><input type="text" value="<s:if test="projectStatus==0" >未开始</s:if><s:elseif test="projectStatus==1">进行中</s:elseif><s:else>已结束</s:else>" readonly/></p>
+               	<p><span>项目目标:</span><input type="text" value="<s:property value="projectTarget"/>" readonly/></p>
+                <p><span>项目备注：</span><input type="text" value="<s:property value="projectRemaks"/>" readonly/></p>
+                <p><span>创建时间：</span><input type="text" value="<s:date name="createTime" format="yyyy-MM-dd HH:mm:00"/>" readonly/></p>
+                </div>
+                
+                <div class="pj_other_right" >
+    				<div class="splash-inner">
+         			 <div class="loading-circle" >
+            			<p><span id="loadedNum"><s:property value="projectProgress"/>%</span></p>
+            			<s:if test="#st.odd">
+            			<canvas class="mask" id="loadingProgress" ></canvas>
+            		</s:if>
+            		<s:else>
+            		<canvas class="mask1" id="loadingProgress1" width="100" height="100"></canvas>
+            		</s:else>
+
+        				</div>
+    			</div>
+			</div>
+			
+            </div></a></div>
+           </s:iterator>
+        </section>
+        </div>
+     <%@include file="/common/mobileBelow.jsp"%>
+
+    </div><!--footer_wrapper结束-->
+<script type="text/javascript" src="<%=basePath %>js/mobile/project/projectList.js?v1.0.1"></script>
+</body>
+</html>
+
+

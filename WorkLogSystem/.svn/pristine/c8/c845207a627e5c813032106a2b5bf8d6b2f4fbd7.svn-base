@@ -1,0 +1,7 @@
+package com.poobo.log.action;
+
+import com.poobo.core.action.BaseAction;
+
+public class LogDetailsAction extends BaseAction{
+	
+}

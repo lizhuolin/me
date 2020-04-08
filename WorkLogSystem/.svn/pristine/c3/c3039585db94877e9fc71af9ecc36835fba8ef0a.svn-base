@@ -1,0 +1,93 @@
+var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+$(function($){
+
+	$("#editForm").validate({
+		rules:{
+			"tblPlan.planName":{
+				required:true
+			},
+			"tblPlan.planRemarks":{
+				required:true
+			},"tblPlan.planStartTime":{
+				required:true
+			},"tblPlan.planEndTime":{
+				required:true
+			},"tblPlan.planTarget":{
+				required:true
+			},"tblPlan.planMsg":{
+				required:true
+			}
+		},
+		messages:{
+			"tblPlan.planName":{
+				required:"计划名称不能为空"
+			},
+			"tblPlan.planRemarks":{
+				required:"计划备注不能为空"
+			},"tblPlan.planStartTime":{
+				required:"计划预计开始时间必填"
+			},"tblPlan.planEndTime":{
+				required:"计划预计结束时间必填"
+			},"tblPlan.planTarget":{
+				required:"计划目标必填"
+			},"tblPlan.planMsg":{
+				required:"计划内容必填"
+			}
+		}
+		,success : function(label) {
+			//label.addClass("success").text("输入正确");
+		}
+		//,errorPlacement : function(error, element) {
+			//error.appendTo(element.next("span").next("span"));
+		//}
+		,onkeyup : false
+		});
+	
+	//弹出页面
+	$("#edit").click(function(){
+		formSubmit();
+	 });
+	
+});
+
+
+
+
+function formSubmit(){
+	if(!dateCompare($("#startTime5").val(),$("#endTime5").val()) || !dateCompare($("#startTime4").val(),$("#endTime4").val())){
+		//$.messager.val("错误","请检查日期两个参数中是否其中一个为空值，或者查询的截止日期大于起始日期错误！","error");
+		opFail("请检查日期两个参数中是否其中一个为空值，或者查询的截止日期大于起始日期错误！");
+		return;
+	}
+	if($("#editForm").validate().form()){
+		//显示遮罩
+		addCover();
+		$.ajax({
+			type: "POST",
+			url: "json_plan_edit.action",
+			data: $("#editForm").serialize(),
+			success: function(data){
+				if(data.resultFlag){
+					parent.$('.search_btn').click();
+					//成功关闭
+					successClose("操作成功");
+					
+				}else{
+					//失败提示
+					failAlert(data);
+				}
+				//隐藏遮罩
+				removeCover();
+			}
+		});
+	}
+}
+
+function dateCompare(data1,data2){
+	
+	if(data1>data2){
+		return false;
+	}
+	
+	return true;
+}

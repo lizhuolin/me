@@ -1,0 +1,37 @@
+package com.poobo.changelog.action;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import com.poobo.changelog.service.IChangelogService;
+import com.poobo.core.action.BaseAction;
+import com.poobo.core.entity.TblChangelog;
+import com.poobo.core.util.ResultData;
+
+public class ChangelogAction extends BaseAction{
+	@Resource
+	private IChangelogService changelogService;
+	private TblChangelog logs;
+	private ResultData resultData;
+	
+	public String listUI(){
+		pageList = changelogService.findChangelogList(logs, pageNow, pageSize);
+		return "listUI";
+	}
+
+	public TblChangelog getLogs() {
+		return logs;
+	}
+
+	public void setLogs(TblChangelog logs) {
+		this.logs = logs;
+	}
+	
+	public ResultData getResultData() {
+		return resultData;
+	}
+
+	public void setResultData(ResultData resultData) {
+		this.resultData = resultData;
+	}
+}

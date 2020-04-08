@@ -1,0 +1,127 @@
+package com.poobo.core.entity;
+
+import java.sql.Time;
+import java.sql.Timestamp;
+
+/**
+ * TblLog entity. @author MyEclipse Persistence Tools
+ */
+
+public class TblLog implements java.io.Serializable {
+
+	// Fields
+
+	private String logId;
+	private TblUser tblUser;
+	private TblCompany tblCompany;
+	private String logMsg;
+	private Timestamp logTime;
+	private String logPicture;
+	private Integer comTime;
+	private Integer dataStatus;
+	private Timestamp createTime;
+	private String logProgress;
+	private String logCreaterId;
+
+	// Constructors
+
+	/** default constructor */
+	public TblLog() {
+	}
+
+
+	// Property accessors
+
+	public String getLogId() {
+		return this.logId;
+	}
+
+	public void setLogId(String logId) {
+		this.logId = logId;
+	}
+
+	public TblUser getTblUser() {
+		return this.tblUser;
+	}
+
+	public void setTblUser(TblUser tblUser) {
+		this.tblUser = tblUser;
+	}
+
+	public String getLogMsg() {
+		return this.logMsg;
+	}
+
+	public void setLogMsg(String logMsg) {
+		this.logMsg = logMsg;
+	}
+
+
+	public Timestamp getLogTime() {
+		return logTime;
+	}
+
+
+	public void setLogTime(Timestamp logTime) {
+		this.logTime = logTime;
+	}
+
+
+	public String getLogPicture() {
+		return this.logPicture;
+	}
+
+	public void setLogPicture(String logPicture) {
+		this.logPicture = logPicture;
+	}
+
+	public Integer getComTime() {
+		return this.comTime;
+	}
+
+	public void setComTime(Integer comTime) {
+		this.comTime = comTime;
+	}
+
+	public Integer getDataStatus() {
+		return this.dataStatus;
+	}
+
+	public void setDataStatus(Integer dataStatus) {
+		this.dataStatus = dataStatus;
+	}
+
+	public Timestamp getCreateTime() {
+		return this.createTime;
+	}
+
+	public void setCreateTime(Timestamp createTime) {
+		this.createTime = createTime;
+	}
+
+	public String getLogProgress() {
+		return this.logProgress;
+	}
+
+	public void setLogProgress(String logProgress) {
+		this.logProgress = logProgress;
+	}
+
+	public String getLogCreaterId() {
+		return this.logCreaterId;
+	}
+
+	public void setLogCreaterId(String logCreaterId) {
+		this.logCreaterId = logCreaterId;
+	}
+
+	public TblCompany getTblCompany() {
+		return tblCompany;
+	}
+
+	public void setTblCompany(TblCompany tblCompany) {
+		this.tblCompany = tblCompany;
+	}
+	
+	
+}

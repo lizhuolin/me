@@ -1,0 +1,100 @@
+<!DOCTYPE html >
+<html>
+<head lang = "en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no;">
+    <title>项目</title>
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+ </head>
+
+<body>
+
+<div id="header_wrapper">
+    <div class="title">
+    	<span class="title_button"><a href="project_detail.html"><input type="button" ></a></span>
+ 		 <span class="title_text"><div class="text">项目</div></span>
+  </div>
+ </div><!--header_wrapper结束-->
+    <div id="body_wrapper">
+    	
+    	<section>
+         <div class="sub_form_top">
+            <div class="pj_plan">
+            <input type="text" value="子项目任务：租金的商议"  readonly/>
+            </div>
+            
+            <div class="sub_pj1">
+            	<div class="sub_pj_left">
+            	<p><span>负责人:</span><input type="text" value="李天赐"readonly></p>
+               	 <p><span>任务优先级:</span><select disabled="disabled">              
+                	<option>高</option>
+                    <option>中</option>
+                    <option>低</option>
+                </select></p>
+                <p><span>项目简介：</span></p>
+                <p><textarea type="text" rows="5" cols="25" readonly></textarea></p>
+                <p><span>创建时间：</span><input type="date" readonly></p>
+                <p><span>项目任务:</span><input type="text" value="显示计划内容"readonly></p>
+                <p><span>子项目任务:</span><input type="text" value="赛车展览"readonly></p>
+                <p>计划开始－结束时间：<input type="date" readonly>-<input type="date" readonly></p>
+        		<p>实际开始－结束时间：<input type="date" readonly>-<input type="date" readonly></p>
+                </div>
+                <div class="sub_pj_right">
+                	<div class="splash-inner">
+      
+        			<div class="loading-circle" >
+            			<p><span id="loadedNum"></span>%</p>
+            			<canvas class="mask" id="loadingProgress" width="100" height="100"></canvas>
+           				 <canvas class="bg" width="100" height="100"></canvas>
+        				</div>
+    			</div>
+                </div>
+		 </div>
+         </div>
+         </section>
+         <section>
+         <div class="sub_form_bottom"> 
+         <div class="pj_plan">
+            <a href="plan_detail.html"><input type="text" value="项目计划" readonly/></a>
+            </div>
+            
+            <div class="sub_pj2">
+            	<div class="sub_pj_left">
+                
+            	<p><span>负责人:</span><input type="text" value="宋岩"readonly>
+                <p><span>工时:</span><input type="text" value="3小时"readonly>
+                <p><span>项目简介：</span></p><p><textarea type="text" rows="5" cols="25"value="显示任务内容"readonly></textarea></p>
+                <p>计划开始－结束时间：<input type="date" readonly>-<input type="date" readonly></p>
+        		<p>实际开始－结束时间：<input type="date" readonly>-<input type="date" readonly></p>
+                </div>
+               
+               <div class="sub_pj_right">
+                	<div class="splash-inner">
+      
+        			<div class="loading-circle" >
+            			<p><span id="loadedNum"></span>%</p>
+            			<canvas class="mask" id="loadingProgress" width="100" height="100"></canvas>
+           				 <canvas class="bg" width="100" height="100"></canvas>
+        				</div>
+    			</div>
+                </div>
+            </div>
+            </div>
+            
+        </section>
+      
+      </div>
+     <div id="footer_wrapper">
+    	<footer>
+  			<div class="message"><a href="message.html">消息</a></div>
+  			<div class="project"><a class="select">项目</a></div>
+  			<div class="log"><a href="log.html">日志</a></div>
+  			<div class="task"><a href="task.html">任务</a></div>
+  			<div class="user"><a href="user.html">个人</a></div>
+  			<div class="clear"></div>
+		</footer>
+
+    </div><!--footer_wrapper结束-->
+   
+</body>
+</html>

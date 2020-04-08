@@ -1,0 +1,71 @@
+<!DOCTYPE html >
+<html>
+<head lang = "en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no;">
+    <title>任务</title>
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+ </head>
+
+<body>
+<div class="message_bg">
+	<div id="header_wrapper">
+    	<div class="index_text">公告信息</div>
+    	
+    </div><!--header_wrapper结束-->
+    <div id="body_wrapper">
+    	<section>
+        	<div class="bl_board">
+            	<form>
+                	<p><img src="images/bl_img.png"></p>
+                    <span>公告信息</span>
+                </form>
+            </div>
+        </section>
+        	<div class="bl_info">
+            	<form>
+                	<a href="msg_remind.html"><p><span>提醒信息<input id="mg_number"type="text" value="1" readonly></input></span> </p></a>
+                    <p><input id="mg_text"type="text" maxlength="10" value="加萨老师讲课 尽快链接阿大声道................" readonly>
+                    	<input id="mg_date" type="hours" value="2016/03/17"readonly></p></a>
+                </form>
+                <form>
+                	<a href="msg_remind.html"><p><span>提醒信息<input id="mg_number"type="text" value="2" readonly></input></span> </p>
+                    <p><input id="mg_text"type="text" maxlength="10" value="加萨老师讲课 尽快链接阿大声道................" readonly>
+                    	<input id="mg_date" type="hours" value="2016/03/17"readonly></p></a>
+                </form>
+                <form>
+                	<a href="msg_remind.html"><p><span>提醒信息<input id="mg_number"type="text" value="3" readonly></input></span> </p>
+                    <p><input id="mg_text"type="text" maxlength="10" value="加萨老师讲课 尽快链接阿大声道................" readonly>
+                    	<input id="mg_date" type="hours" value="2016/03/17"readonly></p></a>
+                </form>
+                <form>
+                	<a href="msg_remind.html"><p><span>提醒信息<input id="mg_number"type="text" value="4" readonly></input></span> </p>
+                    <p><input id="mg_text"type="text" maxlength="10" value="加萨老师讲课 尽快链接阿大声道................" readonly>
+                    	<input id="mg_date" type="hours" value="2016/03/17"readonly></p></a>
+                </form>
+                <form>
+                	<a href="msg_remind.html"><p><span>提醒信息<input id="mg_number"type="text" value="5" readonly></input></span> </p>
+                    <p><input id="mg_text"type="text" maxlength="10" value="加萨老师讲课 尽快链接阿大声道................" readonly>
+                    	<input id="mg_date" type="hours" value="2016/03/17"readonly></p></a>
+                </form>
+                <form>
+                	<a href="msg_remind.html"><p><span>提醒信息<input id="mg_number"type="text" value="6" readonly></input></span> </p>
+                    <p><input id="mg_text"type="text" maxlength="10" value="加萨老师讲课 尽快链接阿大声道................" readonly>
+                    	<input id="mg_date" type="hours" value="2016/03/17"readonly></p></a>
+                </form>
+            </div>
+        <section></section>
+    </div><!--body_wrapper结束--> 
+    <div id="footer_wrapper">
+    	<footer>
+  			<div class="message"><a class="select">消息</a></div>
+  			<div class="project"><a href="index.html">项目</a></div>
+  			<div class="log"><a href="log.html">日志</a></div>
+  			<div class="task"><a href="task.html">任务</a></div>
+  			<div class="user"><a href="user.html">个人</a></div>
+  			<div class="clear"></div>
+		</footer>
+
+    </div><!--footer_wrapper结束-->
+</body>
+</html>

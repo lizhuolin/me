@@ -1,0 +1,71 @@
+package com.poobo.dept.service.impl;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Service;
+
+import com.poobo.core.entity.TblCompany;
+import com.poobo.core.entity.TblDept;
+import com.poobo.core.entity.TblPlan;
+import com.poobo.core.entity.TblUser;
+import com.poobo.core.enums.EnumDataStatus;
+import com.poobo.core.service.impl.BaseServiceImpl;
+import com.poobo.core.util.GetSessionData;
+import com.poobo.core.util.PageController;
+import com.poobo.dept.dao.IDeptDao;
+import com.poobo.dept.service.IDeptService;
+
+
+@Service("deptService")
+public class DeptServiceImpl extends BaseServiceImpl<TblDept> implements IDeptService{
+	
+	private IDeptDao deptDao;
+	@Resource 
+	public void setDeptDao(IDeptDao deptDao) {
+		super.setBaseDao(deptDao);
+		this.deptDao = deptDao;
+	}
+
+
+	@Override
+	public void delDeptByIds(String[] idList) {
+		for(String id:idList){
+			TblDept dept=deptDao.findObjectById(id);
+			dept.setDataStatus(EnumDataStatus.DEL.getValue());
+			//初始化任务未开始
+			deptDao.merge(dept);
+		}
+		
+	}
+
+
+	@Override
+	public PageController<TblDept> findDeptList(TblDept dept, int pageNow,
+			int pageSize) {
+		Criteria criteria = deptDao.createCriteria(TblDept.class);
+		criteria.add(Restrictions.eq("dataStatus", EnumDataStatus.NORMAL.getValue()));
+		if(!GetSessionData.getUser().getIsUserPlatform()){
+			criteria.add(Restrictions.eq("tblCompany", GetSessionData.getUser().getTblCompany()));
+			}
+		criteria.addOrder(Order.desc("createTime"));
+		if(null != dept){
+		  criteria.add(Restrictions.ilike("deptName", "%" + dept.getDeptName() +"%"));
+		  //criteria.add(Restrictions.eq("isEffect",company.getIsEffect()));
+		}
+		return deptDao.findPageByCriteria(criteria, pageNow, pageSize);
+	}
+
+
+	@Override
+	public List<TblDept> findDeptsByCompanyId(String companyId) {
+		return deptDao.findDeptsByCompanyId(companyId);
+	}
+
+
+	
+}

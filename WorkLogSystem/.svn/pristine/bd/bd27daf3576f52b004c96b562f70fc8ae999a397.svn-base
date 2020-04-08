@@ -1,0 +1,7 @@
+#\u6587\u4EF6\u5B58\u653E\u8DEF\u5F84
+file.rootPath=D\:/ruanjian/apache-tomcat-8.0.11/webapps/WorkLogSystem/
+file.fileAccessUrl=http://localhost:8080/WorkLogSystem/
+file.savePath=
+file.tempPath=/temp/
+app.apkFilePath=/apkFile/
+ServerAddress=http://hbyangjianquan.imwork.net:15351/glocalme

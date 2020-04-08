@@ -1,0 +1,56 @@
+package com.poobo.reportwarn.dao.impl;
+
+import java.util.Calendar;
+import java.util.List;
+
+import org.hibernate.Query;
+
+import com.poobo.core.dao.impl.BaseDaoImpl;
+import com.poobo.core.entity.TblLog;
+import com.poobo.core.entity.TblPlan;
+import com.poobo.core.entity.TblReportwarn;
+import com.poobo.core.entity.TblTask;
+import com.poobo.core.util.DateTimeUtil;
+import com.poobo.reportwarn.dao.IReportWarnDao;
+
+public class ReportWarnDaoImpl extends BaseDaoImpl<TblReportwarn> implements IReportWarnDao{
+
+	@Override
+	public List<TblTask> findTasks() {
+		Query query = getSession().createQuery("FROM TblTask WHERE taskStartTime <= ?  AND taskProgress != ?");
+		query.setParameter(0, DateTimeUtil.getNowTimestamp());
+		query.setParameter(1, "100%");
+		return query.list();
+	}
+
+	@Override
+	public List<TblPlan> findPlans() {
+		Query query = getSession().createQuery("FROM TblPlan WHERE planStartTime <= ?  AND planProgress <= ?");
+		query.setParameter(0, DateTimeUtil.getNowTimestamp());
+		query.setParameter(1, 100);
+		return query.list();
+	}
+
+	
+	public List<TblLog> findLog4Yesterday() {
+		//获取昨天0点时间
+		Calendar   cal1   =   Calendar.getInstance();
+		cal1.add(Calendar.DATE,-1);
+		cal1.set(Calendar.HOUR_OF_DAY,0);//0时
+		cal1.set(Calendar.MINUTE,0);//0分
+		cal1.set(Calendar.SECOND,0);//0秒
+		//获取今天0点时间
+		Calendar   cal2  =  Calendar.getInstance();
+		cal2.set(Calendar.HOUR_OF_DAY,0);//0时
+		cal2.set(Calendar.MINUTE,0);//0分
+		cal2.set(Calendar.SECOND,0);//0秒
+		  //String yesterday = new SimpleDateFormat( "yyyy-MM-dd ").format(cal.getTime());
+		  System.out.println(cal2.getTime());
+		Query query = getSession().createQuery("FROM TblLog WHERE createTime BETWEEN ? AND ? ");
+		query.setParameter(0, cal1.getTime());
+		query.setParameter(1, cal2.getTime());
+		return query.list();
+	}
+
+	
+}

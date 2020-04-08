@@ -1,0 +1,60 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+ <%@ taglib prefix="s" uri="/struts-tags" %>
+
+<!DOCTYPE html >
+<html>
+<head lang = "en">
+<%@include file="/common/mobileCommon.jsp"%>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no;">
+    <title>任务</title>
+    <link href="<%=basePath%>css/mobileStyle.css" rel="stylesheet" type="text/css">
+ </head>
+
+<body style="background-color:#e6e6e6">
+	<div id="header_wrapper">
+    	<div class="index_text">任务</div>
+	    	<form  id="searchForm">
+	    	<div class="selected">
+	        	<s:select id="users" list="userList" name="tblTask.taskResponsible.userId" listKey="userId" listValue="name" headerKey="" headerValue="负责人"></s:select>
+	    		<s:select id="taskMsg" list="taskList"  name="tblTask.taskMsg" listKey="taskMsg"  listValue="taskMsg" headerKey=""  headerValue ="任务名称"></s:select>
+	        </div>
+			</form>
+	</div><!--header_wrapper结束-->		
+   
+    <div id="body_wrapper">
+        	<section class="form" id="tasks">
+    	<s:iterator value="taskList">
+            <div class="task_plan">
+            	<div class="dian"></div>
+            	<input type="text"  value="<s:property value="taskMsg"/>" readonly />
+            </div>
+            <a href="<%=basePath%>mobile/task/mobile_task_detailList.action?tblTask.taskId=<s:property value="taskId"/>">
+            <div class="task_other">
+            	<div class="other_left">
+	            	<p><span>负责人:</span><input type="text" value="<s:property value="taskResponsible.name"/>"readonly></p>
+	               	<p><span>任务目标：</span><s:property value="taskTarget"/></p>
+	                <p><span>创建时间：</span><s:property value="createTime"/></p>
+               	</div>
+                
+            <div class="other_right" >
+    			<div class="splash-inner">
+        		 <div class="loading-circle" >
+            		<p><span id="loadedNum"><s:property value="taskProgress"/></span></p>
+            		<canvas class="mask" id="loadingProgress" width="100" height="100"></canvas>
+           			 <canvas class="bg" width="100" height="100"></canvas>
+        			</div>
+    			</div>
+			</div>
+            </div></a>
+         
+		</s:iterator>
+        </section>
+		</div>
+	<%@include file="/common/mobileBelow.jsp"%>
+    <!--footer_wrapper结束-->
+
+<script type="text/javascript" src="<%=basePath%>js/mobile/task/taskList.js?v1.0.1"></script>
+</body>
+</html>

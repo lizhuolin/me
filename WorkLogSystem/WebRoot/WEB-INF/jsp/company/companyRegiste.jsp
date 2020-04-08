@@ -1,0 +1,159 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+ <%@ taglib prefix="s" uri="/struts-tags" %>
+
+<html>
+<head>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>  
+
+
+
+<html>
+<head lang = "en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+    <title>注册</title>
+    <script src="<%=basePath %>/js/jquery/jquery-1.8.3.min.js"></script>
+   <script src="<%=basePath %>common/ajaxfileupload.js"></script>
+   <link href="<%=basePath%>css/registerStyle.css" rel="stylesheet" type="text/css"/>
+   <script src="<%=basePath %>js/layer/layer.js"></script>
+  <script src="<%=basePath %>common/comm.js"></script>
+  <script src="<%=basePath %>js/company/registe.js"></script> 
+<script src="<%=basePath %>js/jquery/jquery.validate.min.js" type="text/javascript"></script>
+<script src="<%=basePath %>/js/common.validate.js" type="text/javascript"></script>
+<script type="text/javascript" src="<%=basePath %>/uploadify/jquery.uploadify.js"></script>
+  
+<!-- 只需要引入自己独有的js即可    js统一放到js文件夹下面，并按模块建立单独文件夹-->
+<script type="text/javascript">
+function ajaxFileUpload() {
+    $.ajaxFileUpload({
+            url:rooPath + '/fileoperate/fileoperate_imageUpload.action',//用于文件上传的服务器端请求地址
+            secureuri:false,//一般设置为false
+            fileElementId:'image1',//文件上传空间的id属性  <input type="file" id="file" name="file" />
+            dataType: 'json',//返回值类型 一般设置为json
+            data : {"childPath" : "company"},
+            success: function (data, status){  //服务器成功响应处理函数
+            	if (typeof(data.error) != 'undefined') {
+                    if (data.error != '') {
+                   	 opFail(data.error);
+                    } else {
+                    	$("#charter").val(data.imagePath);
+                    	//$("#showImg1").attr("src",rooPath + "/" +data.imagePath);
+                    	$("#showImg1 img").remove();
+                    	$("#showImg1 label").remove();
+                    	$("#showImg1").append("<img  src="+ rooPath + "/" +data.imagePath + " width='40px' height='30px'/>"); 
+                     	opSuccess(data.message);
+                    }
+                }
+            	
+             	
+            },
+            error: function (data, status, e){//服务器响应失败处理函数
+            	opFail(data.message);
+            }
+        });
+    return false;
+}
+
+function ajaxFileUpload2() {
+    $.ajaxFileUpload({
+            url:rooPath + '/fileoperate/fileoperate_imageUpload.action',//用于文件上传的服务器端请求地址
+            secureuri:false,//一般设置为false
+            fileElementId:'image2',//文件上传空间的id属性  <input type="file" id="file" name="file" />
+            dataType: 'json',//返回值类型 一般设置为json
+            data : {"childPath" : "company"},
+            success: function (data, status){  //服务器成功响应处理函数
+            	if (typeof(data.error) != 'undefined') {
+                    if (data.error != '') {
+                   	 opFail(data.error);
+                    } else {
+                    	$("#companyLogo").val(data.imagePath);
+                    	$("#showImg2 img").remove();
+                    	$("#showImg2 label").remove();
+                     	$("#showImg2").append("<img  src="+ rooPath + "/" +data.imagePath + " width='40px' height='30px'/>");
+                     	opSuccess(data.message);
+                    }
+                }
+            	
+             	
+            },
+            error: function (data, status, e){//服务器响应失败处理函数
+            	opFail(data.message);
+            }
+        });
+    return false;
+}
+</script>
+
+</head>
+
+
+<body>
+<div class="zc_bg">
+	<div id="header_wrapper">
+    	<div class="zc_logo">
+    	<p><img id="zclogo" src="../images/logo.png"></p>
+        <img id="zcpoobo" src="../images/poobo.png"/></div>
+  
+    </div><!--header_wrapper结束-->
+    <div id="body_wrapper">   
+        	<div class="zc_form">
+            <form id="editForm">
+            	<p><span>公司名称：</span><input type="text" name="tblcompany.companyName" value="${tblcompany.companyName }"/></p>
+             
+                <p><span>公司地址：</span><input type="text" name="tblcompany.companyAdress" value="${tblcompany.companyAdress }"/></p>
+            	
+                 <p id="showImg1">
+                <span>营业执照：</span>
+               	 <a class="file">选择文件 <input type="file" name="image" id="image1" onchange="ajaxFileUpload()"/></a>
+                	<input type="hidden" id="charter" name="tblcompany.charter" >
+                	
+                </p>  
+            
+                
+	          
+      
+                <p><span>公司类型：</span><input  type="text" name="tblcompany.companyType" value="${tblcompany.companyType }"/></p>
+               
+                <p><span>公司简介：</span><input type="text" name="tblcompany.companyIntroduction" value="${tblcompany.companyIntroduction}"/></p>
+                   
+            	<p id="showImg2">
+            	<span>公司LOGO：</span>
+            	 <a class="file">选择文件<input type="file" name="image" id="image2" onchange="ajaxFileUpload2()"/></a>
+            	<input type="hidden"  id="companyLogo" name="tblcompany.companyLogo"  "/>
+            	</p>
+                
+                
+                
+                <p><span>公司电话：</span><input type="text" name="tblcompany.companyMobile" value="${tblcompany.companyMobile }"/></p>
+                
+  	           
+  	            
+  	            <p><span>管理员邮箱:</span><input  type="text" name="tblcompany.email" value="${tblcompany.email }"/></p>
+        
+                <p><span>身份证:</span><input  type="text" name="tblcompany.idcard" value="${tblcompany.idcard }"/></p>
+      
+      			 <p><span>公司管理员：</span><input type="text" name="tblcompany.companyAdmin" value="${tblcompany.companyAdmin }"/></p>
+                 <%-- <p><span>管理员邮箱:</span><input  type="text" name="tblcompany.email" value="${tblcompany.email }"/></p>
+         
+                 <p><span>管理员身份证</span><input  type="text" name="tblcompany.idcard" value="${tblcompany.idcard }"/></p> --%>
+     
+      
+  	            
+  	            
+                </form>
+            </div>
+    <div class="zc_save">
+            	<input  type="button" value="注册" onclick="doRegister()"/>
+            	</div>
+         <div class="zc_canel">      
+                <input type="button" value="取消" onclick="javascript:history.go(-1)"/></div>
+                
+        </div>
+   
+   </div>
+</body>
+</html>

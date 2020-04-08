@@ -1,0 +1,92 @@
+package com.poobo.core.entity;
+
+import java.sql.Timestamp;
+
+/**
+ * TblReportwarn entity. @author MyEclipse Persistence Tools
+ */
+
+public class TblReportwarn implements java.io.Serializable {
+
+	// Fields
+
+	private String reportwarnId;
+	private TblUser tblUser;
+	private TblProject tblProject;
+	private Timestamp createTime;
+	private Integer dataStatus;
+	private String reportCreaterId;
+
+	// Constructors
+
+	/** default constructor */
+	public TblReportwarn() {
+	}
+
+	/** minimal constructor */
+	public TblReportwarn(TblUser tblUser, TblProject tblProject) {
+		this.tblUser = tblUser;
+		this.tblProject = tblProject;
+	}
+
+	/** full constructor */
+	public TblReportwarn(TblUser tblUser, TblProject tblProject,
+			Timestamp createTime, Integer dataStatus, String reportCreaterId) {
+		this.tblUser = tblUser;
+		this.tblProject = tblProject;
+		this.createTime = createTime;
+		this.dataStatus = dataStatus;
+		this.reportCreaterId = reportCreaterId;
+	}
+
+	// Property accessors
+
+	public String getReportwarnId() {
+		return this.reportwarnId;
+	}
+
+	public void setReportwarnId(String reportwarnId) {
+		this.reportwarnId = reportwarnId;
+	}
+
+	public TblUser getTblUser() {
+		return this.tblUser;
+	}
+
+	public void setTblUser(TblUser tblUser) {
+		this.tblUser = tblUser;
+	}
+
+	public TblProject getTblProject() {
+		return this.tblProject;
+	}
+
+	public void setTblProject(TblProject tblProject) {
+		this.tblProject = tblProject;
+	}
+
+	public Timestamp getCreateTime() {
+		return this.createTime;
+	}
+
+	public void setCreateTime(Timestamp createTime) {
+		this.createTime = createTime;
+	}
+
+	public Integer getDataStatus() {
+		return this.dataStatus;
+	}
+
+	public void setDataStatus(Integer dataStatus) {
+		this.dataStatus = dataStatus;
+	}
+
+	public String getReportCreaterId() {
+		return this.reportCreaterId;
+	}
+
+	public void setReportCreaterId(String reportCreaterId) {
+		this.reportCreaterId = reportCreaterId;
+	}
+
+}

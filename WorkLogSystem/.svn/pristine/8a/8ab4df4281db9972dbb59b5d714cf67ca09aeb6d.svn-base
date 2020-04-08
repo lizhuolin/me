@@ -1,0 +1,22 @@
+package com.poobo.changelog.service;
+
+import com.poobo.core.entity.TblChangelog;
+import com.poobo.core.service.IBaseService;
+import com.poobo.core.util.PageController;
+
+public interface IChangelogService extends IBaseService<TblChangelog>{
+	
+	PageController<TblChangelog> getPageList(TblChangelog logs, int pageNow, int pageSize);
+	
+	/**
+	 * 操作日志
+	 * @param userId 操作人
+	 * @param companyId 公司
+	 * @param changelogContent 修改内容
+	 * @param changelogType 日志类型：0添加，1编辑，2删除，3导出
+	 * @param changelogRemaks 备注
+	 * @param changelogmodel  操作模块
+	 */
+	public  void logRemable(String userId ,String companyId,String changelogContent,Integer changelogType, String changelogRemaks,String changelogmodel);
+
+}

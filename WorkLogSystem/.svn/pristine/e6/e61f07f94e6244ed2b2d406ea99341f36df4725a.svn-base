@@ -1,0 +1,9 @@
+package com.poobo.reportwarn.dao.impl;
+
+import com.poobo.core.dao.impl.BaseDaoImpl;
+import com.poobo.core.entity.TblReportwarn;
+import com.poobo.reportwarn.dao.IReportwarnDao;
+
+public class ReportwarnDaoImpl extends BaseDaoImpl<TblReportwarn> implements IReportwarnDao{
+	
+}

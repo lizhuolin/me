@@ -1,0 +1,143 @@
+$(function($) {
+	// 弹出新的对话框页面
+	$("#edit").click(function() {
+		if(isCheckedOne()){
+			var checkedObj = $("input[type='checkbox']:checked");
+			var id = $(checkedObj[0]).attr("value");
+			edit(id);
+		}
+		
+		
+	});
+	
+	$("#add").click(function() {
+		edit();
+	});
+	
+
+	
+	$("#delete").click(function(){
+			deleteProject();
+		
+	});
+	
+	$("#manager").click(function(){
+		if(isCheckedOne()){
+			var checkedObj = $("input[type='checkbox']:checked");
+			var id = $(checkedObj[0]).attr("value");
+			managerPerson(id);
+		}
+	});
+	$("#getplan").click(function(){
+		if(isCheckedOne()){
+			var checkedObj = $("input[type='checkbox']:checked");
+			var id = $(checkedObj[0]).attr("value");
+			toPlanList(id);
+		}
+	});
+	$("#checkout").click(function(){
+		doCheckout(id);
+	});
+	
+	$("#addChild").click(function(){
+		doAddchild(id);
+	});
+	//每月定时报告
+	$("#timeReport").click(function(){
+		changeHead('定时报告');
+		loadNewPage('timeReport/timeReport_timeReportList.action');
+	});
+	
+	$("#back").click(function(){
+		changeHead('项目计划管理');
+		loadNewPage('timeReport/timeReport_timeReportList.action');
+	});
+	$("#analysis").click(function(){
+		changeHead('统计分析');
+		loadNewPage('project/project_analysisList.action');
+	});
+	
+	//年月联动
+	$("#year").change(function(){
+		$("#month option").remove();
+		//获取选中的年份
+		var year = $("#year option:selected").val();
+			//异步发送请求到服务器
+			//参数一：url表示请求的路径
+			//参数二：sendData表示一json格式发送的数据
+			//参数三：function（）{}处理或回调函数
+			var url = "timeReport/json_timeReport_getMonthByYear.action";
+			var sendData = {
+				"year" : year	
+			};
+			$.post(url,sendData,function(backData){
+				for(var i=0;i<backData.monthList.length;i++){
+					var month = backData.monthList[i];
+					var $option = $("<option>"+month+"</option>");
+					//将option元素添加到城市下拉框中
+					$("#month").append($option);
+				}
+			});
+	});
+
+});
+
+function toPlanList(id){
+	loadNewPage('plan/plan_planList.action?tblProject.projectId='+id);changeHead('项目计划管理');
+}
+
+function doCheckout(id){
+	loadNewPage('project/projectchild_projectChildList.action?tblProject.projectId='+id);changeHead('子项目管理');
+}
+
+function doAddchild(id){
+	openNewDialog('project/projectchild_projectEditChild.action?tblProject.projectId='+id,"添加子项目");
+}
+function edit(id){
+	
+	if(id==null){
+		openNewDialog('project/project_projectEdit.action', "新建项目");
+	}else{ 
+		openNewDialog('project/project_projectEdit.action?tblProject.projectId='+id, "编辑项目");
+	}
+	
+}
+
+function managerPerson(id){
+	loadNewPage('project/project_personList.action?tblProject.projectId='+id, "编辑项目组人员");
+	changeHead('项目人员管理');
+}
+function deleteProject(){
+	if(isChecked()){
+		layer.confirm('是否删除', {
+			btn : [ '是', '否' ]
+		// 按钮
+		}, function() {
+			
+			$.ajax({
+				type: "POST",
+				url: "project/json_project_delete.action",
+				data: {"ids":getCheckedIdsStr()},
+				success: function(data){
+					if(data.resultFlag){
+						parent.$('.search_btn').click();
+						//成功关闭
+						successClose("操作成功");
+						
+					}else{
+						//失败提示
+						failAlert(data);
+					}
+					//隐藏遮罩
+				}
+			});
+		});
+	}
+}
+//导出定时报告列表
+	function exportExcel(){
+		document.forms[0].action = "timeReport/timeReport_exportExcel.action";
+		document.forms[0].submit();
+	}
+	
+

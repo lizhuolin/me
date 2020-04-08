@@ -1,0 +1,79 @@
+$(function($) {
+	// 弹出新的对话框页面
+	$("#edit").click(function() {
+		if(isCheckedOne()){
+			var checkedObj = $("input[type='checkbox']:checked");
+			var id = $(checkedObj[0]).attr("value");
+			edit(id);
+		}
+		
+		
+	});
+	$("#add").click(function(){
+		edit();
+	})
+	
+	$("#delete").click(function(){
+			deleteProject();
+		
+	});
+	
+	$("#reportTime").click(function(){
+		
+		if(isCheckedOne()){
+			var checkedObj = $("input[type='checkbox']:checked");
+			var id = $(checkedObj[0]).attr("value");
+			report(id);
+		}
+	});
+	$("#checkOut").click(function(){
+		checkOut(id);
+	});
+});
+
+function report(id){
+	openNewDialog('log/logDetail_logDetailEdit.action?tblLog.logId='+id,"上报工时");
+	changeHead('项目管理');
+}
+
+function checkOut(id){
+	
+}
+
+function edit(id){
+	
+	if(id==""){
+		openNewDialog('log/log_logEdit.action', "新建日志");
+	}else{ 
+		openNewDialog('log/log_logEdit.action?tblLog.logId='+id, "编辑日志");
+	}
+	
+}
+
+function deleteProject(){
+	if(isChecked()){
+		layer.confirm('是否删除', {
+			btn : [ '是', '否' ]
+		// 按钮
+		}, function() {
+			
+			$.ajax({
+				type: "POST",
+				url: "plan/json_log_delete.action",
+				data: {"ids":getCheckedIdsStr()},
+				success: function(data){
+					if(data.resultFlag){
+						parent.$('.search_btn').click();
+						//成功关闭
+						successClose("操作成功");
+						
+					}else{
+						//失败提示
+						failAlert(data);
+					}
+					//隐藏遮罩
+				}
+			});
+		});
+	}
+}

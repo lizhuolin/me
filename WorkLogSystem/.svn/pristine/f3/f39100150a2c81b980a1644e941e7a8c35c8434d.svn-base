@@ -1,0 +1,56 @@
+package com.poobo.reportwarn.service;
+
+import java.util.List;
+
+import com.poobo.core.entity.TblLog;
+import com.poobo.core.entity.TblPlan;
+import com.poobo.core.entity.TblProject;
+import com.poobo.core.entity.TblReportwarn;
+import com.poobo.core.entity.TblTask;
+import com.poobo.core.service.IBaseService;
+import com.poobo.core.util.PageController;
+
+/*public interface IReportwarnService extends IBaseService<TblReportwarn>{
+
+	PageController<TblReportwarn> getPageList(TblReportwarn reportwarn, int pageNow, int pageSize);
+
+	void delReportwarnIds(String[] idList);
+	
+}*/
+
+public interface IReportWarnService extends IBaseService<TblReportwarn>{
+
+	/**
+	 * 分页查询任务列表
+	 * @param task
+	 * @param pageNow
+	 * @param pageSize
+	 * @return
+	 */
+	public PageController<TblReportwarn> getPageList(TblReportwarn reportwarn, int pageNow, int pageSize);
+	
+	/**
+	 * 条件查询所有任务
+	 * @param task
+	 * @return
+	 */
+	
+	
+	public void doReportWarn();
+
+	PageController<TblReportwarn> findReportwarnList(TblReportwarn reportwarn,
+			int pageNow, int pageSize);
+
+
+	public List<TblLog> findLog4Yesterday(boolean isHome);
+
+	/**
+	 * 查找在消息主页显示的提醒报告
+	 * @return
+	 */
+	public List<TblReportwarn> findReportWarns();
+
+	public void delReportWarnByIds(String[] idList);
+
+	
+}

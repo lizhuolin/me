@@ -1,0 +1,77 @@
+$(function($) {
+	
+	/*$("#addPerson").click(function() {
+		
+		addProjectPerson(id);
+	});*/
+	/*$("#deleteFromPrj").click(function(){
+		doDelete(id);
+	});*/
+	$("#goback").click(function(){
+		loadNewPage('project/project_projectList.action');
+		changeHead('项目管理');
+	});
+});
+
+function doDelete(id){
+	
+	if(isChecked()){
+		layer.confirm('是否移除', {
+			btn : [ '是', '否' ]
+		// 按钮
+		}, function() {
+			
+			$.ajax({
+				type: "POST",
+				url: "project/json_project_deletePs.action",
+				data: {"ids":getCheckedIdsStr()},
+				success: function(data){
+					if(data.resultFlag){
+						///parent.$('.search_btn').click();
+						
+						//loadNewPage('project/project_projectList.action');
+						loadNewPage('project/project_personList.action?tblProject.projectId='+id);
+						//成功关闭
+						successClose("操作成功");
+						
+					}else{
+						//失败提示
+						failAlert(data);
+					}
+					//隐藏遮罩
+				}
+			});
+		});
+
+	}
+}
+
+function addProjectPerson(id){
+	if(isChecked()){
+		layer.confirm('是否添加到项目组', {
+			btn : [ '是', '否' ]
+		// 按钮
+		}, function() {
+			
+			$.ajax({
+				type: "POST",
+				url: "project/json_project_addPerson.action?tblProject.projectId="+id,
+				data: {"ids":getCheckedIdsStr()},
+				success: function(data){
+					if(data.resultFlag){
+						//loadNewPage('project/project_projectList.action');
+						loadNewPage('project/project_personList.action?tblProject.projectId='+id);
+						//成功关闭
+						successClose("操作成功");
+						
+					}else{
+						//失败提示
+						failAlert(data);
+					}
+					//隐藏遮罩
+				}
+			});
+		});
+	}
+}
+

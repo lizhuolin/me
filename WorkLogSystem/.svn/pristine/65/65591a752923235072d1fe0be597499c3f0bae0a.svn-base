@@ -1,0 +1,104 @@
+package com.poobo.timereport.service.impl;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
+
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Service;
+
+import com.poobo.core.entity.TblProject;
+import com.poobo.core.entity.TblTimereport;
+import com.poobo.core.enums.EnumDataStatus;
+import com.poobo.core.service.impl.BaseServiceImpl;
+import com.poobo.core.util.ExcelUtil;
+import com.poobo.core.util.GetSessionData;
+import com.poobo.core.util.PageController;
+import com.poobo.timereport.dao.ITimeReportDao;
+import com.poobo.timereport.service.ITimeReportService;
+
+@Service("timeReportService")
+public class TimeReportServiceImpl extends BaseServiceImpl<TblTimereport>
+		implements ITimeReportService {
+	
+	private ITimeReportDao timeReportDao;
+	@Resource
+	public void setTimeReportDaoDao(ITimeReportDao timeReportDao) {
+		super.setBaseDao(timeReportDao);
+		this.timeReportDao = timeReportDao;
+	}
+
+	/**
+	 * 执行定时报告
+	 * 
+	 * @author hao.wang 2016年3月18日09:15:52
+	 */
+	@Override
+	public void doTimeReport() {
+		TblTimereport timeReport = null;
+		List<TblProject> projectList = timeReportDao.findOneMonthProject();
+		for (TblProject project : projectList) {
+			timeReport = new TblTimereport();
+			timeReport.setProjectEndTime(project.getProjectEndTime());
+			timeReport.setProjectManager(project.getProjectManager().getName());
+			timeReport.setProjectName(project.getProjectName());
+			timeReport.setProjectProgress(project.getProjectProgress());
+			timeReport.setProjectRealStartTime(project.getProjectRealStartTime());
+			timeReport.setProjectRealEndTime(project.getProjectRealEndTime());
+			timeReport.setProjectRemaks(project.getProjectRemaks());
+			timeReport.setProjectStartTime(project.getProjectStartTime());
+			timeReport.setProjectStatus(project.getProjectStatus());
+			timeReport.setProjectTarget(project.getProjectTarget());
+			timeReport.setTblCompany(project.getTblCompany());
+			timeReportDao.save(timeReport);
+		}
+	}
+
+	/**
+	 * 获取定时报告分页对象
+	 * 
+	 * @author hao.wang 2016年3月18日09:15:52
+	 * @param timeReport，pageNow，pageSize
+	 * @return PageController
+	 */
+	@Override
+	public PageController<TblTimereport> getPageList(TblTimereport t,
+			int pageNow, int pageSize) {
+		Criteria criteria = timeReportDao.createCriteria(TblTimereport.class);
+		// criteria.add(Restrictions.eq());
+		criteria.addOrder(Order.desc("projectStartTime"));
+		return timeReportDao.findPageByCriteria(criteria, pageNow, pageSize);
+	}
+
+	/**
+	 * 导出定时报告excel
+	 * @param findAll
+	 * @param outputStream
+	 */
+	public void exportExcel(List timeReports, ServletOutputStream outputStream) {
+			ExcelUtil.exportUserExcel(timeReports, outputStream);
+
+	}
+
+	@Override
+	public List<TblTimereport> findAll() {
+		return timeReportDao.findAll();
+	}
+
+	@Override
+	public PageController<TblTimereport> findTimeReportList(
+			TblTimereport timeReport, int pageNow, int pageSize) {
+		Criteria criteria = timeReportDao.createCriteria(TblTimereport.class);
+		if(!GetSessionData.getUser().getIsUserPlatform()){
+		criteria.add(Restrictions.eq("tblCompany", GetSessionData.getUser().getTblCompany()));
+		}
+		criteria.addOrder(Order.desc("projectStartTime"));
+		return timeReportDao.findPageByCriteria(criteria, pageNow, pageSize);
+	}
+
+
+}

@@ -1,0 +1,87 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+ <%@ taglib prefix="s" uri="/struts-tags" %>
+
+<html>
+<head>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>  
+
+
+
+<html>
+<head lang = "en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+    <title>注册</title>
+    <link href="<%=basePath%>css/registerStyle.css" rel="stylesheet" type="text/css"/>
+	<script src="<%=basePath%>js/jquery-1.10.2.min.js"></script>
+<!-- 只需要引入自己独有的js即可    js统一放到js文件夹下面，并按模块建立单独文件夹-->
+<script type="text/javascript">
+function doRegister(){
+	  // addCover();
+		$.ajax({
+			type: "POST",
+			url: "json_company_doRegister.action",
+			data: $("#editForm").serialize(),
+			success: function(data){
+				if(data.resultFlag){
+					//成功提示
+					//successClose("注册成功");
+					alert("注册成功！请等待平台管理员审核，管理员联系电话：18372154566");
+					location.assign("../user/user_loginUI.action");
+				}else{
+					//失败提示
+					failAlert(data);
+				}
+				//隐藏遮罩
+				//removeCover();
+			}
+		});
+}
+</script>
+
+</head>
+
+
+<body>
+<div class="zc_bg">
+	<div id="header_wrapper">
+    	<div class="zc_logo">
+        <img src="../images/poobo.png"/></div>
+        <div class="zc_text">工作日志平台</div>
+        
+    	
+    </div><!--header_wrapper结束-->
+    <div id="body_wrapper">   
+        	<div class="zc_form">
+            <form id="editForm">
+            	<p><span>公司名称：</span><input type="text" name="tblcompany.companyName" value="${tblcompany.companyName }"/></p>
+             
+                <p><span>公司地址：</span><input type="text" name="tblcompany.companyAdress" value="${tblcompany.companyAdress }"/></p>
+            	
+                <p><span>营业执照：</span> <input type="hidden"  name="tblcompany.charter"  value="<s:property value='tblcompany.charter'/>"/> <a href="javascript:;" class="file">选择文件<input type="file" value="浏览"></a></p>
+                
+                <p><span>公司类型：</span><input  type="text" name="tblcompany.companyType" value="${tblcompany.companyType }"/></p>
+               
+                <p><span>公司简介：</span><input type="text" name="tblcompany.companyIntroduction" value="${tblcompany.companyIntroduction}"/></p>
+                   
+            	<p><span>公司LOGO：</span><input type="file" name="tblcompany.companyLogo"  value="<s:property value='tblcompany.companyLogo'/>"/> <a href="javascript:;" class="file">选择文件<input type="file" value="浏览"></a></p>
+                
+                <p><span>公司电话：</span><input type="text" name="tblcompany.companyMobile" value="${tblcompany.companyMobile }"/></p>
+                
+  	            <p><span>公司管理员：</span><input type="text" name="tblcompany.companyAdmin" value="${tblcompany.companyAdmin }"/></p>
+                </form>
+            </div>
+    <div class="zc_save">
+            	<input  type="button" value="保存" onclick="doRegister()"/>
+            	</div>
+         <div class="zc_canel">      
+                <input type="button" value="取消" onclick="javascript:history.go(-1)"/></div>
+        </div>
+   
+   </div>
+</body>
+</html>

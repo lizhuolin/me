@@ -1,0 +1,6 @@
+jdbcUrl=jdbc\:mysql\://192.168.1.48\:3306/WorkLogSystem?useUnicode\=true&characterEncoding\=utf8
+driverClass=com.mysql.jdbc.Driver
+user=root
+password=123
+initialPoolSize=10
+maxPoolSize=30

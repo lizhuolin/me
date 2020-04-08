@@ -1,0 +1,67 @@
+package com.poobo.core.util;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.TagSupport;
+
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.poobo.core.entity.TblPrivilege;
+import com.poobo.core.entity.TblRole;
+import com.poobo.core.entity.TblRolePrivilege;
+import com.poobo.core.entity.TblUser;
+import com.poobo.core.entity.TblUserRole;
+import com.poobo.user.service.IUserService;
+/**
+ * 自定义权限控制标签
+ * @author hao.wang 2016年3月24日14:01:35
+ *
+ */
+public class PrivilegeTag extends TagSupport {
+	   
+	   //模块
+	   private String module;
+	   //模块中具体权限
+	   private String privilege;
+	 
+	   public String getModule() {
+	      return module;
+	   }
+	   public void setModule(String module) {
+	      this.module = module;
+	   }
+	   public String getPrivilege() {
+	      return privilege;
+	   }
+	   public void setPrivilege(String privilege) {
+	      this.privilege = privilege;
+	   }
+	   
+	   /**
+	    * 判断用户是否有权限
+	    * @author hao.wang 2016年3月24日16:54:39
+	    */
+	   public int doStartTag() throws JspException {
+	      boolean result = false;
+	      String s = new String();
+	      if(privilege != null){
+	    	  s = module + "_" + privilege;
+	      }else{
+	    	  s = module;
+	      }
+	    List<TblPrivilege> privilegeList = GetSessionData.getPrivilegeList();
+		//循环检测用户具有的权限组
+	    if(privilegeList != null && privilegeList.size()>0){
+	      for(TblPrivilege privilege : privilegeList){
+	    	  if(privilege.getCode().equals(s)){//用户的权限是否包含功能权限
+	    		  result = true;  
+	    		  break;
+	    	  }
+	      }
+	    }
+	      return result? EVAL_BODY_INCLUDE : SKIP_BODY;//真：返回EVAL_BODY_INCLUDE（执行标签）；假：返回SKIP_BODY（跳过标签不执行）
+	   }
+	}

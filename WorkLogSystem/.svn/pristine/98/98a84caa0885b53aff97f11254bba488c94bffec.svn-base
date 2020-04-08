@@ -1,0 +1,102 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+ <%@ taglib prefix="s" uri="/struts-tags" %>
+
+<html>
+<head lang = "en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<%@include file="/common/mobileCommon.jsp"%>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no;">
+    <title>项目详细信息</title>
+    <link href="<%=basePath%>css/mobileStyle.css" rel="stylesheet" type="text/css">
+ </head>
+
+<body>
+
+<div id="header_wrapper">
+    <div class="title">
+    	<span class="title_button"><a href="<%=basePath%>mobile/project/mobile_projectList4mobile.action"><input type="button" ></a></span>
+ 		 <span class="title_text"><div class="text">项目详细信息</div></span>
+  </div>
+  <div class="explain">
+        <h1><s:property value="tblProject.projectName" /></h1>
+        <div class="explain_content">
+         <p>负责人：<s:property value="tblProject.projectManager.name" /></p>
+         <p>项目状态:<s:if test="tblProject.projectStatus==0" >未开始</s:if><s:elseif test="tblProject.projectStatus==1">进行中</s:elseif><s:else>已结束</s:else></p>
+         <p>项目目标：<s:property value="tblProject.projectTarget" /></p>
+         <p>项目开始－结束时间：</p><p><s:property value="tblProject.projectStartTime" />——<s:property value="tblProject.projectEndTime" /></p>
+         <p>项目实际开始－结束时间：</p><p><s:property value="tblProject.projectRealStartTime" />——<s:property value="tblProject.projectRealEndTime" /></p>
+         <p>创建时间：<s:property value="tblProject.projectStartTime" /></p>
+         <p>备注：<s:property value="tblProject.projectRemaks"/></p>
+    	</div>
+        </div>
+</div><!--header_wrapper结束-->
+
+<div id="body_wrapper">
+	<s:iterator value="projectChildList">
+		<section class="form1">
+    	<div class="z_bj">
+    	
+        	<div class="pj_name">
+            <input type="text"  value="<s:property value="projectName"/>"  readonly/>
+            </div>
+            <div class="pj_plan">
+            <input type="text" value="责任人：<s:property value="responsible.name"/>"  readonly/>
+            </div>
+            
+            
+            <div class="dt_other2">
+            <div class="pj_other_left">
+               	 <p>任务优先级：<s:if test="projectLevel==0" >低</s:if><s:elseif test="projectLevel==1">一般</s:elseif><s:else>高</s:else></p>
+                <p>子项目目标：<input type="text" value="<s:property value="projectChildTarget"/>"readonly></p>
+                <p>子项目状态:<s:if test="projectChildStatus==0" >未开始</s:if><s:elseif test="projectChildStatus==1">进行中</s:elseif><s:else>已结束</s:else></p>
+                <p>子项目计划工时:<s:property value="planTime"/></p>
+                <p>计划开始－结束时间：<s:property value="projectChildStarttime"/>——<s:property value="projectChildEndtime"/></p>
+         		</div>
+                 <div class="pj_other_right" >
+    				<div class="splash-inner">
+         			 <div class="loading-circle" >
+            			<p><span id="loadedNum"><s:property value="projectProgress"/></span>%</p>
+            			<canvas class="mask" id="loadingProgress" width="100" height="100"></canvas>
+           				 <canvas class="bg" width="100" height="100"></canvas>
+        				</div>
+    			</div>
+			</div>
+		</div>   
+        </section>
+        </s:iterator>
+        <s:iterator value="planList">
+        <section class="form2">
+        	<div class="pj_name">
+            <input type="text"  value="<s:property value="planName"/>" readonly/>
+            </div>
+            <div class="pj_plan">
+            <input type="text" value="责任人：<s:property value="planManager.name"/>" readonly/>
+            </div>
+            <a href="<%=basePath%>mobile/project/mobile_planDetail4mobile.action?tblPlan.planId=<s:property value="planId"/>">
+            <div class="dt_other">
+            <div class="pj_other_left">
+            	<p>计划优先级:<s:if test="planClass==0" >低</s:if><s:elseif test="planClass==1">一般</s:elseif><s:else>高</s:else></p>
+                <p>计划工时:<s:property value="planTime"/></p>
+                <p>计划状态:<s:if test="planStatus==0" >未开始</s:if><s:elseif test="planStatus==1">进行中</s:elseif><s:else>已结束</s:else></p>
+                <p>计划简介:</p><p><textarea type="text" rows="5" cols="25"value="<s:property value="planMsg"/>"readonly></textarea></p>
+                <p>计划开始－结束时间：<s:property value="planStartTime"/>——<s:property value="planEndTime"/></p>
+                </div>
+                 <div class="pj_other_right" >
+    				<div class="splash-inner">
+         			 <div class="loading-circle" >
+            			<p><span id="loadedNum"><s:property value="projectProgress"/></span>%</p>
+            			<canvas class="mask" id="loadingProgress" width="100" height="100"></canvas>
+           				 <canvas class="bg" width="100" height="100"></canvas>
+        				</div>
+    			</div>
+			</div>   
+            </div>
+            </a>
+        </section>
+        </s:iterator>
+</div>
+
+</body>
+</html>
+

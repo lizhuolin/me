@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<package name="plan" namespace="/plan" extends="struts-default,json-default">
+		<action name="plan_*" class="com.poobo.plan.action.PlanAction" method="{1}">
+			<result name="{1}">/WEB-INF/jsp/plan/{1}.jsp</result>
+			<!--  <result name="success" type="redirect">/plan_planList.action?tblProject.projectId=${tblProject.projectId}</result>-->
+		</action>
+		<action name="json_plan_*" class="com.poobo.plan.action.PlanAction" method="{1}">
+			<result type="json">
+				<!-- 这里指定将被Struts2序列化的属性，该属性在action中必须有对应的getter方法 -->
+				<param name="root">resultData</param>
+			</result>
+		</action>
+	</package>
+
+
+</struts>

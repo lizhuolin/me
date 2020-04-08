@@ -1,0 +1,119 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+ <%@ taglib prefix="s" uri="/struts-tags" %>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"+ request.getServerName() + ":" + request.getServerPort()+ path + "/";
+%>
+
+<!DOCTYPE html >
+<html>
+<head lang = "en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no;">
+    <title>公告</title>
+    <link href="<%=basePath%>css/mobileStyle.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="<%=basePath%>js/jquery-1.8.3.min.js"></script>
+	<script type="text/javascript" src="<%=basePath%>js/koala.min.1.5.js"></script>
+ </head>
+
+<body>
+
+	<div id="header_wrapper">
+    	<div class="index_text">公告信息</div>
+    	
+    </div><!--header_wrapper结束-->
+    <div id="body_wrapper">
+    	<section>
+        <div class="bl_board">	
+<div id="fsD1" class="focus">  
+    <div id="D1pic1" class="fPic">
+    
+    <s:iterator value="noticeList" status="st">
+        <div class="fcon" style="display: none;">
+            <a href="mobile/mobile_noticedetialList.action?notice.noticeId=<s:property value='noticeId'/>"><img src="<%=basePath%>images/0<s:property value="#st.index"/>.jpg" style="opacity: 1; "></a>
+            <span class="shadow"><input type="text"  value="<s:property value="noticeTitle"/> " readonly> 
+                </span>
+        </div>
+      </s:iterator>  
+     <%--    <div class="fcon" style="display: none;">
+            <a href="mobile/mobile_noticedetialList.action?notice.noticeId=<s:property value="noticeId"/>"><img src="<%=basePath%>images/02.jpg" style="opacity: 1; "></a>
+            <span class="shadow"><input type="text"  value="<s:property value="noticeList.get(1).noticeTitle"/> " readonly> 
+                </span>
+        </div>
+        
+        <div class="fcon" style="display: none;">
+            <a href="mobile/mobile_noticedetialList.action?notice.noticeId=<s:property value='noticeId'/>"><img src="<%=basePath%>images/03.jpg" style="opacity: 1; "></a>
+            <span class="shadow"> <input type="text"  value="<s:property value="noticeList.get(2).noticeTitle"/> " readonly> </span>
+            
+        </div>
+        
+        <div class="fcon" style="display: none;">
+            <a href="mobile/mobile_noticedetialList.action?notice.noticeId=<s:property value='noticeId'/>"><img src="<%=basePath%>images/04.jpg" style="opacity: 1; "></a>
+            <span class="shadow"> <input type="text"  value="<s:property value="noticeList.get(3).noticeTitle"/> " readonly> </span>
+        </div>  --%>   
+    </div>
+    <div class="fbg">  
+    <div class="D1fBt" id="D1fBt">  
+        <a href="javascript:void(0)" hidefocus="true" target="_self" class=""><i>1</i></a>  
+        <a href="javascript:void(0)" hidefocus="true" target="_self" class=""><i>2</i></a>  
+        <a href="javascript:void(0)" hidefocus="true" target="_self" class="current"><i>3</i></a>  
+        <a href="javascript:void(0)" hidefocus="true" target="_self" class=""><i>4</i></a>  
+    </div>  
+    </div>  
+    <span class="prev"></span>   
+    <span class="next"></span>    
+</div>  
+<script type="text/javascript">
+	Qfast.add('widgets', { path: "<%=basePath%>js/terminator2.2.min.js", type: "js", requires: ['fx'] });  
+	Qfast(false, 'widgets', function () {
+		K.tabs({
+			id: 'fsD1',   //焦点图包裹id  
+			conId: "D1pic1",  //** 大图域包裹id  
+			tabId:"D1fBt",  
+			tabTn:"a",
+			conCn: '.fcon', //** 大图域配置class       
+			auto: 1,   //自动播放 1或0
+			effect: 'fade',   //效果配置
+			eType: 'click', //** 鼠标事件
+			pageBt:true,//是否有按钮切换页码
+			bns: ['.prev', '.next'],//** 前后按钮配置class                          
+			interval: 3000  //** 停顿时间  
+		}) 
+	})  
+</script>
+<!-- 代码 结束 -->
+
+<div style="text-align:center;clear:both;">
+
+</div>
+</div>
+        </section>
+        <section>
+        	<div class="bl_info">
+            	<form>
+                	<a href="msg_remind.html"><p><span>提醒信息</span> </p></a>
+                    <p><input id="mg_text"type="text" maxlength="10" value="<s:property value="noticeTitle"/>" readonly>
+                    	<input id="mg_date" type="hours" value="2016/03/17"readonly></p></a>
+                </form>
+                <form>
+                	<a href="msg_remind.html"><p><span>提醒信息</span> </p>
+                    <p><input id="mg_text"type="text" maxlength="10" value="加萨老师讲课 尽快链接阿大声道................" readonly>
+                    	<input id="mg_date" type="hours" value="2016/03/17"readonly></p></a>
+                </form>
+                <form>
+                	<a href="msg_remind.html"><p><span>提醒信息</span> </p>
+                    <p><input id="mg_text"type="text" maxlength="10" value="加萨老师讲课 尽快链接阿大声道................" readonly>
+                    	<input id="mg_date" type="hours" value="2016/03/17"readonly></p></a>
+                </form>
+                <form>
+                	<a href="msg_remind.html"><p><span>提醒信息</span> </p>
+                    <p><input id="mg_text"type="text" maxlength="10" value="加萨老师讲课 尽快链接阿大声道................" readonly>
+                    	<input id="mg_date" type="hours" value="2016/03/17"readonly></p></a>
+                </form>
+            </div>
+        </section> 
+    </div><!--body_wrapper结束--> 
+     <%@include file="/common/mobileBelow.jsp"%>
+</body>
+</html>

@@ -1,0 +1,7 @@
+package com.poobo.reportwarn.dao;
+
+import com.poobo.core.dao.IBaseDao;
+import com.poobo.core.entity.TblReportwarn;
+
+public interface IReportwarnDao extends IBaseDao<TblReportwarn>{
+}

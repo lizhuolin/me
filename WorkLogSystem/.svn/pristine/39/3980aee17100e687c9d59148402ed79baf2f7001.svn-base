@@ -1,0 +1,610 @@
+var index;
+var rooPath;
+$(function($){
+	index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+	rooPath=getRootPath();
+	//关闭
+	$("#close").click(function(){
+		parent.layer.close(index);
+	});
+	//选中一行/取消选中
+	$(".checkedOne").click(function(){
+		var obj = this.getElementsByTagName("input");
+		var flag = $(obj[0]).prop("checked");
+		if(!flag){
+			$(obj[0]).removeAttr("checked");
+			$("#checkedAll").removeAttr("checked");
+		}else{
+			$(obj[0]).prop("checked", true);
+			$(obj[0]).attr("checked", "checked");
+		}
+	});
+	
+	//全选/取消全选
+	$("#checkedAll").click(function(){
+		var flag = $(this).prop("checked");
+		if(!flag){
+			$(".autoChecked").removeAttr("checked");
+		}else{
+			$(".autoChecked").prop("checked", true);
+			$(".autoChecked").attr("checked", "checked");
+		}
+	});
+	$(".banEnter").bind('keydown',function(){
+		  if (event.keyCode == "13") {
+			  return false;
+		  }
+	});
+	
+	$(".onlyNum").bind('keydown', function() {
+		/**
+		 * 8：退格键
+		 * 9：Tab
+		 * 46：delete
+		 * 37-40： 方向键
+		 * 48-57：小键盘区的数字
+		 * 96-105：主键盘区的数字
+		 * 110、190：小键盘区和主键盘区的小数点
+		 */
+		if(!((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105) || (event.keyCode >= 37 && event.keyCode <= 40) || event.keyCode == 8 || event.keyCode == 46 || event.keyCode == 110 || event.keyCode == 190 || event.keyCode == 9)){
+			return false;
+		}
+	});
+	
+	
+	/**
+	 * 获取选中的ids
+	 */
+	function getCheckedIdsStr(){
+		var checkedObj = $("input[type='checkbox']:checked");
+		var ids="";
+		$.each(checkedObj, function(key, val) { 
+			
+			ids=ids+"@"+$(this).val(); 
+			}); 
+		if(ids!=""){
+			ids=ids.substring(1);
+		}
+		return ids;
+		
+	}
+
+	
+	//查询条件过多可伸缩
+	if($(".con_search").height()>70){
+		$(".toggle").show();
+	}
+	
+	$(".toggle").click(function(){
+		if($(this).children("i").hasClass("icon-212102")){
+			$(this).children("i").removeClass("icon-212102");
+			$(this).children("i").addClass("icon-2121021");
+			$(this).parent(".con_top").height("auto");
+		}else{
+			$(this).children("i").removeClass("icon-2121021");
+			$(this).children("i").addClass("icon-212102");
+			$(this).parent(".con_top").height(70);
+		}
+		
+	});
+	
+	 $(".d_list").parent("span").height(30);
+});
+
+function scantoInput(obj){
+	var length = $(obj).val().length;
+	if(length === 15){
+		var inputs = document.getElementsByTagName("input");
+		if(inputs.length > 1){//批量操作
+			for(var i = 0;i<inputs.length;i++){
+				// 如果是最后一个，则再生成一行输入框
+				if(i==(inputs.length-1)){
+					//生成一行IMEI输入框
+					autoAppend(obj);
+					//下一个输入框聚焦
+					inputs[i+1].focus();
+					break;
+				}else if(obj == inputs[i]){ //下一个输入框聚焦
+					inputs[i+1].focus();
+					break;
+				}
+			}
+		}
+	}
+}
+
+//生成一行输入框
+function autoAppend(obj){
+	$("#input_ul").append("<li class=\"batch_all\">" +
+			"<span class=\"imei\"><input type=\"text\" name=\"imeiList\" oninput=\"scantoInput(this)\" maxlength=\"15\"  value=\"\"  onblur=\"isInstorage(this)\"/>" +
+			"<label class=\"error\"></label></span>" +
+			"<span class=\"imei\"><input type=\"text\" name=\"imeiList\" maxlength=\"15\" oninput=\"scantoInput(this)\" value=\"\" onblur=\"isInstorage(this)\"/>" +
+			"<label class=\"error\"></label></span></li>");
+}
+
+/**
+ * 打开新对话框
+ */
+function openNewDialog(url,title){
+	$.ajax({
+		type: "POST",
+		url: "user/json_user_loginCheck.action",
+		data: {},
+		dataType:"json",
+		success: function(data){
+			
+			if(!data.resultFlag){
+				//未登录
+				reloadWindowUrl();
+				
+			}else{
+				 //iframe层-父子操作
+				 var index= layer.open({
+					  type: 2,
+					  area: ['800px', '600px'],//弹出层宽高
+					  title: [title, 'font-size:16px;'],
+					  fix: false, //不固定
+					  maxmin: true,
+					  content: url//加载页面
+				  });
+				return index;
+			}
+		}
+	});
+}
+
+function openNewDialog2(url,title){
+	$.ajax({
+		type: "POST",
+		url: "json_permission_LoginController_checkLogin4Json",
+		data: {},
+		dataType:"json",
+		success: function(data){
+			if(!data.resultFlag){
+				//未登录
+				reloadWindowUrl();
+				
+			}else{
+				 //iframe层-父子操作
+				 var index= layer.open({
+							type: 2,
+							area: ['750px', '550px'],//弹出层宽高
+							title: [title, 'font-size:16px;'],
+							fix: false, //不固定
+							maxmin: true,
+							zIndex: 19891016,
+							content: url//加载页面
+						});
+				return index;
+			}
+		}
+	});
+	
+	
+	
+	
+}
+
+/**
+ * 打开新窗口
+ * @param url		地址
+ * @param title		标题
+ * @param width		窗口宽度	例如 1200
+ * @param height	窗口高度	例如	600
+ */
+function openNewDialogV2(url,title,width,height){
+	 //iframe层-父子操作
+	  /*layer.open({
+		  type: 2,
+		  area: [width+'px', height+'px'],//弹出层宽高
+		  title: [title, 'font-size:16px;'],
+		  fix: false, //不固定
+		  maxmin: true,
+		  content: url//加载页面
+	  });*/
+		$.ajax({
+			type: "POST",
+			url: "json_permission_LoginController_checkLogin4Json",
+			data: {},
+			dataType:"json",
+			success: function(data){
+				if(!data.resultFlag){
+					//未登录
+					reloadWindowUrl();
+					
+				}else{
+					 //iframe层-父子操作
+					 var index= layer.open({
+						  type: 2,
+						  area: [width+'px', height+'px'],//弹出层宽高
+						  title: [title, 'font-size:16px;'],
+						  fix: false, //不固定
+						  maxmin: true,
+						  content: url//加载页面
+					  });
+					return index;
+				}
+			}
+		});
+}
+
+/**
+ * 打开新窗口
+ * @param url		地址
+ * @param title		标题
+ * @param width		窗口宽度	例如 1200
+ * @param height	窗口高度	例如	600
+ */
+function openDialog(url,title,width,height){
+	 //iframe层-父子操作
+	  layer.open({
+		  type: 2,
+		  area: [width+'px', height+'px'],//弹出层宽高
+		  title: [title, 'font-size:16px;'],
+		  fix: false, //不固定
+		  maxmin: true,
+		  content: url//加载页面
+	  });
+}
+
+function opSuccess(msg){
+	layer.msg(msg, {icon: 1,time:2000});
+}
+/**
+ * 操作失败
+ * @param msg
+ */
+function opFail(msg){
+	layer.msg(msg, {icon: 7,time:3000});
+}
+
+
+/**
+ * 父窗口操作成功提示
+ */
+function successClose(msg){
+	 parent.layer.msg(msg, {icon: 1,time:2000});
+	 parent.layer.close(index);
+}
+
+/**
+ *
+ * @param msg
+ */
+function successClose(msg, times){
+	parent.layer.msg(msg, {icon: 1,time:times});
+	parent.layer.close(index);
+}
+
+/**
+ * 父窗口失败后提示并关闭
+ */
+function failClose(msg,times){
+	 parent.layer.msg(msg, {icon: 7,time:times||500})
+	 parent.layer.close(index);
+}
+
+/**
+ * 子窗口打开失败后提示并关闭
+ */
+function failClose2(msg){
+	 parent.layer.msg(msg);
+	 parent.layer.close(index);
+}
+
+/**
+ * 父窗口失败弹出(未登录的会刷新整个页面)
+ */
+function failAlert(data){
+	console.log(data);
+	var jsonData=data;//JSON.parse(data);
+	if(data.resultCode==undefined){
+	   if(data.indexOf("NOTLOGIN")>0){
+		   //未登陆
+			parent.reloadWindowUrl();
+			return;
+	   }	
+	   
+	}
+	
+	if(jsonData.resultCode=="NOTLOGIN"){
+		//未登陆
+		parent.reloadWindowUrl();
+		//成功关闭
+		failClose(jsonData.resultMsg);
+	}else{
+		//其他错误
+		var msg=jsonData.resultMsg;
+		if(msg==null||msg==""){
+			msg="操作失败";
+		}
+		parent.layer.msg(msg, {icon: 7,time:3000});
+	}
+}
+
+//刷新地址栏
+function  reloadWindowUrl(){
+	location.reload();
+}
+
+/**
+ * 搜索
+ */
+function searchForm(){
+	//parent.layer.msg("点击了搜索", {shade: 0.1,time:500});
+	$("#pageNow").val(1);
+	getNewData();
+	
+}
+
+function getNewData(){
+	//alert($("#searchForm").serialize());
+	addCover();
+	$.ajax({
+		   type: "POST",
+		   url: $("#actionUrl").val(),
+		   data:$("#searchForm").serialize(),
+		   dataType:"html",
+		   success: function(data){
+			   removeCover();
+			   $("#mainDiv").html(data);
+		   }
+		});
+}
+
+function goPage(){
+	
+	if($("#jumpPage").val()!=""){
+		changePage($("#jumpPage").val(),1);
+	}else{
+		layer.msg("请填写跳转页码");
+	}
+	
+}
+function changePage(page,type){
+//	parent.layer.msg("点击了翻页", {shade: 0.1,time:500});
+	var totalPage=Number($("#totalPage").val());
+	var pageNow=$("#pageNow").val();
+	var newPageNow;
+	if(type==1){
+		newPageNow=page;
+	}else{
+		newPageNow=Number(pageNow)+Number(page);
+	}
+	
+	if(newPageNow>(totalPage+1)){
+		layer.msg("超过总页数");
+		return;
+	}
+	if(newPageNow==(totalPage+1)){
+		layer.msg("已是最后一页");
+		return;
+	}
+	if(newPageNow<=0){
+		layer.msg("已是第一页");
+		return;
+	}
+	
+	//layer.msg("执行了查询");
+	$("#pageNow").val(newPageNow);
+	getNewData();
+}
+
+
+$(function($){
+	if(undefined!=$(".date_ymd")){
+	    $(".date_ymd").click(function(){
+	    	 var opt=eval("("+$(this).data("wdatepicker")+")")||{};
+	    	 WdatePicker(opt);
+	   	});
+    }
+	
+    if(undefined!=$("#startTime")){
+     $("#startTime").click(function(){
+    	// laydate({elem: '#startTime'});
+    	 var opt=eval("("+$(this).data("wdatepicker")+")")||{};
+    	 WdatePicker(opt);
+	});
+    }
+
+   if(undefined!=$("#endTime")){
+     $("#endTime").click(function(){
+//    	 laydate({elem: '#endTime'});
+    	 var opt=eval("("+$(this).data("wdatepicker")+")")||{};
+    	 WdatePicker(opt);
+	});
+   }
+   if(undefined!=$("#startTime3")){
+	   $("#startTime3").click(function(){
+		   WdatePicker();
+	   });
+   }
+   
+   if(undefined!=$("#endTime3")){
+	   $("#endTime3").click(function(){
+		   WdatePicker();
+	   });
+   }
+   if(undefined!=$("#startTime2")){
+	   $("#startTime2").click(function(){
+		   WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'});
+	   });
+   }
+   
+   if(undefined!=$("#endTime2")){
+	   $("#endTime2").click(function(){
+		   WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'});
+	   });
+   }
+   if(undefined!=$("#startTime4")){
+	   $("#startTime4").click(function(){
+		   WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'});
+	   });
+   }
+   
+   if(undefined!=$("#endTime4")){
+	   $("#endTime4").click(function(){
+		   WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'});
+	   });
+   }
+   
+   if(undefined!=$("#startTime5")){
+	   $("#startTime5").click(function(){
+		   WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:00'});
+	   });
+   }
+   
+   if(undefined!=$("#endTime5")){
+	   $("#endTime5").click(function(){
+		   WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:00'});
+	   });
+   }
+   
+    if(undefined!=$("#monthTime")){
+     $("#monthTime").click(function(){
+		$("#monthTime").datepicker({dateFormat: "yy-mm-01"});
+	});
+   }
+   
+    
+    
+  
+	//关闭缓存	 
+    $.ajaxSetup ({ 
+       cache: true //关闭AJAX相应的缓存 
+     });  	    
+
+});
+
+function layerTitle(title){
+	$(".layui-layer-title").html(title);
+	
+}
+
+
+/**
+ * 是否只选择了一个
+ * @returns {Boolean}true --是，false--否
+ */
+function isCheckedOne(){
+	if($("input:checked").length==0){
+		layer.msg("至少选择一条数据");
+		return false
+	}else if($("input:checked").length>1){
+		layer.msg("只能选择一条数据");
+		return false;
+	}else{
+		return true;
+	}
+}
+/**
+ * 是否只选择了多个
+ * @returns {Boolean}true --是，false--否
+ */
+function isChecked(){
+	if($("input:checked").length==0)
+	{
+		layer.msg("至少选择一条数据");
+		return false;	
+	}
+	else
+	{
+		return true;
+	}
+}
+function isChecked(){
+	if($("input:checked").length==0)
+	{
+		layer.msg("至少选择一条数据");
+		return false;	
+	}
+	else
+	{
+		return true;
+	}
+}
+
+/**
+ * 获取选中的ids
+ */
+function getCheckedIdsStr(){
+	var checkedObj = $("input[type='checkbox']:checked");
+	var ids="";
+	$.each(checkedObj, function(key, val) { 
+		
+		ids=ids+"@"+$(this).val(); 
+		}); 
+	if(ids!=""){
+		ids=ids.substring(1);
+	}
+	return ids;
+	
+}
+
+
+//js获取项目根路径，如： http://localhost:8083/uimcardprj  
+function getRootPath(){  
+    //获取当前网址，如： http://localhost:8083/uimcardprj/share/meun.jsp  
+    var curWwwPath=window.document.location.href;  
+    //获取主机地址之后的目录，如： uimcardprj/share/meun.jsp  
+    var pathName=window.document.location.pathname;  
+    var pos=curWwwPath.indexOf(pathName);  
+    //获取主机地址，如： http://localhost:8083  
+    var localhostPaht=curWwwPath.substring(0,pos);  
+    //获取带"/"的项目名，如：/uimcardprj  
+    var projectName=pathName.substring(0,pathName.substr(1).indexOf('/')+1);  
+    return(localhostPaht+projectName);  
+} 
+
+/**
+ * 添加遮罩
+ */
+function addCover(){
+	var o = document.body;
+	var div = document.createElement("div");
+	var p = document.createElement("p");
+	var img = document.createElement("img");
+	div.setAttribute("class","edit_cover");
+	div.setAttribute("id","edit_cover");
+	img.setAttribute("src",getRootPath()+"/images/loading.gif");
+	p.appendChild(img);
+	div.appendChild(p);
+	o.appendChild(div);
+}
+
+/**
+ * 隐藏遮罩
+ */
+function removeCover(){
+  var o = document.body;
+  var div = document.getElementById("edit_cover");
+  o.removeChild(div);
+}
+
+/**
+ * 手机号自动改成3-4-4格式
+ * @param obj
+ */
+function add344(obj){
+	var mobile=$(obj).val();
+	if(mobile.length>3&&mobile[3]!="-"){
+		mobile=mobile.substring(0,3)+"-"+mobile.substring(3);
+	}
+	if(mobile.length>8&&mobile[8]!="-"){
+		mobile=mobile.substring(0,8)+"-"+mobile.substring(8);
+	}
+	$(obj).val(mobile);
+}
+function getCheckedIdsStr(){
+	var checkedObj = $("input[type='checkbox']:checked");
+	var ids="";
+	$.each(checkedObj, function(key, val) { 
+		
+		ids=ids+"@"+$(this).val(); 
+		}); 
+	if(ids!=""){
+		ids=ids.substring(1);
+	}
+	return ids;
+	
+}

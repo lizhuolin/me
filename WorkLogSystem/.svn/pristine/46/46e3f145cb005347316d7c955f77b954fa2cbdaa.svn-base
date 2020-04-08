@@ -1,0 +1,194 @@
+package com.poobo.company.action;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.poobo.company.service.CompanyService;
+import com.poobo.core.action.BaseAction;
+import com.poobo.core.entity.TblCompany;
+import com.poobo.core.util.DateUtils;
+import com.poobo.core.util.ResultData;
+
+
+
+
+public class CompanyAction extends BaseAction<TblCompany> {
+	@Resource
+	private CompanyService companyService;
+	private List<TblCompany> companyList;
+	private TblCompany tblcompany;
+	private ResultData resultData;
+	private String headImgContentType;
+	private String headImgFileName;
+	private String ids;
+
+
+	/**
+	 * 
+	 * 删除公司
+	 */
+	public String doCompanyDelete()
+	{
+		resultData=new ResultData();
+		if(StringUtils.isNotEmpty(ids))
+		{//更新数据状态
+			String[]  idList=ids.split("@");
+			companyService.delcompanyByIds(idList);
+			resultData.setResultFlag(true);
+		}
+		
+		return SUCCESS;
+		
+	}
+	
+    /**
+     * 
+     * 编辑公司信息
+     */
+	public String edit(){
+		resultData = new ResultData();
+		if(tblcompany != null && StringUtils.isEmpty(tblcompany.getCompanyId())){
+		
+				tblcompany.setIsVerification(false);
+				tblcompany.setDataStatus(1);
+				tblcompany.setCreateTime(DateUtils.getCurrentDateTimeStamp());
+				companyService.save(tblcompany);
+		}else if(tblcompany != null && !StringUtils.isEmpty(tblcompany.getCompanyId())){
+			companyService.update(tblcompany);
+		}
+		resultData.setResultFlag(true);
+		return SUCCESS;
+	}
+
+	/**
+	 * 
+	 * 公司信息审核
+	 */
+   public String audit(){
+		resultData=new ResultData();
+		if(StringUtils.isNotEmpty(ids))
+		{//更新数据状态
+			String[]  idList=ids.split("@");
+			companyService.auditCompanyByIds(idList);
+			resultData.setResultFlag(true);
+		}
+		return SUCCESS;
+    }
+	
+		   
+	// 跳转到列表页面
+	public String companyList(){
+//		companyList = companyService.findAll();
+		 //pageList = companyService.getPageList(tblcompany, pageNow, pageSize);
+		 pageList = companyService.findCompanyList(tblcompany, pageNow, pageSize);
+		return "companyList";
+	}
+
+	
+	// 跳转到保存页面
+	public String companyEdit() {
+		
+		if(tblcompany != null && tblcompany.getCompanyId() != null){
+		tblcompany = companyService.findObjectById(tblcompany.getCompanyId());
+		}
+		return "companyEdit";
+	}
+	
+		public String companyRegiste() {
+		
+		if(tblcompany != null && tblcompany.getCompanyId() != null){
+		tblcompany = companyService.findObjectById(tblcompany.getCompanyId());
+		}
+		return "companyRegiste";
+		}
+
+	// 跳转到审核页面
+	public String companyAudit(){
+		if(tblcompany != null && tblcompany.getCompanyId() != null){
+			tblcompany = companyService.findObjectById(tblcompany.getCompanyId());
+			}
+		return "companyAudit";
+	}
+
+	
+	public List<TblCompany> getCompanyList() {
+		return companyList;
+	}
+
+	public void setCompanyList(List<TblCompany> companyList) {
+		this.companyList = companyList;
+	}
+
+	
+
+
+	public String getHeadImgContentType() {
+		return headImgContentType;
+	}
+
+	public void setHeadImgContentType(String headImgContentType) {
+		this.headImgContentType = headImgContentType;
+	}
+
+	public String getHeadImgFileName() {
+		return headImgFileName;
+	}
+
+	public void setHeadImgFileName(String headImgFileName) {
+		this.headImgFileName = headImgFileName;
+	}
+
+	public TblCompany getTblcompany() {
+		return tblcompany;
+	}
+
+	public void setTblcompany(TblCompany tblcompany) {
+		this.tblcompany = tblcompany;
+	}
+
+	public ResultData getResultData() {
+		return resultData;
+	}
+
+	public void setResultData(ResultData resultData) {
+		this.resultData = resultData;
+	}
+
+	public String getIds() {
+		return ids;
+	}
+
+	public void setIds(String ids) {
+		this.ids = ids;
+	}
+
+
+	public class UplaodFileBack {
+		private String fileName;
+		private String filePath;
+		private String fileUrl;
+		public String getFileName() {
+			return fileName;
+		}
+		public void setFileName(String fileName) {
+			this.fileName = fileName;
+		}
+		public String getFilePath() {
+			return filePath;
+		}
+		public void setFilePath(String filePath) {
+			this.filePath = filePath;
+		}
+		public String getFileUrl() {
+			return fileUrl;
+		}
+		public void setFileUrl(String fileUrl) {
+			this.fileUrl = fileUrl;
+		}
+		
+		
+	}
+}

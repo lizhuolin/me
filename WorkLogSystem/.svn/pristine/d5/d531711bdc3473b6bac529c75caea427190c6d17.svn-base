@@ -1,0 +1,32 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+ <%@ taglib prefix="s" uri="/struts-tags" %>
+ 
+        	<s:iterator value="projectList">
+            <div class="pj_name">
+            <input type="text"  value="<s:property value="projectName"/>"  readonly/>
+            </div>
+            <div class="pj_plan">
+            <input type="text" value="<s:property value="projectManager.name"/>"  readonly/>
+            </div>
+            
+            <a href="mobile/project/mobile_projectDetail4mobile.action?tblProject.projectId=<s:property value="projectId"/>">
+            <div class="pj_other">
+            	<div class="pj_other_left">
+            	<p><span>项目状态:</span><s:if test="projectStatus==0" >未开始</s:if><s:elseif test="projectStatus==1">进行中</s:elseif><s:else>已结束</s:else></p>
+               	<p><span>项目目标：</span><s:property value="projectTarget"/></p>
+                <p><span>项目备注：</span><s:property value="projectRemaks"/></p>
+                <p><span>创建时间：</span><s:property value="projectStartTime"/></p>
+                </div>
+                
+                <div class="pj_other_right" >
+    				<div class="splash-inner">
+         			 <div class="loading-circle" >
+            			<p><span id="loadedNum"><s:property value="projectProgress"/></span>%</p>
+            			<canvas class="mask" id="loadingProgress" width="100" height="100"></canvas>
+           				 <canvas class="bg" width="100" height="100"></canvas>
+        				</div>
+    			</div>
+			</div>  
+            </div></a>
+             </s:iterator>

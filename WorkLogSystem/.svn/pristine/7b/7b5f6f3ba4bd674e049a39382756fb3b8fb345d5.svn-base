@@ -1,0 +1,19 @@
+package com.poobo.reportwarn.action;
+
+import javax.annotation.Resource;
+
+import com.poobo.core.action.BaseAction;
+import com.poobo.core.entity.TblReportwarn;
+import com.poobo.reportwarn.service.IReportWarnService;
+
+public class ReportWarnAction extends BaseAction {
+
+	@Resource
+	private IReportWarnService reportwarnService;
+	private TblReportwarn reportWarn;
+
+	public String reportwarnList() {
+		pageList = reportwarnService.findReportwarnList(reportWarn, pageNow, pageSize);
+		return "reportwarnList";
+	}
+}

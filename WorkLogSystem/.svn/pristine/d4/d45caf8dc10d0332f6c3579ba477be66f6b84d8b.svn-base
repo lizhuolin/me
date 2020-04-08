@@ -1,0 +1,118 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+ <%@ taglib prefix="s" uri="/struts-tags" %>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"+ request.getServerName() + ":" + request.getServerPort()+ path + "/";
+%>
+
+<!DOCTYPE html >
+<html>
+<head lang = "en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no;">
+    <title>公告</title>
+    <link href="<%=basePath%>css/mobileStyle.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="<%=basePath%>js/jquery-1.8.3.min.js"></script>
+	<script type="text/javascript" src="<%=basePath%>js/koala.min.1.5.js"></script>
+ </head>
+
+<body>
+
+	<div id="header_wrapper">
+    	<div class="index_text">公告信息</div>
+    	
+    </div><!--header_wrapper结束-->
+    <div id="body_wrapper">
+    	<section>
+        <div class="bl_board">	
+<div id="fsD1" class="focus">  
+    <div id="D1pic1" class="fPic">
+    <s:if test="noticeList!=null">
+    <s:iterator value="noticeList" status="st">
+    
+        <div class="fcon" style="display: none;">
+            <a href="mobile/mobile_noticedetialList.action?notice.noticeId=<s:property value='noticeId'/>"><img src="<%=basePath%><s:property value="image"/>" style="opacity: 1; "></a>
+            <span class="shadow"><input type="text"  value="<s:property value="noticeTitle"/> " readonly> 
+                </span>
+        </div>				
+      </s:iterator>  
+      </s:if> 
+    </div>
+    <div class="fbg">  
+    <div class="D1fBt" id="D1fBt">  
+        <a href="javascript:void(0)" hidefocus="true" target="_self" class=""><i>1</i></a>  
+        <a href="javascript:void(0)" hidefocus="true" target="_self" class=""><i>2</i></a>  
+        <a href="javascript:void(0)" hidefocus="true" target="_self" class="current"><i>3</i></a>  
+        <a href="javascript:void(0)" hidefocus="true" target="_self" class=""><i>4</i></a>  
+    </div>  
+    </div>  
+    <span class="prev"></span>   
+    <span class="next"></span>    
+</div>  
+<script type="text/javascript">
+	Qfast.add('widgets', { path: "<%=basePath%>js/terminator2.2.min.js", type: "js", requires: ['fx'] });  
+	Qfast(false, 'widgets', function () {
+		K.tabs({
+			id: 'fsD1',   //焦点图包裹id  
+			conId: "D1pic1",  //** 大图域包裹id  
+			tabId:"D1fBt",  
+			tabTn:"a",
+			conCn: '.fcon', //** 大图域配置class       
+			auto: 1,   //自动播放 1或0
+			effect: 'fade',   //效果配置
+			eType: 'click', //** 鼠标事件
+			pageBt:true,//是否有按钮切换页码
+			bns: ['.prev', '.next'],//** 前后按钮配置class                          
+			interval: 3000  //** 停顿时间  
+		}) 
+	})  
+</script>
+<!-- 代码 结束 -->
+
+<div style="text-align:center;clear:both;">
+
+</div>
+</div>
+        </section>
+        <section>
+        <div class="bl_info">
+        <s:iterator value="reportwarnList">
+	        <s:if test='type == "0"'>
+	        	<form>
+                	<a ><p><span>任务提醒</span> </p></a>
+                    <p><input id="mg_text"type="text" maxlength="10" value="<s:property value="tblTask.taskDesc"/>" readonly>
+                    <input id="mg_date" type="hours" readonly></p></a>
+               </form>
+	        </s:if>
+        	<s:elseif test='type == "1"'>
+        		<form>
+                	<a ><p><span>计划提醒</span> </p></a>
+                    <p><input id="mg_text"type="text" maxlength="10" value="<s:property value="tblPlan.planMsg"/>" readonly>
+                    <input id="mg_date" type="hours" readonly></p></a>
+               </form>
+        	</s:elseif>
+        	<s:elseif test='type == "2"'>
+        		<s:if test="tblLog == null">
+        		<form>
+                	<a ><p><span>日志提醒</span> </p></a>
+                    <p><input id="mg_text"type="text" maxlength="10" value="昨日日志尚未完成" readonly>
+                    <input id="mg_date" type="hours" readonly></p></a>
+                </form>
+        		</s:if><s:else>
+        			<form>
+                	<a ><p><span>日志提醒</span> </p></a>
+                    <p><input id="mg_text"type="text" maxlength="10" value="<s:property value="tblLog.logMsg"/>" readonly>
+                    <input id="mg_date" type="hours" readonly></p></a>
+                </form>
+        		
+        		</s:else>
+        	</s:elseif>
+            	
+            </s:iterator>
+            </div>
+        </section> 
+    </div><!--body_wrapper结束--> 
+     <%@include file="/common/mobileBelow.jsp"%>
+</body>
+</html>

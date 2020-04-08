@@ -1,0 +1,645 @@
+package com.poobo.user.action;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.opensymphony.xwork2.ActionContext;
+import com.poobo.changelog.service.IChangelogService;
+import com.poobo.company.service.CompanyService;
+import com.poobo.core.action.BaseAction;
+import com.poobo.core.api.ReturnLogin;
+import com.poobo.core.entity.TblCompany;
+import com.poobo.core.entity.TblDept;
+import com.poobo.core.entity.TblPrivilege;
+import com.poobo.core.entity.TblRole;
+import com.poobo.core.entity.TblRolePrivilege;
+import com.poobo.core.entity.TblUser;
+import com.poobo.core.entity.TblUserRole;
+import com.poobo.core.entity.TblUserRoleId;
+import com.poobo.core.enums.EnumDataStatus;
+import com.poobo.core.enums.EnumRolEffect;
+import com.poobo.core.enums.EnumRole;
+import com.poobo.core.util.DateTimeUtil;
+import com.poobo.core.util.DateUtils;
+import com.poobo.core.util.GetSessionData;
+import com.poobo.core.util.MD5Util;
+import com.poobo.core.util.PropertyConfigurer;
+import com.poobo.core.util.ResultData;
+import com.poobo.core.util.SetUserInfo;
+import com.poobo.dept.service.IDeptService;
+import com.poobo.role.service.IRoleService;
+import com.poobo.user.service.IUserService;
+import com.poobo.wechat.WechatProperty;
+import com.poobo.wechat.WechatUrl;
+import com.poobo.wechat.bean.OAuthToken;
+import com.poobo.wechat.core.WechatRequest;
+
+public class UserAction extends BaseAction {
+	//@Resource
+	//private IOrganizationService organizationService;
+	
+	@Resource
+	private CompanyService companyService;
+	@Resource
+	private IDeptService deptService;
+	@Resource 
+	private IRoleService roleService;
+	@Resource
+	private IChangelogService changelogService;
+	
+	@Resource
+	private IUserService userService;
+	@Autowired
+	PropertyConfigurer propertyConfigurer;
+	
+	
+	private TblUser user;
+	private String loginResult;
+	private ResultData resultData;
+	private List<TblUser> userList;
+	private List<TblRole> roleList;
+	private List<TblUser> forgetpassword;
+	private List<TblCompany> companyList;
+	private List<TblDept> deptList;
+	private ReturnLogin returnLogin;
+	private String[] roleIds;
+	private String ids;
+	private TblDept dept;
+	private String token;
+	private String mobile;
+	private String header;
+
+	
+	public String forgetpassword(){
+		pageList = userService.findUserList(user, pageNow, pageSize);
+		user = userService.findObjectById(GetSessionData.getUser().getUserId());
+		forgetpassword = userService.findAll();
+		
+		return "forgetpassword";
+	}
+	/***
+	 * 手机端修改个人信息
+	 * @return
+	 */
+	public String mobileEdit(){
+		resultData = new ResultData();
+		if(user!=null){
+			if(StringUtils.isEmpty(user.getUserId())){
+				String md5Password = MD5Util.MD5(user.getPassword());
+				user.setPassword(md5Password);
+				userService.save(user);
+			}else{
+				if(user.getPassword().length() != 32){
+					String md5Password = MD5Util.MD5(user.getPassword());
+					user.setPassword(md5Password);
+					}
+				userService.update(user);
+			}
+			resultData.setResultFlag(true);
+		}
+		return SUCCESS;
+	}
+	
+	
+
+	
+	public String sendMessage(){
+		//pageList = taskService.getPageList(tblTask, pageNow, pageSize);
+		GetSessionData.getUser().getEmail();
+		
+		return "sendMessage";
+	}
+	/***
+	 * 手机端list页面
+	 * @return
+	 */
+	public String userList(){
+		//pageList = taskService.getPageList(tblTask, pageNow, pageSize);
+		pageList = userService.findUserList(user, pageNow, pageSize);
+		user = userService.findObjectById(GetSessionData.getUser().getUserId());
+		
+		
+		userList = userService.findAll();
+		
+		return "userList";
+	}
+	
+	//跳转到登录页面
+	public String loginUI(){
+		return "login";
+	}
+	/**
+	 * 登录验证并保存用户信息到session中
+	 * @return
+	 */
+	public String login() {
+		//判断用户在登录账号情况下登陆其他账号,若登录清空已登录账号信息
+		if(GetSessionData.getUser() != null){
+			ServletActionContext.getRequest().getSession().removeAttribute("USER");
+		}
+		if (user != null) {
+			user.setPassword(MD5Util.MD5(user.getPassword()));//转换密码为md5格式去数据库查找
+			//通过用户名密码获取用户列表
+			List<TblUser> list = userService.findUserByUsernameAndPassword(
+					user.getUsername(), user.getPassword());
+			if (list != null && list.size() > 0) {
+				user = list.get(0);
+				if(user.getTblCompany().getIsFreeze() ){
+					loginResult = "该用户所属公司被冻结，请联系管理员！";
+					return "login";
+				}else if(user.getTblCompany().getDataStatus()
+						.equals(EnumDataStatus.DEL.getValue())){
+					loginResult = "该用户所属公司被删除，请联系管理员！";
+					return "login";
+				}
+				//设置用户信息，角色信息，权限信息到session
+				SetUserInfo.SetUserInfoToSession(user);
+				
+				// 保存用户最后次登录时间
+				user.setLastLoginTime(DateTimeUtil.getNowTimestamp());
+				userService.save(user);
+				return "toHome";
+			 }
+			}
+		loginResult = "用户名或密码错误";
+		return "login";
+	}
+	public String Phonelogin(){
+		List<TblUser> list = userService.findUserByUsernameAndPassword(user.getUsername(), user.getPassword());
+		if(user!=null){
+			if(list!=null&&list.size()>0){
+				user=list.get(0);
+				returnLogin.setStatus("0");
+				returnLogin.setResultMsg("");
+			}
+		}
+		return SUCCESS;
+	}
+	
+    public String register() {
+		if(user != null){
+		user = userService.findObjectById(user.getUserId());
+		}
+		return "register";
+	 }
+
+
+    
+
+		// 跳转到列表页面
+		public String listUI(){
+			//pageList = userService.getPageList(user, pageNow, pageSize);
+			pageList = userService.findUserList(user, pageNow, pageSize);
+			      return "listUI"; 
+		}
+		/**
+		 * 执行编辑用户
+		 * @return
+		 */
+		public String edit(){
+			resultData = new ResultData();
+			
+			TblUser tblUser = GetSessionData.getUser();
+			//设置用户的部门
+			//user.setTblDept(dept);
+			if(tblUser.getIsUserPlatform()){
+				user.setUserType(EnumRole.PUSER.getValue());
+			}else{
+				user.setUserType(EnumRole.CUSER.getValue());
+			}
+			if(user != null ){
+			//设置用户的所有角色
+				if(roleIds != null ){
+					//删除用户已有的角色
+					userService.removeUserRoles(user.getUserId());
+					HashSet<TblUserRole> set = new HashSet<TblUserRole>();
+					for(int i = 0; i < roleIds.length; i++){
+						TblRole role = roleService.findObjectById(roleIds[i]);
+						
+						set.add(new TblUserRole(new TblUserRoleId(user,role)));
+					}
+					//如果用户是公司管理员或者不是本公司的角色就保存下来
+					Set tblUserRoles = user.getTblUserRoles(); 
+					Iterator<TblUserRole> it = tblUserRoles.iterator();
+					/*for(TblUserRole userRole : tblUserRoles){
+						if(role.getRoleId().equals(EnumRole.CADMIN.getValue()) || 
+								!role.getTblCompany().getCompanyId()
+								.equals(GetSessionData.getUser().getTblCompany()
+								.getCompanyId()))
+						  set.add(new TblUserRole(new TblUserRoleId(user,role)));
+					}*/
+					/*while(it.hasNext()){
+						TblUserRole userRole =  it.next();
+						TblRole role = userRole.getId().getTblRole();
+						if(role.getRoleId().equals(EnumRole.CADMIN.getValue()) || 
+								!role.getTblCompany().getCompanyId()
+								.equals(GetSessionData.getUser().getTblCompany()
+								.getCompanyId())) {
+						 set.add(new TblUserRole(new TblUserRoleId(user,role)));
+						}
+					}*/
+					user.setTblUserRoles(set);
+				  }
+			}
+		if (StringUtils.isEmpty(user.getUserId())) {
+			String md5Password = MD5Util.MD5(user.getPassword());
+			user.setPassword(md5Password);
+			user.setTblCompany(tblUser.getTblCompany());
+			user.setCreateTime(DateUtils.getCurrentDateTimeStamp());
+			user.setIsUserPlatform(GetSessionData.getUser().getIsUserPlatform());
+			user.setDataStatus(1);
+			userService.save(user);
+			//保存操作日志
+			changelogService.logRemable(user.getUsername(), 0, "用户");
+		} else {
+			if(user.getPassword().length() != 32){
+			String md5Password = MD5Util.MD5(user.getPassword());
+			user.setPassword(md5Password);
+			}
+			userService.update(user);
+			//保存操作日志
+			changelogService.logRemable(user.getUsername(), 1, "用户");
+		}
+		resultData.setResultFlag(true);
+
+		return SUCCESS;
+	}
+	public String loginOut() {
+         ActionContext.getContext().getSession().remove("USER");
+          return "login";
+    }
+
+	public String editUI(){
+		if(user != null && !StringUtils.isEmpty(user.getUserId())){
+			user = userService.findObjectById(user.getUserId());
+			//处理权限回显
+			Set<TblUserRole> urs = user.getTblUserRoles();
+			if(urs != null){
+				roleIds = new String[user.getTblUserRoles().size()];
+				int i = 0;
+				for(TblUserRole ur : urs){
+					roleIds[i++] = ur.getId().getTblRole().getRoleId();
+				}
+			}
+			
+		}	
+		if(GetSessionData.getUser().getIsUserPlatform()){
+			if(user!=null){
+				deptList=deptService.findDeptsByCompanyId(user.getTblCompany().getCompanyId());
+			}else{
+				deptList=deptService.findDeptsByCompanyId(GetSessionData.getUser().getTblCompany().getCompanyId());
+			}
+		}else{
+			deptList=deptService.findDeptsByCompanyId(GetSessionData.getUser().getTblCompany().getCompanyId());
+		}
+		
+		   roleList = roleService.findRolesByCompanyId(GetSessionData.getUser().getTblCompany().getCompanyId());
+		
+		TblRole cAdminRole  = roleService.findObjectById(EnumRole.CADMIN.getValue());
+		if(!GetSessionData.getUser().getIsUserPlatform()){
+				roleList.add(0, cAdminRole);
+		}
+			
+		return "editUI";
+	}
+	
+	public String userDelete()
+	{
+		resultData=new ResultData();
+		if(StringUtils.isNotEmpty(ids))
+		{//更新数据状态
+			String[]  idList=ids.split("@");
+			for(String id:idList){
+				TblUser user=userService.findObjectById(id);
+				if(GetSessionData.getUser().getUsername().equals(user.getUsername())){
+					return "false";
+				}
+			}
+			
+			
+			//保存操作日志
+			StringBuffer changelogContent = new StringBuffer();
+			for(String id : idList){
+				changelogContent.append(userService.findObjectById(id).getUsername());
+				changelogContent.append(",");
+			}
+			if(changelogContent.length() > 1){
+			changelogContent.substring(0, changelogContent.length()-2);
+			}
+			changelogService.logRemable(changelogContent.toString(), 2, "用户");
+			
+			
+			userService.delUserByIds(idList);
+			resultData.setResultFlag(true);
+			
+		}
+	
+		return SUCCESS;
+	}
+	
+	
+	
+	public String userReset()
+	{
+		resultData=new ResultData();
+		if(StringUtils.isNotEmpty(ids))
+		{//更新数据状态
+			String[]  idList=ids.split("@");
+			userService.setPasswordByIds(idList);
+			resultData.setResultFlag(true);
+		}
+		
+		return SUCCESS;
+		
+	}
+	
+	
+	/**
+	 * 校验账号名称
+	 */
+	public void checkUsername(){
+		if(userService.checkUsername(user)){
+			toJson("true");
+		}else{
+			toJson("false");
+		}
+	}
+	
+	public void checkUsermobile(){
+		if(userService.checkUsermobile(user)){
+			toJson("true");
+		}else{
+			toJson("false");
+		}
+	}
+	
+	//检验是否登录
+	public String loginCheck(){
+		TblUser tbluser = null;
+		tbluser = (TblUser) ServletActionContext.getRequest().getSession().getAttribute("USER");
+		resultData = new ResultData();
+		if (tbluser != null) {
+			resultData.setResultFlag(true);
+			resultData.setResultMsg("登录");
+		}else{
+			resultData.setResultFlag(false);
+			resultData.setResultMsg("未登录");
+		}
+		return SUCCESS;
+	}
+	
+	/**
+	 * 跳转到用户信息编辑页面
+	 * @return
+	 */
+	public String editUserInfo(){
+		if(null != GetSessionData.getUser())
+			user = userService.findObjectById(GetSessionData.getUser().getUserId());
+		return "editUserInfo";
+	}
+	/**
+	 * 进行用户信息编辑页面
+	 * @return
+	 */
+	public String doEditUserInfo(){
+		resultData = new ResultData();
+		if(null != user){
+		if(user.getPassword().length() != 32){
+		String md5Password = MD5Util.MD5(user.getPassword());
+		user.setPassword(md5Password);
+		 }
+		}
+		userService.update(user);
+		//更新session中用户的信息
+		ServletActionContext.getRequest().getSession()
+		.setAttribute("USER", user);
+	    resultData.setResultFlag(true);
+
+	return SUCCESS;
+}
+	/**
+	 * 手机端自动登录
+	 * 
+	 */
+	public String autoLogin(){
+		user = userService.findUserByToken(token);
+		if(user != null){
+			if(user.getTblCompany().getIsFreeze() ){
+				loginResult = "该用户所属公司被冻结，请联系管理员！";
+				return "login";
+			}else if(user.getTblCompany().getDataStatus()
+					.equals(EnumDataStatus.DEL.getValue())){
+				loginResult = "该用户所属公司被删除，请联系管理员！";
+				return "login";
+			}
+			//设置用户信息，角色信息，权限信息到session
+			SetUserInfo.SetUserInfoToSession(user);
+			return "toHome";
+		}
+		return "login";
+	}
+	
+	public String mobileLogin() {
+		String header = ServletActionContext.getRequest().getHeader("user-agent");
+		resultData = new ResultData();
+		header = ServletActionContext.getRequest().getHeader("user-agent");
+		if(header.contains("pooboAndroid")){
+			resultData.setResultCode("app");
+		}else{
+			resultData.setResultCode("weiChat");
+		}
+		if (user != null) {
+			user.setPassword(MD5Util.MD5(user.getPassword()));//转换密码为md5格式去数据库查找
+			//通过用户名密码获取用户列表
+			List<TblUser> list = userService.findUserByUsernameAndPassword(
+					user.getUsername(), user.getPassword());
+			if (list != null && list.size() > 0) {
+				user = list.get(0);
+				if(user.getTblCompany().getIsFreeze()){
+					resultData.setResultData("该用户所属公司被冻结，请联系管理员！");
+					return SUCCESS;
+				}else if(user.getTblCompany().getDataStatus()
+						.equals(EnumDataStatus.DEL.getValue())){
+					resultData.setResultData("该用户所属公司被删除，请联系管理员！");
+					return SUCCESS;
+				}
+				//设置用户信息，角色信息，权限信息到session
+				SetUserInfo.SetUserInfoToSession(user);
+				// 保存用户最后次登录时间
+				user.setLastLoginTime(DateTimeUtil.getNowTimestamp());
+				token = MD5Util.MD5(mobile + user.getUsername() + user.getPassword());
+				if(resultData.getResultCode().equals("app")){
+				 user.setToken(token);
+				 resultData.setResultMsg(token);
+				}else{
+					user.setOpenId((String)ServletActionContext.getRequest().getAttribute("openId"));
+				}
+				userService.save(user);
+				resultData.setResultFlag(true);
+				return SUCCESS;
+			 }
+			}
+		resultData.setResultData("用户名或密码错误");
+		return SUCCESS;
+	}
+	
+	
+	
+	/**
+	 * 微信端自动登录
+	 * @throws IOException 
+	 * 
+	 */
+	public String weiChatAutoLogin() throws IOException{
+		HttpServletRequest request=ServletActionContext.getRequest();
+		HttpServletResponse response=ServletActionContext.getResponse();
+		String code=ServletActionContext.getRequest().getParameter("code");
+		if(StringUtils.isEmpty(code)){
+			//微信重定向打开
+			String appId=WechatProperty.getWechatAppId();
+			String url= propertyConfigurer.getFileAccessUrl()  + "/moblie/user/mobile_weiChatAutoLogin.action";
+			url = java.net.URLEncoder.encode(url, "utf-8");
+			String redriectUrl=WechatUrl.redirectUrl(appId, url);
+			response.sendRedirect(redriectUrl);
+			return null;
+		}else{
+			OAuthToken aAuthToken=WechatRequest.getLoginUserAccessToken(code);
+			user = userService.findUserByOpenId(aAuthToken.getOpenid());
+			if(user != null){
+				//设置用户信息，角色信息，权限信息到session
+				SetUserInfo.SetUserInfoToSession(user);
+				return "toHome";
+			}else{
+				request.setAttribute("openId", aAuthToken.getOpenid());
+				return "login";
+				
+			}
+			
+			
+		}
+		
+		
+	}
+	/**
+	 * 手机端退出登录
+	 * @return
+	 */
+	public String mobileLoginOut() {
+		header = ServletActionContext.getRequest().getHeader("user-agent");
+		user = GetSessionData.getUser();
+		if(header.contains("pooboAndroid")){
+			user.setToken(null);
+		}else{
+			user.setOpenId(null);
+		}
+		userService.update(user);
+        ActionContext.getContext().getSession().remove("USER");
+        return "login";
+   }
+
+	public String download(){
+		return "download";
+	}
+	
+	
+	public TblUser getUser() {
+		return user;
+	}
+
+	public void setUser(TblUser user) {
+		this.user = user;
+	}
+	public String getLoginResult() {
+		return loginResult;
+	}
+	public void setLoginResult(String loginResult) {
+		this.loginResult = loginResult;
+	}
+	public List<TblUser> getUserList() {
+		return userList;
+	}
+	public void setUserList(List<TblUser> userList) {
+		this.userList = userList;
+	}
+	public String[] getRoleIds() {
+		return roleIds;
+	}
+	public void setRoleIds(String[] roleIds) {
+		this.roleIds = roleIds;
+	}
+	public String getIds() {
+		return ids;
+	}
+	public void setIds(String ids) {
+		this.ids = ids;
+	}
+	public List<TblRole> getRoleList() {
+		return roleList;
+	}
+	public void setRoleList(List<TblRole> roleList) {
+		this.roleList = roleList;
+	}
+
+	public List<TblUser> getForgetpassword() {
+		return forgetpassword;
+	}
+
+	public void setForgetpassword(List<TblUser> forgetpassword) {
+		this.forgetpassword = forgetpassword;
+	}
+	public ReturnLogin getReturnLogin() {
+		return returnLogin;
+	}
+	public void setReturnLogin(ReturnLogin returnLogin) {
+		this.returnLogin = returnLogin;
+	}
+	public ResultData getResultData() {
+		return resultData;
+	}
+	public void setResultData(ResultData resultData) {
+		this.resultData = resultData;
+	}
+	public List<TblCompany> getCompanyList() {
+		return companyList;
+	}
+	public void setCompanyList(List<TblCompany> companyList) {
+		this.companyList = companyList;
+	}
+	public List<TblDept> getDeptList() {
+		return deptList;
+	}
+	public void setDeptList(List<TblDept> deptList) {
+		this.deptList = deptList;
+	}
+	public TblDept getDept() {
+		return dept;
+	}
+	public void setDept(TblDept dept) {
+		this.dept = dept;
+	}
+	public String getToken() {
+		return token;
+	}
+	public void setToken(String token) {
+		this.token = token;
+	}
+	public String getMobile() {
+		return mobile;
+	}
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+	
+}

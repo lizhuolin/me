@@ -1,0 +1,12 @@
+package com.poobo.log.service;
+
+import java.util.List;
+
+import com.poobo.core.entity.TblLogDetail;
+import com.poobo.core.service.IBaseService;
+
+public interface ILogDetailsService extends IBaseService<TblLogDetail>{
+
+	List<TblLogDetail> findAllByLogId(String logId);
+
+}

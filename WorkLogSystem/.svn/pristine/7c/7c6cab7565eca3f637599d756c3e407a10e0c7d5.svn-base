@@ -1,0 +1,74 @@
+var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+$(function($){
+
+	$("#editForm").validate({
+		rules:{
+			"tblProjectChild.projectName":{
+				required:true
+			},"tblProjectChild.responsible.userId":{
+				required:true
+			},"tblProjectChild.projectChildStarttime":{
+				required:true
+			},"tblProjectChild.projectChildEndtime":{
+				required:true
+			},"tblProjectChild.projectChildTarget":{
+				required:true
+			}
+			
+		},
+		messages:{
+			"tblProjectChild.projectName":{
+				required:"项目名称不能为空"
+			},"tblProjectChild.responsible.userId":{
+				required:"项目成员不能为空"
+			},"tblProjectChild.projectChildStarttime":{
+				required:"子项目预计开始时间必填"
+			},"tblProjectChild.projectChildEndtime":{
+				required:"子项目预计结束时间必填"
+			},"tblProjectChild.projectChildTarget":{
+				required:"子项目目标必填"
+			}
+		}
+		,success : function(label) {
+			//label.addClass("success").text("输入正确");
+		}
+		//,errorPlacement : function(error, element) {
+			//error.appendTo(element.next("span").next("span"));
+		//}
+		,onkeyup : false
+		});
+	
+	//弹出页面
+	$("#edit").click(function(){
+		formSubmit();
+	 });
+	
+});
+
+
+
+
+function formSubmit(){
+	if($("#editForm").validate().form()){
+		//显示遮罩
+		addCover();
+		$.ajax({
+			type: "POST",
+			url: "json_projectchild_edit.action",
+			data: $("#editForm").serialize(),
+			success: function(data){
+				if(data.resultFlag){
+					parent.$('.search_btn').click();
+					//成功关闭
+					successClose("操作成功");
+					
+				}else{
+					//失败提示
+					failAlert(data);
+				}
+				//隐藏遮罩
+				removeCover();
+			}
+		});
+	}
+}

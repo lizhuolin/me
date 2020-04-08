@@ -1,0 +1,133 @@
+package com.poobo.fileoperate.action;
+
+import java.io.File;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.opensymphony.xwork2.ActionSupport;
+import com.poobo.core.util.FileOperation;
+import com.poobo.core.util.PropertyConfigurer;
+import com.poobo.core.util.ResultData;
+
+/**
+ * 文件操作类
+ * 
+ * @author lei.ma 2016年1月10日 下午3:18:40
+ *
+ */
+public class FileOperateAction extends ActionSupport{
+	/**
+	 * @author lei.ma 2016年1月10日 下午3:20:19
+	 */
+	@Autowired
+	PropertyConfigurer propertyConfigurer;
+	
+	private static final long serialVersionUID = -5947930651390587435L;
+	private ResultData resultData;
+	/*
+	 * 下面的uploadFiles有两点需要注意 1、必须是List数组
+	 * 2、命名必须跟jsp页面中的uploadify的一个参数"fileObjName"一致，否则无法获取到上传的文件
+	 */
+	public List<File> uploadFiles;
+	/*
+	 * 下面的两个属性为使用Action上传文件所必须的，在前台jsp页面无需做任何操作
+	 */
+	public List<String> uploadFilesFileName;
+	private String savePath;
+
+
+	/**
+	 * 上传单个文件
+	 * @author lei.ma 2016年1月10日 下午3:19:23
+	 * @return
+	 */
+	public String uploadOneFile(){
+		resultData=new ResultData();
+		if(null!=uploadFiles){
+			
+		}
+		String relativePath=propertyConfigurer.getFileSavePath()+savePath+"/";
+		//保存路径=根路径+固定保存路径+自定义路径
+		String physicsPath=propertyConfigurer.getFileRootPath()+relativePath;
+		
+		File saveFile =new File(physicsPath);
+		for(int i=0;i<uploadFiles.size();i++){
+			File upFile=uploadFiles.get(i);
+			String originalName=uploadFilesFileName.get(i);
+			String newName=UUID.randomUUID().toString();
+			String lastName=FileOperation.saveFile(saveFile, upFile, originalName, newName);
+			UplaodFileBack file4Back=new UplaodFileBack();
+			file4Back.setFileName(originalName);
+			file4Back.setFilePath(relativePath+lastName);
+			file4Back.setFileUrl(propertyConfigurer.getFileAccessUrl()+relativePath+lastName);
+			resultData.setResultData(file4Back);
+			resultData.setResultFlag(true);
+		}
+		return SUCCESS;
+	}
+	
+
+
+
+	public List<File> getUploadFiles() {
+		return uploadFiles;
+	}
+
+	public void setUploadFiles(List<File> uploadFiles) {
+		this.uploadFiles = uploadFiles;
+	}
+
+	public List<String> getUploadFilesFileName() {
+		return uploadFilesFileName;
+	}
+
+	public void setUploadFilesFileName(List<String> uploadFilesFileName) {
+		this.uploadFilesFileName = uploadFilesFileName;
+	}
+
+
+	public ResultData getResultData() {
+		return resultData;
+	}
+
+	public void setResultData(ResultData resultData) {
+		this.resultData = resultData;
+	}
+
+	public String getSavePath() {
+		return savePath;
+	}
+
+	public void setSavePath(String savePath) {
+		this.savePath = savePath;
+	}
+
+	public class UplaodFileBack {
+		private String fileName;
+		private String filePath;
+		private String fileUrl;
+		public String getFileName() {
+			return fileName;
+		}
+		public void setFileName(String fileName) {
+			this.fileName = fileName;
+		}
+		public String getFilePath() {
+			return filePath;
+		}
+		public void setFilePath(String filePath) {
+			this.filePath = filePath;
+		}
+		public String getFileUrl() {
+			return fileUrl;
+		}
+		public void setFileUrl(String fileUrl) {
+			this.fileUrl = fileUrl;
+		}
+		
+		
+	}
+	
+}

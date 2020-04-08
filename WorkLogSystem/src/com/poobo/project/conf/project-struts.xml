@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<package name="project" namespace="/project" extends="struts-default,json-default">
+		<action name="project_*" class="com.poobo.project.action.ProjectAction" method="{1}">
+			<result name="{1}">/WEB-INF/jsp/project/{1}.jsp</result>
+			<result name="list" type="redirectAction">
+				<param name="actionName">project_projectList</param>
+			</result>
+		</action>
+		
+		<action name="json_project_*" class="com.poobo.project.action.ProjectAction" method="{1}">
+			<result type="json">
+				<!-- 这里指定将被Struts2序列化的属性，该属性在action中必须有对应的getter方法 -->
+				<param name="root">resultData</param>
+			</result>
+		</action>
+		
+		<action name="projectchild_*" class="com.poobo.project.action.ChildProjectAction" method="{1}">
+		<result name="{1}">/WEB-INF/jsp/project/{1}.jsp</result>
+			<result name="list" type="redirectAction">
+				<param name="actionName">projectchild_projectChildList</param>
+			</result>
+		</action>
+		<action name="json_projectchild_*" class="com.poobo.project.action.ChildProjectAction" method="{1}">
+			<result type="json">
+				<!-- 这里指定将被Struts2序列化的属性，该属性在action中必须有对应的getter方法 -->
+				<param name="root">resultData</param>
+			</result>
+		</action>
+	</package>
+	<package name="mobileProject" namespace="/mobile/project" extends="json-default">
+	
+		<action name="mobile_*" class="com.poobo.project.action.ProjectAction" method="{1}">
+			<result name="{1}">/WEB-INF/jsp/mobile/{1}.jsp</result>
+			<result name="success">/WEB-INF/jsp/mobile/planDetail4mobile.jsp</result>
+		</action>
+	</package>
+	<package name="mobileProjectChild" namespace="/mobile/projectChild" extends="json-default">
+		<action name="mobile_*" class="com.poobo.project.action.ChildProjectAction" method="{1}">
+			<result name="{1}">/WEB-INF/jsp/mobile/{1}.jsp</result>
+			<result name="success">/WEB-INF/jsp/mobile/planDetail4mobile.jsp</result>
+		</action>
+	</package>
+</struts>

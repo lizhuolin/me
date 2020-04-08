@@ -1,0 +1,29 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+ <%@ taglib prefix="s" uri="/struts-tags" %>
+ 	
+    	<s:iterator value="taskList">
+            <div class="task_plan">
+            	<div class="dian">●</div>
+            	<input type="text"  value="<s:property value="taskMsg"/>" readonly />
+            </div>
+            <a href="mobile/task/mobile_task_detailList.action?tblTask.taskId=<s:property value="taskId"/>">
+            <div class="task_other">
+            	<div class="other_left">
+	            	<p><span>负责人:</span><input type="text" value="<s:property value="taskResponsible.name"/>"readonly></p>
+	               	<p><span>任务目标：</span><s:property value="taskTarget"/></p>
+	                <p><span>创建时间：</span><s:property value="createTime"/></p>
+               	</div>
+                
+            <div class="other_right" >
+    			<div class="splash-inner">
+        		 <div class="loading-circle" >
+            		<p><span id="loadedNum"><s:property value="taskProgress"/></span></p>
+            		<canvas class="mask" id="loadingProgress" width="100" height="100"></canvas>
+           			 <canvas class="bg" width="100" height="100"></canvas>
+        			</div>
+    			</div>
+			</div>
+            </div></a>
+         
+		</s:iterator>

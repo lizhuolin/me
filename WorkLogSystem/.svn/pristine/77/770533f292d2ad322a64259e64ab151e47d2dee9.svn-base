@@ -1,0 +1,61 @@
+
+<!DOCTYPE html >
+<html>
+<head lang = "en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no;">
+    <title>任务</title>
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+ </head>
+
+<body>
+<div class="user_bg">
+	<div id="header_wrapper">
+    	<div class="index_text">个人</div>
+    	
+    </div><!--header_wrapper结束-->
+    <div id="body_wrapper">
+    	<section>
+        	<div class="user_img">
+            <p><img src="images/touxiang.png"></p>
+            <input type="text" value="兰志亮" >
+            </div>
+        </section>
+        	
+        <section>
+        	<div class="user_form">
+        	<form>
+            	<p><span>公司名称：</span><input type="text" value="红与白传媒有限公司"></p>
+                <p><span>员工姓名：</span><input type="text" value="兰志亮"></p>
+                <p><span>身份证：</span><input type="number" value="152626199301107846"></p>
+            
+            	<p><span>性别：</span><input type="checkbox" >男<input type="checkbox" >女</p>
+                <p><span>所属部门：</span><input type="text" value="销售部"></p>
+                <p><span>所属角色：</span><input type="text" value="销售经理"></p>
+                <p><span>公司职位：</span><input type="text" value="销售经理"></p>
+                <p><span>电话：</span><input type="number" value="15111101110"></p>
+                <p><span>公司邮箱：</span><input type="email" value="poboo@163.com"></p>
+                <p><span>头像：</span><input type="file" value="浏览"></p>
+                
+            </form>
+            </div>
+        </section>
+        <section>
+        	<div class="alter">
+            	<input type="button" value="修改">
+            </div>
+        </section>
+        </div><!--body_wrapper结束-->  
+    <div id="footer_wrapper">
+    	<footer>
+  			<div class="message"><a href="message.html">消息</a></div>
+  			<div class="project"><a href="index.html">项目</a></div>
+  			<div class="log"><a href="log.html">日志</a></div>
+  			<div class="task"><a href="task.html">任务</a></div>
+  			<div class="user"><a class="select">个人</a></div>
+  			<div class="clear"></div>
+		</footer>
+
+    </div><!--footer_wrapper结束-->
+</body>
+</html>

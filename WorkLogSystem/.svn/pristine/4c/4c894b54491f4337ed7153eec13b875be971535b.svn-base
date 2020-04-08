@@ -1,0 +1,32 @@
+package com.poobo.notice.dao.impl;
+
+import java.util.List;
+
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+
+import com.poobo.core.dao.impl.BaseDaoImpl;
+import com.poobo.core.entity.TblDept;
+import com.poobo.core.entity.TblNotice;
+import com.poobo.core.util.PageController;
+import com.poobo.dept.dao.IDeptDao;
+import com.poobo.notice.dao.INoticeDao;
+
+public class NoticeDaoImpl extends BaseDaoImpl<TblNotice> implements INoticeDao{
+
+	@Override
+	public List findAllByUserId(String userId) {
+		// TODO Auto-generated method stub
+		Query query = getSession().createQuery("FROM TblNotice WHERE tblUser.userId = ?");
+		query.setParameter(0, userId);
+		return query.list();
+	}
+
+	/*@Override
+	public PageController<TblNotice> findNoticeListByUserId(Criteria criteria,
+			int pageNow, int pageSize) {
+		// TODO Auto-generated method stub
+		return null;
+	}*/
+	
+}

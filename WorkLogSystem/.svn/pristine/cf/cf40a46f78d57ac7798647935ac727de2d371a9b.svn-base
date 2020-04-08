@@ -1,0 +1,261 @@
+package com.poobo.task.service.impl;
+
+import java.util.HashMap;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Service;
+
+import com.poobo.core.entity.TblChangelog;
+import com.poobo.core.entity.TblProject;
+import com.poobo.core.entity.TblRole;
+import com.poobo.core.entity.TblTask;
+import com.poobo.core.enums.EnumDataStatus;
+import com.poobo.core.service.impl.BaseServiceImpl;
+import com.poobo.core.util.DateTimeUtil;
+import com.poobo.core.util.DateUtils;
+import com.poobo.core.util.GetSessionData;
+import com.poobo.core.util.PageController;
+import com.poobo.task.dao.ITaskDao;
+import com.poobo.task.service.ITaskService;
+
+@Service("taskService")
+public class TaskServiceImpl extends BaseServiceImpl<TblTask> implements ITaskService{
+	
+	
+	private ITaskDao taskDao;
+	@Resource 
+	public void setTaskDao(ITaskDao taskDao) {
+		super.setBaseDao(taskDao);
+		this.taskDao = taskDao;
+	}
+	
+	public PageController<TblTask> getPageList(TblTask task, int pageNow, int pageSize) {
+		PageController list=new PageController<TblTask>(30, 10, 2);
+		list.setPageNow(pageNow);
+		Criteria criteria=taskDao.createCriteria(TblTask.class);
+		criteria.add(Restrictions.ne("dataStatus", EnumDataStatus.DEL.getValue()));
+		
+		if(!GetSessionData.getUser().getIsUserPlatform()){
+			criteria.add(Restrictions.eq("tblCompany", GetSessionData.getUser().getTblCompany()));
+			}
+			criteria.addOrder(Order.desc("createTime"));
+		
+		 if(null!=task){
+			 if(StringUtils.isNotEmpty(task.getTaskMsg())){
+				 criteria.add(Restrictions.like("taskMsg", task.getTaskMsg()));
+			 }
+		 }
+		return taskDao.findPageByCriteria(criteria, pageNow, pageSize);
+	}
+	
+	@Override
+	public List<TblTask> findTaskList(TblTask task) {
+		 Criteria   criteria =taskDao.createCriteria(TblTask.class);
+		 if(null!=task){
+			 if(StringUtils.isNotEmpty(task.getTaskMsg())){
+				 criteria.add(Restrictions.like("taskMsg","%" +task.getTaskMsg() + "%"));
+			 }
+		 }
+		return criteria.list();
+	}
+
+	@Override
+	public void newTask(TblTask tblTask) {
+		/*tblTask.setDataStatus(EnumDataStatus.NORMAL.getValue());*/
+		tblTask.setCreateTime(DateUtils.getCurrentDateTimeStamp());
+		
+		//初始化任务未开始
+		/*tblTask.setDataStatus(EnumTaskStatus.N_START.getValue());*/
+		super.save(tblTask);
+	}
+
+	@Override
+	public void updateTask(TblTask tblTask) {
+		
+		TblTask oldTask=super.findObjectById(tblTask.getTaskId());
+		tblTask.setCreateTime(oldTask.getCreateTime());
+		tblTask.setDataStatus(oldTask.getDataStatus());
+		/*tblTask.setTaskDesc("123132");*/
+		oldTask=tblTask;
+		super.merge(oldTask);
+	}
+
+	@Override
+	public void delTaskByIds(String[] idList) {
+		for(String id:idList){
+			TblTask tblTask=super.findObjectById(id);
+			tblTask.setDataStatus(EnumDataStatus.DEL.getValue());
+			//初始化任务未开始
+			super.merge(tblTask);
+		}
+		
+	}
+
+
+
+	//查询列表
+	@Override
+	public PageController<TblTask> findTaskList(TblTask tblTask, int pageNow, int pageSize) {
+		// TODO Auto-generated method stub
+		//后加的
+		StringBuffer sb=new StringBuffer();
+		sb.append(" from TblTask where 1=1 ");
+		Map<String, Object> namedParam = new HashMap<String, Object>();
+		if (null != tblTask) {
+			if (StringUtils.isNotEmpty(tblTask.getTaskMsg())) {
+				if(!tblTask.getTaskMsg().equals("%")){
+					namedParam.put("taskMsg", "%"+tblTask.getTaskMsg()+"%");
+					sb.append(" and taskMsg like :taskMsg");
+				}else{
+					namedParam.put("taskMsg", "%"+"\\%"+"%");
+					sb.append(" and taskMsg like :taskMsg");
+				}
+			}
+			if (tblTask.getTaskResponsible()!=null&&StringUtils.isNotEmpty(tblTask.getTaskResponsible().getName())){
+				if(tblTask.getTaskResponsible().getName().equals("%")){
+				sb.append(" and taskResponsible.name =:TaskResponsible");
+				namedParam.put("TaskResponsible","%" + "\\%" +"%");
+				}else{
+					sb.append(" and taskResponsible.name like :TaskResponsible");
+					namedParam.put("TaskResponsible","%"+ tblTask.getTaskResponsible().getName()+"%");
+				}
+			}
+			/*if (tblProject.getTblCompany()!=null&&StringUtils.isNotEmpty(tblProject.getTblCompany().getCompanyName())){
+				if(!tblProject.getProjectName().equals("%")){
+					sb.append(" and tblCompany.companyName like :companyName");
+					namedParam.put("companyName","%"+ tblProject.getTblCompany().getCompanyName()+"%");
+				}else{
+					namedParam.put("projectName", "%"+"\\%"+"%");
+					sb.append(" and projectName like :projectName");
+				}*/
+			
+			if(!StringUtils.isEmpty(tblTask.getTaskProgress())){
+				 sb.append(" and taskProgress=:taskProgress");
+				namedParam.put("taskProgress", tblTask.getTaskProgress());
+			}
+			
+			
+			  
+		}
+			if(!GetSessionData.getUser().getIsUserPlatform()){
+				sb.append(" and tblCompany.companyId=:tblCompany");
+				namedParam.put("tblCompany",GetSessionData.getUser().getTblCompany().getCompanyId());
+				}
+			sb.append(" and dataStatus=:dataStatus");
+			namedParam.put("dataStatus", EnumDataStatus.NORMAL.getValue());
+			sb.append(" order by createTime desc");
+		return taskDao.findPageByHql(sb.toString(), namedParam, pageNow, pageSize);
+		
+	}
+
+
+	/**
+	 * 根据公司id查找所有任务
+	 * @return
+	 */
+	public List<TblTask> findTaskByCompanyId(String companyId) {
+		return taskDao.findTaskByCompanyId(companyId);
+	}
+
+
+
+
+	@Override
+	public List<TblTask> findTaskByUserId(String userId) {
+		return taskDao.findTaskByUserId(userId);
+	}
+
+
+
+
+	@Override
+	public List<TblTask> findTaskList4Mobile(TblTask tblTask, int rowIndex, int pageSize) {
+		
+		Criteria criteria = taskDao.createCriteria(TblTask.class);
+		if(null!=tblTask){
+			if(null!=tblTask.getTaskResponsible() && !StringUtils.isEmpty(tblTask.getTaskResponsible().getUserId())){
+				criteria.add(Restrictions.eq("taskResponsible.userId", tblTask.getTaskResponsible().getUserId()));
+				}
+			if(!StringUtils.isEmpty(tblTask.getTaskMsg())){
+				criteria.add(Restrictions.eq("taskMsg", tblTask.getTaskMsg()));
+			}
+			if(tblTask.getTblCompany() != null){
+				criteria.add(Restrictions.eq("tblCompany.companyId", tblTask.getTblCompany().getCompanyId()));
+			}
+			
+			criteria.add(Restrictions.eq("dataStatus", EnumDataStatus.NORMAL.getValue()));
+		}
+		criteria.addOrder(Order.desc("createTime"));
+		criteria.setFirstResult(rowIndex);
+		criteria.setMaxResults(pageSize);
+		return criteria.list();
+	}
+
+
+
+
+	@Override
+	public void logRemable(String changelogContent, Integer changelogType, String changelogmodel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+	@Override
+	public List<TblTask> findTaskList4Mobile(TblTask tblTask, int rowIndex, int pageSize, String companyId) {
+		Criteria criteria =taskDao.createCriteria(TblProject.class);
+		if(null!=tblTask){
+			if(null!=tblTask.getTaskResponsible() && !StringUtils.isEmpty(tblTask.getTaskResponsible().getUserId())){
+				criteria.add(Restrictions.eq("getTaskResponsible.userId", tblTask.getTaskResponsible().getUserId()));
+				}
+			if(!StringUtils.isEmpty(tblTask.getTaskId())){
+				criteria.add(Restrictions.eq("taskId", tblTask.getTaskId()));
+			}
+		}	
+		criteria.add(Restrictions.eq("dataStatus", EnumDataStatus.NORMAL.getValue()));
+		
+		criteria.setFirstResult(rowIndex);
+		criteria.setMaxResults(pageSize);
+		return criteria.list();
+	}
+
+
+
+
+	@Override
+	public List<TblTask> findTaskByUserIdAndTime(String userId, Date taskInDate) {
+		
+		return taskDao.findTaskByUserIdAndTime(userId,taskInDate);
+	}
+
+
+
+/*
+	@Override
+	public void logRemable(String changelogContent,Integer changelogType,String changelogmodel) {
+		// TODO Auto-generated method stub
+		role.setCreateTime(DateTimeUtil.getNowTimestamp());
+		roleService.save(role);
+		//操作日志
+		changelogService.logRemable(role.getRoleName(),0,"角色");
+	}else{
+		roleService.update(role);
+		//保存操作日志
+		changelogService.logRemable(role.getRoleName(),1,"角色");
+	}*/
+	
+	
+	
+	
+}

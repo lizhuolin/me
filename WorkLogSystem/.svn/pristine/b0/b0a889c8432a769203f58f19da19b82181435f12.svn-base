@@ -1,0 +1,37 @@
+package com.poobo.log.service.impl;
+
+import javax.annotation.Resource;
+
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Service;
+
+import com.poobo.core.entity.TblLog;
+import com.poobo.core.enums.EnumDataStatus;
+import com.poobo.core.service.impl.BaseServiceImpl;
+import com.poobo.core.util.PageController;
+import com.poobo.log.dao.ILogDao;
+import com.poobo.log.service.ILogService;
+
+@Service("logService")
+public class LogServiceImpl extends BaseServiceImpl<TblLog> implements ILogService {
+
+	private ILogDao logDao;
+	@Resource
+	public void setLogDao(ILogDao logDao){
+		super.setBaseDao(logDao);
+		this.logDao=logDao;
+	}
+	/**
+	 * 根据用户名查找日志
+	 */
+	@Override
+	public PageController<TblLog> getPageListByUserid(String userId,int pageNow, int pageSize) {
+		
+		Criteria criteria=logDao.createCriteria(TblLog.class);
+		criteria.add(Restrictions.eq("tblUser.userId", userId));
+		criteria.add(Restrictions.eq("dataStatus", EnumDataStatus.NORMAL.getValue()));
+		return logDao.findPageByCriteria(criteria, pageNow, pageSize);
+	}
+
+}

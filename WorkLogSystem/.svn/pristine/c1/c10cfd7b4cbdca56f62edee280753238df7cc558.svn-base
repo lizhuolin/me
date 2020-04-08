@@ -1,0 +1,63 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+ <%@ taglib prefix="s" uri="/struts-tags" %>
+
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"+ request.getServerName() + ":" + request.getServerPort()+ path + "/";
+%>
+
+<!DOCTYPE html >
+<html>
+<head lang = "en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no;">
+    <title>项目</title>
+    <link href="<%=basePath %>css/mobileStyle.css" rel="stylesheet" type="text/css">
+ </head>
+
+<body>
+
+	<div id="header_wrapper">
+    	<div class="title">
+    	<span class="title_button"><a href="mobile/task/mobile_taskList.action"><input type="button" ></a></span>
+ 		 <span class="title_text"><div class="text">任务详细信息</div></span>
+  		</div>
+ 	</div><!--header_wrapper结束-->
+    <div id="body_wrapper">
+    	<div class="plan_dt_bg">
+    	<section class="plan_form">
+ 			<div class="plan_dl">
+            	<p><input id="input0" type="text" value="任务名称：" name="taskMsg" value='<s:property value="taskMsg"/>'readonly></p>
+            	<p><input id="input1"type="text" value="负责人："readonly><input id="input6"type="text" name="taskResponsible.name" value='<s:property value="taskResponsible.name"/>'  readonly/></p>
+                <p><input id="input2" type="text" value="任务目标："readonly><input id="input7"type="text" value="<s:property value="taskTarget"/>"readonly></p>
+                
+                <p>任务进度:<select >              
+                	<option>10%</option>
+                    <option>50%</option>
+                    <option>100%</option>
+                </select></p>
+                <p><input id="input3" type="text" value="创建时间："  readonly/><input id="input8"type="date" readonly></p>
+                <p><input id="input4"type="text" value="计划开始－结束时间："readonly/><input id="input9" type="date" readonly>-<input  id="input9" type="date" readonly></p>
+        		<p><input id="input5" type="text" value="实际开始－结束时间"readonly/><input id="input9" type="date" readonly>-<input  id="input9" type="date" readonly></p>
+                
+                <p><input id="input10"type="text" value="任务内容："readonly></p>
+                <p><textarea type="text" rows="10" cols="60" readonly></textarea></p>
+		 </div>
+        </section>
+        </div>
+       <div id="footer_wrapper">
+    	<footer>
+  			<div class="message"><a href="message.html">消息</a></div>
+  			<div class="project"><a href="index.html">项目</a></div>
+  			<div class="log"><a href="log.html">日志</a></div>
+  			<div class="task"><a class="select">任务</a></div>
+  			<div class="user"><a href="user.html">个人</a></div>
+  			<div class="clear"></div>
+		</footer>
+
+    </div><!--footer_wrapper结束-->
+   
+</body>
+</html>
+

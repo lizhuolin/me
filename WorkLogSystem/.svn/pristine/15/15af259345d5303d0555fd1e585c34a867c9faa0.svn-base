@@ -1,0 +1,50 @@
+package com.poobo.timereport.action;
+
+import java.util.Calendar;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts2.ServletActionContext;
+
+import com.poobo.core.action.BaseAction;
+import com.poobo.core.entity.TblTimereport;
+import com.poobo.timereport.service.ITimeReportService;
+
+public class TimeReportAction extends BaseAction<TblTimereport> {
+	@Resource
+	private ITimeReportService timeReportService;
+	private TblTimereport timeReport;
+	/**
+	 * 跳转到定时报告
+	 * @return 
+	 */
+	public String timeReportList(){
+		pageList = timeReportService.getPageList(timeReport, pageNow, pageSize);
+		return "timeReportList";
+	}
+	/**
+	 * 导出定时报告excel
+	 * 
+	 * 
+	 * @author hao.wang 2016年3月21日14:16:27
+	 */
+	public void exportExcel(){
+		try {
+			 Calendar cal = Calendar.getInstance();
+			 int year = cal.get(Calendar.YEAR);
+			 int month = cal.get(Calendar.MONTH)+1;
+			HttpServletResponse response = ServletActionContext.getResponse();
+			response.setContentType("application/x-execl");
+			response.setHeader("Content-Disposition", "attachment;filename=" + new String((year + "年" + month + "月定时报告.xls").getBytes(), "ISO-8859-1"));
+			ServletOutputStream outputStream = response.getOutputStream();
+			timeReportService.exportExcel(timeReportService.findAll(), outputStream);
+			if(outputStream != null){
+				outputStream.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}

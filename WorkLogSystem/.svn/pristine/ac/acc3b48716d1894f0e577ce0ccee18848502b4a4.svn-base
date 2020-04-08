@@ -1,0 +1,29 @@
+package com.poobo.log.service.impl;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.poobo.core.entity.TblLogDetail;
+import com.poobo.core.service.impl.BaseServiceImpl;
+import com.poobo.log.dao.ILogDetailsDao;
+import com.poobo.log.service.ILogDetailsService;
+
+@Service("logDetailsService")
+public class LogDetailsServiceImpl extends BaseServiceImpl<TblLogDetail> implements ILogDetailsService{
+
+	private ILogDetailsDao logDetailsDao;
+	@Resource
+	public void setLogDetailsDao(ILogDetailsDao logDetailsDao){
+		super.setBaseDao(logDetailsDao);
+		this.logDetailsDao=logDetailsDao;
+	}
+	@Override
+	public List<TblLogDetail> findAllByLogId(String logId) {
+		
+		return logDetailsDao.findAllByLogId(logId);
+	}
+
+}

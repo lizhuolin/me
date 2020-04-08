@@ -1,0 +1,160 @@
+package com.poobo.user.service.impl;
+
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Service;
+
+import com.poobo.core.entity.TblCompany;
+import com.poobo.core.entity.TblRole;
+import com.poobo.core.entity.TblUser;
+import com.poobo.core.entity.TblUserRole;
+import com.poobo.core.entity.TblUserRoleId;
+import com.poobo.core.enums.EnumDataStatus;
+import com.poobo.core.service.impl.BaseServiceImpl;
+import com.poobo.core.util.DateUtils;
+import com.poobo.core.util.GetSessionData;
+import com.poobo.core.util.MD5Util;
+import com.poobo.core.util.PageController;
+import com.poobo.core.util.QueryHelper;
+import com.poobo.user.dao.IUserDao;
+import com.poobo.user.service.IUserService;
+
+@Service("userService")
+public class UserServiceImpl extends BaseServiceImpl<TblUser> implements IUserService{
+	
+	private IUserDao userDao;
+	
+	@Resource 
+	public void setUserDao(IUserDao userDao) {
+		super.setBaseDao(userDao);
+		this.userDao = userDao;
+	}
+	//通过用户名密码查找用户列表
+	@Override
+	public List<TblUser> findUserByUsernameAndPassword(String username,
+			String password) {
+		return userDao.findUserByUsernameAndPassword(username, password);
+	}
+	
+	@Override
+	public PageController<TblUser> getPageList(TblUser user, int pageNow,
+			int pageSize) {
+          Criteria criteria=userDao.createCriteria(TblUser.class);
+		
+        //		criteria.add(Restrictions.eq("name", "123"));
+		
+		
+		return userDao.findPageByCriteria(criteria, pageNow, pageSize);
+	}
+
+	@Override
+	public PageController<TblUser> getProjectPersonList(String companyId, int pageNow,
+			int pageSize) {
+		Criteria criteria=userDao.createCriteria(TblUser.class);
+		criteria.add(Restrictions.eq("tblCompany.companyId", companyId));
+		criteria.add(Restrictions.eq("dataStatus", EnumDataStatus.NORMAL.getValue()));
+		return userDao.findPageByCriteria(criteria, pageNow, pageSize);
+	}
+
+	@Override
+	public void delUserByIds(String[] idList) {
+		for(String id:idList){
+			TblUser user = userDao.findObjectById(id);
+			user.setDataStatus(EnumDataStatus.DEL.getValue());
+			//初始化任务未开始
+ 			userDao.merge(user);
+		}
+		
+	}
+	@Override
+	public TblUser getUserById(Serializable userId) {
+		
+		return userDao.findObjectById(userId);
+	}
+	
+	@Override
+	public List<TblUser> getUserListByCompanyId(String companyId) {
+		return userDao.findAllByCompanyId(companyId);
+	}
+	@Override
+	public PageController<TblUser> findUserList(TblUser user, int pageNow,
+			int pageSize) {
+		Criteria criteria = userDao.createCriteria(TblUser.class);
+		criteria.add(Restrictions.eq("dataStatus", EnumDataStatus.NORMAL.getValue()));
+		criteria.addOrder(Order.desc("createTime"));
+		if(!GetSessionData.getUser().getIsUserPlatform())
+		  criteria.add(Restrictions.eq("tblCompany", GetSessionData.getUser().getTblCompany()));
+		if(null != user) 
+		  criteria.add(Restrictions.ilike("username", "%" + user.getUsername() +"%"));
+		List<TblUser> userList = criteria.list();
+		return userDao.findPageByCriteria(criteria, pageNow, pageSize);
+	}
+	@Override
+	public void removeUserRoles(String userId) {
+		userDao.removeUserRoles(userId);
+		
+	}
+	/**
+	 * 检验账号
+	 * @param user
+	 * @return true 验证通过（不存在该账号）
+	 */
+	public boolean checkUsername(TblUser user){
+		QueryHelper queryHelper = new QueryHelper(TblUser.class,"u");
+		queryHelper.addCondition("u.username=?",user.getUsername());
+		queryHelper.addCondition("u.dataStatus=?",EnumDataStatus.NORMAL.getValue());
+		List<TblUser> list =findObjects(queryHelper);
+		if(list == null || list.size() == 0){
+			return true;
+		}else{
+			// 排除编辑情况下，检测当前编辑的对象
+			if(list.size() == 1 && user.getUserId()!=null){
+				if(user.getUserId().equals(list.get(0).getUserId())){
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+	/**
+	 * 
+	 */
+	public void createCompanys(List<TblCompany> companyList,TblRole companyAdminRole) {
+		try {
+			for(TblCompany company : companyList){
+			TblUser user = new TblUser();
+			user.setCreateTime(DateUtils.getCurrentDateTimeStamp());
+			user.setDataStatus(EnumDataStatus.NORMAL.getValue());
+			user.setIsUserPlatform(false);
+			user.setMobile(company.getCompanyMobile());
+			user.setName(company.getCompanyAdmin());
+			user.setUsername(company.getCompanyMobile());
+		    user.setPassword(MD5Util.encrypt(company.getCompanyMobile()));
+			
+			user.setTblCompany(company);
+			user.setUserType(3);
+			
+			//设置用户的公司管理员角色
+			HashSet<TblUserRole> set = new HashSet<TblUserRole>();
+			set.add(new TblUserRole(new TblUserRoleId(user,companyAdminRole)));
+			user.setTblUserRoles(set);
+			userDao.save(user);
+			
+		  }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		}
+}
+
+
+	
+	
+

@@ -1,0 +1,88 @@
+package com.poobo.reportwarn.dao.impl;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import org.hibernate.Query;
+
+import com.poobo.core.dao.impl.BaseDaoImpl;
+import com.poobo.core.entity.TblLog;
+import com.poobo.core.entity.TblPlan;
+import com.poobo.core.entity.TblReportwarn;
+import com.poobo.core.entity.TblTask;
+import com.poobo.core.enums.EnumDataStatus;
+import com.poobo.core.enums.EnumReportWarnType;
+import com.poobo.core.util.DateTimeUtil;
+import com.poobo.core.util.DateUtils;
+import com.poobo.core.util.GetSessionData;
+import com.poobo.reportwarn.dao.IReportWarnDao;
+
+public class ReportWarnDaoImpl extends BaseDaoImpl<TblReportwarn> implements IReportWarnDao{
+
+	@Override
+	public List<TblTask> findTasks() {
+		Query query = getSession().createQuery("FROM TblTask WHERE taskStartTime <= ?  AND taskProgress != ? AND dataStatus=?");
+		query.setParameter(0, DateTimeUtil.getNowTimestamp());
+		query.setParameter(1, "100%");
+		query.setParameter(2, EnumDataStatus.NORMAL.getValue());
+		return query.list();
+	}
+
+	@Override
+	public List<TblPlan> findPlans() {
+		Query query = getSession().createQuery("FROM TblPlan WHERE planStartTime <= ?  AND projectProgress != ? AND dataStatus=?");
+		query.setParameter(0, DateTimeUtil.getNowTimestamp());
+		query.setParameter(1, "100");
+		query.setParameter(2, EnumDataStatus.NORMAL.getValue());
+		return query.list();
+	}
+
+	/**
+	 * 
+	 * @param isHome判断是否是去消息主页请求
+	 * @return
+	 */
+	public List<TblLog> findLog4Yesterday(boolean isHome) {
+		String hql ="FROM TblLog WHERE logTime = ? AND dataStatus=? ";
+		if(isHome){
+			hql += " AND tblUser.userId = ?";
+		}
+		Calendar   cal  =   Calendar.getInstance();
+		cal.add(Calendar.DATE,-1);
+		Query query = getSession().createQuery(hql);
+		query.setParameter(0, cal.getTime());
+		query.setParameter(1, EnumDataStatus.NORMAL.getValue());
+		if(isHome){
+			query.setParameter(2, GetSessionData.getUser().getUserId());
+		}
+		return query.list();
+	}
+
+	@Override
+	public List<TblReportwarn> findReportWarns() {
+		Calendar   cal  =   Calendar.getInstance();
+		cal.set(Calendar.HOUR_OF_DAY,0);//0时
+		cal.set(Calendar.MINUTE,0);//0分
+		cal.set(Calendar.SECOND,0);//0秒
+		
+		Query query = getSession().createQuery(
+				"FROM TblReportwarn WHERE createTime BETWEEN ?  AND  ? AND type != ? AND tblUser.userId=? AND dataStatus=?");
+		query.setParameter(0, cal.getTime());
+		query.setParameter(1, DateUtils.getCurrentDateTimeStamp());
+		query.setParameter(2, EnumReportWarnType.LOG.getValue());
+		query.setParameter(3, GetSessionData.getUser().getUserId());
+		query.setParameter(4, EnumDataStatus.NORMAL.getValue());
+		return query.list();
+	}
+
+	@Override
+	public void deleteAllReportWarns() {
+		Query query = getSession().createQuery("DELETE TblReportwarn");
+		query.executeUpdate();
+	}
+
+
+
+	
+}

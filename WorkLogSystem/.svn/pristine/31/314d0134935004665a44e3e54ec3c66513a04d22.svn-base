@@ -1,0 +1,9 @@
+package com.poobo.dept.dao.impl;
+
+import com.poobo.core.dao.impl.BaseDaoImpl;
+import com.poobo.core.entity.TblDept;
+import com.poobo.dept.dao.IDeptDao;
+
+public class DeptDaoImpl extends BaseDaoImpl<TblDept> implements IDeptDao{
+	
+}

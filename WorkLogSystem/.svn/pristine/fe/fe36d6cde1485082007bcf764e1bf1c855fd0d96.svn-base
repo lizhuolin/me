@@ -1,0 +1,46 @@
+<!DOCTYPE html >
+<html>
+<head lang = "en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no;">
+    <title>任务</title>
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+ </head>
+
+<body>
+<div class="forget_bg">
+	<div id="header_wrapper">
+    	<div class="user_text">忘记密码</div>
+    	
+    </div><!--header_wrapper结束-->
+    <div id="body_wrapper">
+    	
+        	
+        <section>
+        	<div class="forget_form">
+        	<form>
+            	<p><span>公司名称：</span><input type="text" value="红与白传媒有限公司"></p>
+                <p><span>员工姓名：</span><input type="text" value="兰志亮"></p>
+                <p><span>身份证：</span><input type="number" value="152626199301107846"></p>
+                <p><span>公司职位：</span><input type="text" value="销售经理"></p>
+                <p><span>电话：</span><input type="number" value="15111101110"></p>
+                <p><span>公司邮箱：</span><input type="email" value="poboo@163.com"></p>
+                
+                
+            </form>
+            </div>
+        </section>
+        <section>
+        	<div class="reset">
+            	<input type="text" value="重置密码">
+            </div>
+            <div class="function">
+            	<p><input id="send"type="button" value="发送"><input id="cancel" type="button" value="取消"></p>
+            </div>
+           
+        </section>
+        </div><!--body_wrapper结束-->  
+    
+    </div>
+</body>
+</html>

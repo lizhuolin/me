@@ -1,0 +1,164 @@
+@charset "utf-8";
+/* CSS Document */
+*{
+    font-family: "冬青黑体简体中文 W3";
+}
+.lg_bg {
+position:absolute; 
+top:0; 
+left:0; 
+height:100%; 
+width:100%; 
+background-image:url(../images/ui_bg.png); 
+background-position: center 0; 
+background-repeat: no-repeat; 
+background-attachment:fixed; 
+background-size: cover; 
+-webkit-background-size: cover;/* 兼容Webkit内核浏览器如Chrome和Safari */ 
+-o-background-size: cover;/* 兼容Opera */ 
+zoom: 1; 
+
+} 
+.zilogo {
+	margin-bottom: 10px;
+    margin-top: 5%;
+    font-size: 38px;
+    margin-left: 37%;
+    color: #6b6d6c;
+	font-family: "汉仪中圆简";
+}
+
+li {
+    list-style-type: none;
+}
+.lg_disc{
+	margin-left: 37%;
+    margin-top: 10%;
+    background-color: #eceff8;
+    width: 400px;
+    height: 460px;
+    border-radius: 25px;
+	
+}
+img#poobo {
+    width: 90px	;
+	margin-top: 20px;
+    margin-left: 20px;
+}
+img#date {
+    width: 80px;
+    margin-left: 150px;
+	margin-top: 40px;
+ 	margin-bottom: 10px;
+}
+
+input[type="text"],input[type="password"] {
+    height: 40px;
+    border: none;
+	width: 260px;
+
+}
+.lg_disc span{ display:inline-block; vertical-align:top; margin-top: 20px;}
+span img {
+     height: 20px;
+    width: 18px;
+    background-color: #fff;
+    padding: 10px;
+	margin-left:15px;
+}
+.lg_logo {
+   padding-top: 50px;
+}
+.lg_btn{    width: 35%;
+    margin-top: 66px;
+    margin-left: 58%;}
+.lg_btn a{
+    display: block;
+    width: 85%;
+    text-align: center;
+    line-height: 40px;
+    background: #8dbcf2;
+    font-family: 汉仪中圆简;
+    font-size: 23px;
+    color: #fff;}
+.zc_btn{    width: 35%;
+    float: left;
+    margin-left: 14%;
+    margin-top: 50px;   }
+.zc_btn a{display: block;
+    width: 85%;
+    text-align: center;
+    line-height: 40px;
+    background: #8dbcf2;
+    font-family: 汉仪中圆简;
+    font-size: 23px;
+    color: #fff;}
+.yytu {
+    margin-top: 30px;
+}
+img#touying {
+    width: 400px;
+    margin-left: 37%;
+}
+div#weixin {
+    
+    float: right;
+	margin-right:4%;
+	text-align:center;
+    color: #333333;
+}
+div#weixin img{
+    width: 120px;
+}
+div#weixin span{
+    font-weight: bold;
+}
+div#download {
+  
+    float: right;
+	margin-right: 7%;
+	text-align:center;
+    color: #333333;
+}
+div#download img {
+    width: 120px;
+}
+div#download span {
+    font-weight: bold;
+}
+.copyright {
+    position: absolute;
+    bottom: 0;
+	width: 100%;
+	margin-bottom:10px;
+}
+span#c1 {
+   margin-left: 5%;
+    margin-bottom: 10px;
+    display: block;
+    color: #4d6162;
+    font-size: 15px;
+    font-weight: 600;
+}
+span#c2 {
+    margin-left: 5%;
+    margin-bottom: 10px;
+    display: block;
+    color: #4d6162;
+    font-size: 15px;
+    font-weight: 600;
+}
+span#c3 {
+	margin-left: 5%;
+    display: block;
+    margin-bottom: 20px;
+    float: left;
+    color: #4d6162;
+    font-size: 15px;
+    font-weight: 600;
+}
+.lg_disc label{ display:block; width:100%; text-align:center; color:red; font-size:12px;}
+
+a{
+  cursor:pointer;
+}

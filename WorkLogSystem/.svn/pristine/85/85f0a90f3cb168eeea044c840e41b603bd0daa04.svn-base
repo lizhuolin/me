@@ -1,0 +1,28 @@
+package com.poobo.log.dao.impl;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.hibernate.Query;
+
+import com.poobo.core.dao.impl.BaseDaoImpl;
+import com.poobo.core.entity.TblLog;
+import com.poobo.core.entity.TblPlan;
+import com.poobo.core.enums.EnumDataStatus;
+import com.poobo.log.dao.ILogDao;
+
+public class LogDaoImpl extends BaseDaoImpl<TblLog>implements ILogDao{
+
+	@Override
+	public TblLog findTblLogByUserDate(String userId, Date newDate) {
+		Query query = getSession().createQuery(" FROM TblLog WHERE tblUser.userId =? and dataStatus =? and logTime =?");
+		 
+		query.setParameter(0, userId);
+		query.setParameter(1, EnumDataStatus.NORMAL.getValue());
+		query.setParameter(2,newDate);
+		List<TblLog> list=query.list();
+		return list.get(0);
+	}
+
+}

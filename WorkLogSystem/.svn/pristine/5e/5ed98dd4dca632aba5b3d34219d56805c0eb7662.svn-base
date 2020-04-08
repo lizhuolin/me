@@ -1,0 +1,100 @@
+$(function($) {
+	// 弹出新的对话框页面
+	$("#edit").click(function() {
+		if(isCheckedOne()){
+			var checkedObj = $("input[type='checkbox']:checked");
+			var id = $(checkedObj[0]).attr("value");
+		edit(id);
+		}
+		
+		
+	});
+	$("#add").click(function() {
+		edit("");
+	});
+	
+	$("#audit").click(function() {
+
+		auditCompany();
+
+	});
+	
+	$("#delete").click(function() {
+		deleteCompany();
+	});
+
+});
+
+function deleteCompany(){
+	
+	if(isChecked()){
+		layer.confirm('是否删除', {
+			btn : [ '是', '否' ]
+		// 按钮
+		}, function() {
+			
+			$.ajax({
+				type: "POST",
+				url: "company/json_company_doCompanyDelete.action",
+				data: {"ids":getCheckedIdsStr()},
+				success: function(data){
+					if(data.resultFlag){
+						parent.$('.search_btn').click();
+						//成功关闭
+						successClose("操作成功");
+						
+					}else{
+						//失败提示
+						failAlert(data);
+					}
+					//隐藏遮罩
+				}
+			});
+		});
+
+	}
+	
+	
+}
+
+
+
+function edit(id){
+	if(id==""){
+		openNewDialog('company/company_companyEdit.action', "新增任务");
+	}else{ 
+		openNewDialog('company/company_companyEdit.action?tblcompany.companyId='+id, "编辑任务");
+	}
+	
+}
+function auditCompany(){
+	
+	if(isChecked()){
+		layer.confirm('是否审核成功', {
+			btn : [ '是', '否' ]
+		// 按钮
+		}, function() {
+			
+			$.ajax({
+				type: "POST",
+				url: "company/json_company_audit.action",
+				data: {"ids":getCheckedIdsStr()},
+				success: function(data){
+					if(data.resultFlag){
+						parent.$('.search_btn').click();
+						//成功关闭
+						successClose("操作成功");
+						
+					}else{
+						//失败提示
+						failAlert(data);
+					}
+					//隐藏遮罩
+				}
+			});
+		});
+
+	}
+	
+}SSS	
+

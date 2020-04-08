@@ -1,0 +1,141 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+ <%@ taglib prefix="s" uri="/struts-tags" %>
+
+<!DOCTYPE html >
+<html>
+<head lang = "en">
+<%@include file="/common/mobileCommon.jsp"%>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no;">
+    <title>子项目详细信息</title>
+    <link href="<%=basePath%>css/mobileStyle.css" rel="stylesheet" type="text/css">
+ </head>
+
+<body style="background-color:#e6e6e6">
+
+<div id="header_wrapper">
+    <div class="title">
+    	<div class="title_button"><a href="<%=basePath%>mobile/project/mobile_projectList4mobile.action"><input type="button" ><img src="<%=basePath%>images/back.png"></a></div>
+ 		 <div class="title_text">子项目详细信息</div>
+  </div>
+  <div class="explain">
+  		<div class="explain_name">
+        <div class="dt_dian">●</div><input type="text" value="<s:property value="tblProjectChild.projectName" />" readonly/>
+        </div>
+        <div class="explain_content"> 
+         <p>负责人:<s:property value="tblProjectChild.responsible.name" /></p>
+		 <p>子项目状态:<s:if test="tblProjectChild.projectChildStatus==0" >未开始</s:if><s:elseif test="tblProjectChild.projectChildStatus==1">进行中</s:elseif><s:else>已结束</s:else></p>
+         <p>创建时间:<s:property value="tblProjectChild.createTime" /></p>
+         <p>项目目标:<s:property value="tblProjectChild.projectChildTarget" /></p>
+         <p>子项目计划工时:<s:property value="tblProjectChild.planTime"/></p>
+         <p>子项目等级:<s:if test="tblProjectChild.projectLevel==0" >低</s:if><s:elseif test="tblProjectChild.projectLevel==1">一般</s:elseif><s:else>高</s:else></p>
+		 <p>子项目进度:<s:property value="tblProjectChild.projectProgress"/>%</p>
+         <p>计划开始－结束时间:</p><p><s:date name="tblProjectChild.projectChildStarttime" format="yyyy-MM-dd HH:mm:00"/>——<s:date name="tblProjectChild.projectChildEndtime" format="yyyy-MM-dd HH:mm:00"/></p>
+         <p>实际开始－结束时间:</p><p><s:date name="tblProjectChild.projectChildRealstarttime" format="yyyy-MM-dd HH:mm:00"/>——<s:date name="tblProjectChild.projectChildRealendtime" format="yyyy-MM-dd HH:mm:00"/></p>
+    	</div>
+        </div>
+</div><!--header_wrapper结束-->
+<!--  
+<div id="body_wrapper">
+	  <s:iterator value="planList" status="s">
+      <section>
+        	<div class="dt_name">
+           <div class="xuhao"><s:property value="#s.index"/></div><input type="text"  value="<s:property value="planName"/>"  readonly/>
+            </div>                     
+            <a href="<%=basePath%>mobile/project/mobile_planDetail4mobile.action?tblPlan.planId=<s:property value="planId"/>"><div class="dt_other">
+            <div class="dt_other_left">
+           			<p>责任人：<input type="text" value="<s:property value="planManager.name"/>" readonly/></p>
+               	 <p>计划优先级：<input type="text" value="<s:if test="planClass==0" >低</s:if><s:elseif test="planClass==1">一般</s:elseif><s:else>高</s:else>" readonly/></p>
+                 <p>计划工时:<input type="text" value="<s:property value="planTime"/>" readonly/></p>
+				 <p>计划状态:<input type="text" value="<s:if test="planStatus==0" >未开始</s:if><s:elseif test="planStatus==1">进行中</s:elseif><s:else>已结束</s:else>" readonly/></p>
+				 <p>计划简介:<input type="text" value="<s:property value="planMsg"/>" readonly/></p>
+                <p>计划预计开始－预计结束时间：<input type="text" value="<s:date name="planStartTime" format="yyyy-MM-dd HH:mm:00"/>——<s:date name="planEndTime" format="yyyy-MM-dd HH:mm:00"/>" readonly/></p>
+         		</div>
+                 <div class="dt_other_right" >
+                 <div class="splash-inner">
+        		 <div class="loading-circle" >
+        		 
+            		<p><span id="loadedNum" class="loadedNum"><s:property value="projectProgress"/></span>%</p>
+            		<s:if test="#s.odd">
+            			<canvas class="mask" id="loadingProgress" ></canvas>
+            		</s:if>
+            		<s:else>
+            		<canvas class="mask1" id="loadingProgress1" width="100" height="100"></canvas>
+            		</s:else>
+           			
+        			</div>
+    			</div>
+			</div>         
+            </div></a>
+      </section>
+    </s:iterator>  
+       
+</div>
+-->
+ <%@include file="/common/mobileBelow.jsp"%>
+   <script>
+   var slots={},c=document.getElementById('loadingProgress');
+
+ //window.hasLoaded = 0;
+ //window.loading = false;
+ window.ulp = ulp;
+
+ function setLoadingProgress(){
+ 	var progresses = $(".loadingProgress");
+ 	var nums = $(".loadedNum");
+ 	var percents =  $(".taskProgress");
+ 	//循环设置每一个进度
+ 	for(var i=0; i<progresses.length;i++ ){
+ 		slots={};
+ 		ctx=progresses[i].getContext('2d');
+ 		var value = percents[i].defaultValue;
+ 		var num = value.split('%')[0];
+ 		ulp(num,nums[i],ctx);
+ 	}
+ 	
+ }
+
+
+
+ function ulp(percent,loadedNum,ctx){
+ 	var loading = true;
+ 	var hasLoaded = 0;
+     var i = 0, draw = null;
+     draw = setInterval(function(){
+     	
+         if (hasLoaded > 100) {
+             loading = false;
+             clearInterval(draw);
+             draw = null;
+             return true;
+         }
+
+         if (i<=percent) {
+             d(loadedNum,ctx,hasLoaded);
+             i++;
+             hasLoaded += 1;
+         } else {
+             clearInterval(draw);
+             draw = null;
+         }
+     }, 20);
+ }
+
+ function d(lp,ctx,hasLoaded){
+     /*var lp = document.getElementById('loadedNum');*/
+     lp.innerHTML = hasLoaded+"%";
+     var loaded = hasLoaded * 2 / 100 * Math.PI, cw = 102, hcw = 51;
+     ctx.clearRect (0,0,cw,cw);
+     ctx.beginPath();
+     ctx.arc(hcw,hcw,hcw-4, 0, loaded, false);
+     ctx.lineWidth = 8;
+     ctx.strokeStyle = '#ff6000';
+     ctx.stroke();
+ }
+
+</script>
+</body>
+</html>
+
+

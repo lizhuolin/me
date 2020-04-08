@@ -1,0 +1,125 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+ <%@ taglib prefix="s" uri="/struts-tags" %>
+ <%@ taglib prefix="pb" uri="http://http://www.poobo.com//tags/privilege-1.0" %>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>   
+ 
+<script type="text/javascript" src="${basePath}js/jquery/jquery-1.10.2.min.js"></script>
+    <link href="${basePath}css/skin1.css" rel="stylesheet" type="text/css" /> 
+ 
+
+<!-- 第一步：只需要引入自己独有的js即可    js统一放到js文件夹下面，并按模块建立单独文件夹-->
+<script src="<%=basePath %>/js/task/task.js"></script>
+
+<form id="searchForm">
+   <input type="hidden" name="pageNow" id="pageNow" value="<s:property value="pageList.pageNow"/>">
+   <input type="hidden" id="actionUrl" value="<%=basePath %>/task/task_taskList.action">
+	 <div class="main_top">
+	     <!-- 第二步：写自己查询需要的数据  需要提交的查询表单数据 start -->
+	      <div class="con_top">
+	        <div class="con_search">
+	         <span>任务名称:<s:textfield name="tblTask.taskMsg"/></span>
+	         <span>任务进度:<s:select name="tblTask.taskProgress" list="#progressList"  headerKey="" headerValue="全部"> 
+             </s:select> </span>
+             <span>任务负责人:<s:textfield name="tblTask.taskResponsible.name"/></span>
+	          <input id="hiddenText" type="text" style="display:none" /><%--防止enter刷新当前页面 --%>
+	        </div>
+	        <!--  需要提交的查询表单数据 end -->
+	        
+	        <div class="search_btn" onclick="searchForm();"><a class="fr">查询</a></div>
+		 <a class="toggle"><i class="iconfont icon-212102"></i></a>
+	      </div>
+	</div> 
+</form>  
+     
+<div class="content">
+      <div class="con_btn">
+   <!--  第四步：   自定义操作按钮 start -->
+    <pb:pri privilege="add" module="task">
+      <a id="add">新增</a>
+	 </pb:pri>
+	 <pb:pri privilege="edit" module="task">
+      <a id="edit">编辑</a>
+	 </pb:pri>
+	 <pb:pri privilege="delete" module="task">
+      <a id="delete">删除</a>
+	 </pb:pri> 
+      
+     <!--     自定义操作按钮 end -->  
+      
+      </div>
+
+      <div class="con_disc">
+        <table border="1" bordercolor="#ccc">
+         
+          <!--  第五步： 展示数据 start -->
+          
+          <tr>
+            <th><input type="checkbox" class="autoChecked" id="checkedAll"></th>
+            <s:if test="#session.USER.isUserPlatform">
+            <th>公司名称</th>
+           	</s:if>
+            <th>任务名称</th>
+            <th>创建人</th>
+            <th>计划开始时间</th>
+            <th>计划结束时间</th>
+            <th>任务目标</th>
+            <th>负责人</th>
+            <th>优先级</th>
+            <th>工时</th>
+            <th>进度</th>
+            <th>操作</th>
+          </tr>
+          
+          <s:iterator value="pageList.dataList" >
+          
+          <tr>
+          	
+         	<s:if test='taskProgress == "100%"'><td></td></s:if>
+            <s:else><td class="checkedOne"><input type="checkbox" class="autoChecked" value="<s:property value="taskId"/>"></td>
+            </s:else>
+            
+            <s:if test="#session.USER.isUserPlatform">
+            <td><s:property value="tblCompany.companyName"/></td>
+            </s:if>
+            
+                 
+            <td><s:property value="taskMsg"/> </td>
+            <td><s:property value="createrUser.name"/> </td>
+            <td><s:date name="taskStartTime" format="yyyy-MM-dd"/> </td>
+            <td><s:date name="taskEndTime" format="yyyy-MM-dd"/> </td>
+            
+            <td><s:property value="taskTarget" /> </td>  
+           	<td><s:property value="taskResponsible.name"/> </td>
+            <td>
+            <s:if test="taskLevel==1">中</s:if>
+            <s:elseif test='taskLevel==0'>低</s:elseif>
+            <s:else>高</s:else>
+            </td>
+           
+            <td><s:property value="taskTime"/> </td>
+            
+            <td><s:property value="taskProgress"/></td>
+            
+            <%-- <td><s:property value="taskRemaks"/> </td>
+            <td><s:property value="taskDesc"/> </td> --%>
+          
+            <td align="center">
+            	<a id="check" onclick="checkOut9('<s:property value='taskId'/>')">任务详情</a>
+            </td>
+            
+          </tr>
+          
+          </s:iterator>
+          <!--   展示数据 end -->
+          
+        </table>
+      </div>
+</div>
+    
+<jsp:include page="/common/page.jsp"></jsp:include>
+<%-- <script type="text/javascript" src="<%=basePath %>/js/css-control.js"></script>--%>
+<script src="<%=basePath %>common/comm.js" type="text/javascript"></script> 

@@ -1,0 +1,36 @@
+package com.poobo.plan.dao.impl;
+
+import java.util.List;
+
+import org.aspectj.apache.bcel.generic.Type;
+import org.hibernate.Query;
+
+import com.poobo.core.dao.impl.BaseDaoImpl;
+import com.poobo.core.entity.TblPlan;
+import com.poobo.core.enums.EnumDataStatus;
+import com.poobo.plan.dao.IPlanDao;
+
+public class PlanDaoImpl extends BaseDaoImpl<TblPlan>implements IPlanDao{
+	/**
+	 * 根据项目id查找出所有的计划列表
+	 */
+	@Override
+	public List<TblPlan> findAllByProjectId(String projectId) {
+		Query query = getSession().createQuery(" FROM TblPlan WHERE tblProject.projectId =? and dataStatus =?");
+ 
+		query.setParameter(0, projectId);
+		query.setParameter(1, EnumDataStatus.NORMAL.getValue());
+		List<TblPlan> list=query.list();
+		return list;
+	}
+
+	@Override
+	public List<TblPlan> findAllByProjectChildId(String projectChildRealId) {
+		Query query = getSession().createQuery(" FROM TblPlan WHERE tblProjectChild.projectChildRealId =? and dataStatus =?");
+		query.setParameter(0, projectChildRealId);
+		query.setParameter(1, EnumDataStatus.NORMAL.getValue());
+		List<TblPlan> list=query.list();
+		return list;
+	}
+
+}

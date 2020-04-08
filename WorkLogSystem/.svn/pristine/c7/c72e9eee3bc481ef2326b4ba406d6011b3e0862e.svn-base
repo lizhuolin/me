@@ -1,0 +1,164 @@
+package com.poobo.reportwarn.action;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+/*
+ * @author zhiliang.lan 2016年3月16日上午10:31:17
+ *
+ */
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.opensymphony.xwork2.ActionContext;
+import com.poobo.company.service.CompanyService;
+import com.poobo.core.action.BaseAction;
+import com.poobo.core.entity.TblPlan;
+import com.poobo.core.entity.TblProject;
+import com.poobo.core.entity.TblReportwarn;
+import com.poobo.core.entity.TblTask;
+import com.poobo.core.entity.TblUser;
+import com.poobo.core.util.GetSessionData;
+import com.poobo.core.util.ResultData;
+import com.poobo.plan.service.IPlanService;
+import com.poobo.project.service.IProjectChildService;
+import com.poobo.project.service.IProjectService;
+import com.poobo.reportwarn.service.IReportwarnService;
+import com.poobo.task.service.ITaskService;
+
+public class ReportwarnAction extends BaseAction {
+
+	@Resource
+	private IReportwarnService reportwarnService;
+	@Resource
+	private CompanyService companyService;
+	@Resource
+	private ITaskService taskService;
+	@Resource
+	private IProjectService projectService;
+	@Resource
+	private IProjectChildService projectChildService;
+	@Resource
+	private IPlanService planService;
+	private ResultData resultData;
+	private TblReportwarn tblReportwarn;
+	private List<TblUser> userList;
+	private TblReportwarn reportwarn;
+	private String ids;
+
+	private List<TblTask> taskList;
+	private TblTask tblTask;
+	private List<TblPlan> planList;
+	private TblPlan tblPlan;
+	private List<TblProject> projectList;
+	private TblProject tblProject;
+
+	public String reportwarnList() {
+		pageList = reportwarnService.getPageList(tblReportwarn, pageNow, pageSize);
+		
+		return "reportwarnList";
+	}
+
+
+	public ResultData getResultData() {
+		return resultData;
+	}
+
+	public void setResultData(ResultData resultData) {
+		this.resultData = resultData;
+	}
+
+	public TblReportwarn getTblReportwarn() {
+		// EnumDataStatus.NORMAL.getValue();
+		return tblReportwarn;
+	}
+
+	public void setTblReportwarn(TblReportwarn tblReportwarn) {
+		this.tblReportwarn = tblReportwarn;
+	}
+
+	public List<TblUser> getUserList() {
+		return userList;
+	}
+
+	public void setUserList(List<TblUser> userList) {
+		this.userList = userList;
+	}
+
+	public String getIds() {
+		return ids;
+	}
+
+	public void setIds(String ids) {
+		this.ids = ids;
+	}
+
+	public IReportwarnService getReportwarnService() {
+		return reportwarnService;
+	}
+
+	public void setReportwarnService(IReportwarnService reportwarnService) {
+		this.reportwarnService = reportwarnService;
+	}
+
+	public TblReportwarn getReportwarn() {
+		return reportwarn;
+	}
+
+	public void setReportwarn(TblReportwarn reportwarn) {
+		this.reportwarn = reportwarn;
+	}
+
+	public List<TblTask> getTaskList() {
+		return taskList;
+	}
+
+	public void setTaskList(List<TblTask> taskList) {
+		this.taskList = taskList;
+	}
+
+	public TblTask getTblTask() {
+		return tblTask;
+	}
+
+	public void setTblTask(TblTask tblTask) {
+		this.tblTask = tblTask;
+	}
+
+	public List<TblPlan> getPlanList() {
+		return planList;
+	}
+
+	public void setPlanList(List<TblPlan> planList) {
+		this.planList = planList;
+	}
+
+	public TblPlan getTblPlan() {
+		return tblPlan;
+	}
+
+	public void setTblPlan(TblPlan tblPlan) {
+		this.tblPlan = tblPlan;
+	}
+
+	public List<TblProject> getProjectList() {
+		return projectList;
+	}
+
+	public void setProjectList(List<TblProject> projectList) {
+		this.projectList = projectList;
+	}
+
+	public TblProject getTblProject() {
+		return tblProject;
+	}
+
+	public void setTblProject(TblProject tblProject) {
+		this.tblProject = tblProject;
+	}
+	
+	
+}

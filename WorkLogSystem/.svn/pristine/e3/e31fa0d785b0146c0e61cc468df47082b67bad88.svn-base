@@ -1,0 +1,79 @@
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+
+<!DOCTYPE html >
+<html>
+<head lang = "en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+    <title>注册</title>
+    <link href="<%=basePath%>css/mobileStyle.css" rel="stylesheet" type="text/css">
+    
+    <!-- 只需要引入自己独有的js即可    js统一放到js文件夹下面，并按模块建立单独文件夹-->
+    <script src="<%=basePath %>js/company/edit.js"></script> 
+ </head>
+<script type="text/javascript">
+    	//提交表单
+    	function doSubmit(){
+	    		//提交表单
+	    		
+	    		//$("#form").submit();
+	    		document.forms[0].submit();
+	    		 alert("修改成功"); 
+    	}
+
+    </script>
+<body style="background-color:#f0f0f0">
+
+	<div id="header_wrapper">
+    	<div class="index_text">注册</div>
+    	
+    </div><!--header_wrapper结束-->
+    <div id="body_wrapper">
+    	<section>
+        	<div class="company">
+            公司信息
+            </div>
+        </section>	
+        <section>
+        	<div class="register_form">
+            <form id="form" name="form" action="<%=basePath %>mobile/company/mobile_mobileEdit.action" method="post" enctype="multipart/form-data">
+            	<s:hidden name="tblcompany.companyId"/>
+            	
+            	<p><span>公司名称：</span><input type="text" name="tblcompany.companyName" value="${tblcompany.companyName }"></p>
+                <hr size="1" width="100%" color="#cacaca" noshade="noshade" />
+                <p><span>服务类型：</span><input type="text" name="tblcompany.companyType" value="${tblcompany.companyType }"></p>
+                <hr size="1" width="100%" color="#cacaca" noshade="noshade" />
+                <p><span>公司地址：</span><input type="text" name="tblcompany.companyAdress" value="${tblcompany.companyAdress }"></p>
+            	<hr size="1" width="100%" color="#cacaca" noshade="noshade" />
+                <p><span>营业执照：</span> <a href="javascript:;" class="file">浏览<input type="file" name="tblcompany.charter"  value="<s:property value='tblcompany.charter'/>"></a></p>
+                <hr size="1" width="100%" color="#cacaca" noshade="noshade" />
+                <p><span>公司电话：</span><input type="number" name="tblcompany.companyMobile" value="${tblcompany.companyMobile }"></p>
+                <hr size="1" width="100%" color="#cacaca" noshade="noshade" />
+            	<p><span>公司LOGO：</span> <a href="javascript:;" class="file">浏览<input type="file" name="tblcompany.companyLogo"></a></p>
+                <hr size="1" width="100%" color="#cacaca" noshade="noshade" />
+                <p><span>管理员姓名：</span><input type="text" name="tblcompany.companyAdmin" value="${tblcompany.companyAdmin }"></p>
+                <hr size="1" width="100%" color="#cacaca" noshade="noshade" />
+                <p><span>公司简介：</span></p>
+                <hr size="1" width="100%" color="#cacaca" noshade="noshade" />
+                <p><textarea type="text"rows="4" cols="35" name="tblcompany.companyIntroduction"></textarea></p>
+             
+         </form>
+            </div>
+        </section>
+        <section>
+        	<div class="re_button">
+            	<input type="button" value="注册" onClick="doSubmit()">
+            </div>
+        </section>
+        </div><!--body_wrapper结束-->  
+    
+
+    </div><!--footer_wrapper结束-->
+   
+</body>
+</html>

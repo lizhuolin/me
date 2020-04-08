@@ -1,0 +1,33 @@
+$(function($) {
+	// 弹出新的对话框页面
+	$("#edit").click(function() {
+		if(isCheckedOne()){
+			var checkedObj = $("input[type='checkbox']:checked:not([id]");
+			var id = $(checkedObj[0]).attr("value");
+			edit(id);
+		}
+		
+	});
+	$("#add").click(function() {
+		edit("");
+	});
+
+	$("#delete").click(function() {
+		deleteprivilege();
+	});
+	
+});
+
+
+function edit(id){
+	
+	if(id==""){
+		openNewDialog('privilege/privilege_editUI.action', "新增权限");
+	}else{ 
+		openNewDialog('privilege/privilege_editUI.action?privilege.privilegeId='+id, "编辑权限");
+	}
+	
+}
+
+
+

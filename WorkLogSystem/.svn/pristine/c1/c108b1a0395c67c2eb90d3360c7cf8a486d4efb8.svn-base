@@ -1,0 +1,109 @@
+<!DOCTYPE html >
+<html>
+<head lang = "en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no;">
+    <title>任务</title>
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+ </head>
+<script type="text/javascript" src="js/progress.js"></script>
+<body>
+<div class="task_bg">
+	<div id="header_wrapper">
+    	<div class="index_text">任务</div>
+    	<div class="selected">
+        <select id="task_name">
+        	<option>负责人</option>
+            <option>张三</option>
+            <option>李四</option>
+        </select>
+        <select id="task_plan">
+        	<option selected>任务名称筛选</option>
+            <option>任务一</option>
+            <option>任务二</option>
+        </select>
+        </div>
+    </div><!--header_wrapper结束-->
+    <div id="body_wrapper">
+    	<section class="form">
+        
+            <div class="task_plan">
+            <a href="task_detail.html"><input type="text" value="摩天轮"  readonly/></a>
+            </div>
+            
+            <div class="task_other">
+            	<div class="other_left">
+            	<p><span>负责人:</span><input type="text" value="杨格"readonly></p>
+               	<p><span>任务目标：</span><input type="text" value="赛车展览"readonly></p>
+                <p><span>创建时间：</span><input type="date" value="2016.5.15"readonly></p>
+               	</div>
+                
+            <div class="other_right" >
+    			<div class="splash-inner">
+      
+        			<div class="loading-circle" >
+            			<p><span id="loadedNum">0</span>%</p>
+            			<canvas class="mask" id="loadingProgress" width="100" height="100"></canvas>
+           				 <canvas class="bg" width="100" height="100"></canvas>
+        				</div>
+    			</div>
+			</div>
+            </div>
+         
+        
+        </div><!--body_wrapper结束-->
+        <div id="footer_wrapper">
+    	<footer>
+  			<div class="message"><a href="message.html">消息</a></div>
+  			<div class="project"><a href="index.html" >项目</a></div>
+  			<div class="log"><a href="log.html">日志</a></div>
+  			<div class="task"><a class="select">任务</a></div>
+  			<div class="user"><a href="user.html">个人</a></div>
+  			<div class="clear"></div>
+		</footer>
+
+    </div><!--footer_wrapper结束-->
+    </div>
+    <script>
+    var slots={},c=document.getElementById('loadingProgress'),ctx=c.getContext('2d');
+    window.hasLoaded = 0;
+    window.loading = false;
+    window.ulp = ulp;
+    function ulp(percent){
+        window.loading = true;
+        var i = 0, draw = null;
+        draw = setInterval(function(){
+            if (window.hasLoaded > 100) {
+                window.loading = false;
+                clearInterval(draw);
+                draw = null;
+                return true;
+            }
+
+            if (i<percent) {
+                d();
+                i++;
+                window.hasLoaded += 1;
+            } else {
+                clearInterval(draw);
+                draw = null;
+            }
+        }, 100);
+    }
+
+    function d(){
+        var lp = document.getElementById('loadedNum');
+        lp.innerHTML = window.hasLoaded;
+
+        var loaded = window.hasLoaded * 2 / 100 * Math.PI, cw = 102, hcw = 51;
+        ctx.clearRect (0,0,cw,cw);
+        ctx.beginPath();
+        ctx.arc(hcw,hcw,hcw-4, 0, loaded, false);
+        ctx.lineWidth = 8;
+        ctx.strokeStyle = '#ff6000';
+        ctx.stroke();
+    }
+    ulp(88);
+</script>
+</body>
+</html>

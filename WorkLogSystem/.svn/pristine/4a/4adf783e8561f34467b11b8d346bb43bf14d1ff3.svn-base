@@ -1,0 +1,329 @@
+package com.poobo.user.action;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.struts2.ServletActionContext;
+
+import com.opensymphony.xwork2.ActionContext;
+import com.poobo.company.service.CompanyService;
+import com.poobo.core.action.BaseAction;
+import com.poobo.core.api.ReturnLogin;
+import com.poobo.core.entity.TblCompany;
+import com.poobo.core.entity.TblDept;
+import com.poobo.core.entity.TblPrivilege;
+import com.poobo.core.entity.TblRole;
+import com.poobo.core.entity.TblRolePrivilege;
+import com.poobo.core.entity.TblUser;
+import com.poobo.core.entity.TblUserRole;
+import com.poobo.core.entity.TblUserRoleId;
+import com.poobo.core.util.DateUtils;
+import com.poobo.core.util.GetSessionData;
+import com.poobo.core.util.ResultData;
+import com.poobo.dept.service.IDeptService;
+import com.poobo.role.service.IRoleService;
+import com.poobo.user.service.IUserService;
+
+public class UserAction extends BaseAction {
+	//@Resource
+	//private IOrganizationService organizationService;
+	
+	@Resource
+	private CompanyService companyService;
+	@Resource
+	private IDeptService deptService;
+	@Resource 
+	private IRoleService roleService;
+	
+	
+	@Resource
+	private IUserService userService;
+	
+	private TblUser user;
+	private String loginResult;
+	private ResultData resultData;
+	private List<TblUser> userList;
+	private List<TblRole> roleList;
+	private List<TblUser> forgetpassword;
+	
+	private ReturnLogin returnLogin;
+	private String[] roleIds;
+	private String ids;
+
+	
+	public String forgetpassword(){
+		pageList = userService.findUserList(user, pageNow, pageSize);
+		user = userService.findObjectById(GetSessionData.getUser().getUserId());
+		forgetpassword = userService.findAll();
+		
+		return "forgetpassword";
+	}
+	/***
+	 * 手机端修改个人信息
+	 * @return
+	 */
+	public String mobileEdit(){
+		resultData = new ResultData();
+		if(user!=null){
+			if(StringUtils.isEmpty(user.getUserId())){
+				/*user.setIsUserPlatform(true);
+				user.setCreateTime(DateUtils.getCurrentDateTimeStamp());
+				user.setDataStatus(1);
+				TblUser tblUser = (TblUser) ServletActionContext.getRequest().getSession().getAttribute("USER");
+				user.setTblCompany(tblUser.getTblCompany());
+				user.setTblDept(tblUser.getTblDept());*/
+				userService.save(user);
+			}else{
+				userService.update(user);
+			}
+			resultData.setResultFlag(true);
+		}
+		return SUCCESS;
+	}
+	
+	
+
+	
+	public String sendMessage(){
+		//pageList = taskService.getPageList(tblTask, pageNow, pageSize);
+		GetSessionData.getUser().getEmail();
+		
+		return "sendMessage";
+	}
+	/***
+	 * 手机端list页面
+	 * @return
+	 */
+	public String userList(){
+		//pageList = taskService.getPageList(tblTask, pageNow, pageSize);
+		pageList = userService.findUserList(user, pageNow, pageSize);
+		user = userService.findObjectById(GetSessionData.getUser().getUserId());
+		userList = userService.findAll();
+		
+		return "userList";
+	}
+	
+	//跳转到登录页面
+	public String loginUI(){
+		return "login";
+	}
+	/**
+	 * 登录验证并保存用户信息到session中
+	 * @return
+	 */
+	public String login(){
+		if(user != null){
+		List<TblUser> list = userService.findUserByUsernameAndPassword(user.getUsername(), user.getPassword());
+			if(list != null && list.size() > 0){
+				user = list.get(0);
+				  List<TblPrivilege> privilegeList = new ArrayList<TblPrivilege>();
+				  List<TblRole> roleList = new ArrayList<TblRole>();
+			 	 Set<TblUserRole> userRoles  = user.getTblUserRoles();
+			 	 //获取用户的权限集合
+				 if(userRoles != null && userRoles.size() > 0){
+					 for(TblUserRole userRole : userRoles){
+				    	 TblRole role = userRole.getId().getTblRole();
+				    	 roleList.add(role);
+				    	  Set<TblRolePrivilege> rolePrivileges  = role.getTblRolePrivileges();
+				    	 if(rolePrivileges != null && rolePrivileges.size() > 0){
+				    		 for(TblRolePrivilege rolePrivilege : rolePrivileges){
+						    		TblPrivilege privilege = rolePrivilege.getId().getTblPrivilege();
+						    		privilegeList.add(privilege);
+						    }
+				    	 }
+				      }
+				 }
+				 ServletActionContext.getRequest().getSession().setAttribute("USER", user);
+				 ServletActionContext.getRequest().getSession().setAttribute("ROLES", roleList);
+				 ServletActionContext.getRequest().getSession().setAttribute("PRIS", privilegeList);
+				return "toHome";
+			 }
+			}
+		loginResult = "用户名或密码错误";
+		return "login";
+	}
+	public String Phonelogin(){
+		List<TblUser> list = userService.findUserByUsernameAndPassword(user.getUsername(), user.getPassword());
+		if(user!=null){
+			if(list!=null&&list.size()>0){
+				user=list.get(0);
+				returnLogin.setStatus("0");
+				returnLogin.setResultMsg("");
+			}
+		}
+		return SUCCESS;
+	}
+	
+    public String register() {
+		if(user != null){
+		user = userService.findObjectById(user.getUserId());
+		}
+		return "register";
+	 }
+
+
+    
+    
+	// 跳转到列表页面
+		public String listUI(){
+			//pageList = userService.getPageList(user, pageNow, pageSize);
+			pageList = userService.findUserList(user, pageNow, pageSize);
+			if(!GetSessionData.getUser().getIsUserPlatform()){
+				List<TblUser> userList = userService.getUserListByCompanyId(GetSessionData.getUser().getTblCompany().getCompanyId());
+				pageList.setDataList(userList);
+			}
+			      return "listUI"; 
+		}
+		/**
+		 * 执行编辑用户
+		 * @return
+		 */
+
+		public String edit(){
+			resultData = new ResultData();
+			
+			TblUser tblUser = GetSessionData.getUser();
+			if(user != null ){
+				//删除用户已有的角色
+				userService.removeUserRoles(user.getUserId());
+			//设置用户的所有角色
+				if(roleIds != null){
+					HashSet<TblUserRole> set = new HashSet<TblUserRole>();
+					for(int i = 0; i < roleIds.length; i++){
+						TblRole role = roleService.findObjectById(roleIds[i]);
+						set.add(new TblUserRole(new TblUserRoleId(user,role)));
+					}
+					user.setTblUserRoles(set);
+				  }
+			}
+			if(StringUtils.isEmpty(user.getUserId())){
+				user.setTblCompany(tblUser.getTblCompany());
+				user.setTblDept(tblUser.getTblDept());
+				user.setCreateTime(DateUtils.getCurrentDateTimeStamp());
+				user.setIsUserPlatform(GetSessionData.getUser().getIsUserPlatform());
+				user.setDataStatus(1);
+				userService.save(user);
+			}else{
+				userService.update(user);
+			}
+			resultData.setResultFlag(true);
+			
+			return SUCCESS;
+		}
+		
+	public String loginOut() {
+         ActionContext.getContext().getSession().remove("USER");
+            return "login";
+    }
+
+	public String editUI(){
+		if(user != null && !StringUtils.isEmpty(user.getUserId())){
+			user = userService.findObjectById(user.getUserId());
+			//处理权限回显
+			Set<TblUserRole> urs = user.getTblUserRoles();
+			if(urs != null){
+				roleIds = new String[user.getTblUserRoles().size()];
+				int i = 0;
+				for(TblUserRole ur : urs){
+					roleIds[i++] = ur.getId().getTblRole().getRoleId();
+				}
+			}
+		}	
+		
+		roleList = roleService.findAll();
+		return "editUI";
+	}
+	
+	public String userDelete()
+	{
+		resultData=new ResultData();
+		if(StringUtils.isNotEmpty(ids))
+		{//更新数据状态
+			String[]  idList=ids.split("@");
+			userService.delUserByIds(idList);
+			resultData.setResultFlag(true);
+		}
+		
+		return SUCCESS;
+		
+	}
+	//检验是否登录
+	public String loginCheck(){
+		TblUser tbluser = null;
+		tbluser = (TblUser) ServletActionContext.getRequest().getSession().getAttribute("USER");
+		resultData = new ResultData();
+		if (tbluser != null) {
+			resultData.setResultFlag(true);
+			resultData.setResultMsg("登录");
+		}else{
+			resultData.setResultFlag(false);
+			resultData.setResultMsg("未登录");
+		}
+		return SUCCESS;
+	}
+	public TblUser getUser() {
+		return user;
+	}
+
+	public void setUser(TblUser user) {
+		this.user = user;
+	}
+	public String getLoginResult() {
+		return loginResult;
+	}
+	public void setLoginResult(String loginResult) {
+		this.loginResult = loginResult;
+	}
+	public List<TblUser> getUserList() {
+		return userList;
+	}
+	public void setUserList(List<TblUser> userList) {
+		this.userList = userList;
+	}
+	public String[] getRoleIds() {
+		return roleIds;
+	}
+	public void setRoleIds(String[] roleIds) {
+		this.roleIds = roleIds;
+	}
+	public String getIds() {
+		return ids;
+	}
+	public void setIds(String ids) {
+		this.ids = ids;
+	}
+	public List<TblRole> getRoleList() {
+		return roleList;
+	}
+	public void setRoleList(List<TblRole> roleList) {
+		this.roleList = roleList;
+	}
+
+	public List<TblUser> getForgetpassword() {
+		return forgetpassword;
+	}
+
+	public void setForgetpassword(List<TblUser> forgetpassword) {
+		this.forgetpassword = forgetpassword;
+	}
+	public ReturnLogin getReturnLogin() {
+		return returnLogin;
+	}
+	public void setReturnLogin(ReturnLogin returnLogin) {
+		this.returnLogin = returnLogin;
+	}
+	public ResultData getResultData() {
+		return resultData;
+	}
+	public void setResultData(ResultData resultData) {
+		this.resultData = resultData;
+	}
+}

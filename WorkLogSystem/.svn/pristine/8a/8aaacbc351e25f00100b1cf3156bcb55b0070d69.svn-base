@@ -1,0 +1,17 @@
+package com.poobo.project.service;
+
+import java.util.List;
+
+import com.poobo.core.entity.TblProjectChild;
+import com.poobo.core.service.IBaseService;
+import com.poobo.core.util.PageController;
+
+public interface IProjectChildService extends IBaseService<TblProjectChild>{
+
+	PageController<TblProjectChild> getPageList(TblProjectChild tblProjectChild, int pageNow,
+			int pageSize, String projectId);
+
+	void delProjectByIds(String[] idList);
+
+	List<TblProjectChild> findAllByProjectId(String projectId);
+}

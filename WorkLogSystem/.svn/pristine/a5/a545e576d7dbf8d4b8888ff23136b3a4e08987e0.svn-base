@@ -1,0 +1,11 @@
+package com.poobo.project.dao;
+
+import java.util.List;
+
+import com.poobo.core.dao.IBaseDao;
+import com.poobo.core.entity.TblProject;
+
+public interface IProjectDao extends IBaseDao<TblProject>{
+
+
+}

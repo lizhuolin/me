@@ -1,0 +1,35 @@
+.photo{
+	background-color: #FFFFFF;
+    border: 1px solid #DDDDDD;
+    height: 70px;
+    margin: 0 auto;
+    padding: 5px;
+    width: 70px;
+    margin-bottom: 5px;
+}
+
+.photo a{
+	display: table-cell;
+    height: 70px;
+    vertical-align: middle;
+    width: 70px;
+    text-align: center;
+    color: #0063DC;
+    cursor: pointer;
+    text-decoration: none;
+    *display: block;
+    *font-size: 60px;
+    *font-family: Arial;
+}
+
+.photo a img{
+	vertical-align: middle;
+	border: medium none;
+}
+
+.list-item{
+	margin: 10px;
+    padding: 0;
+	list-style: none outside none;
+	float: left;
+}

@@ -1,0 +1,236 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+ <%@ taglib prefix="s" uri="/struts-tags" %>
+
+<html>
+<head>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>   
+ 
+
+
+
+<html>
+<head>
+
+<jsp:include page="/common/common.jsp"></jsp:include>
+
+<!-- 只需要引入自己独有的js即可    js统一放到js文件夹下面，并按模块建立单独文件夹-->
+<script src="<%=basePath %>js/company/edit.js"></script> 
+
+<script type="text/javascript">
+$(function($){
+	
+	 $('#file_upload').uploadify({
+         'swf':rooPath+'/uploadify/uploadify.swf',
+         "fileObjName":"uploadFiles",
+         'uploader' :'json_file_uploadOneFile.action;jsessionid=<%=session.getId()%>',
+         //文件存放子目录，如headImg,orderImg等
+         'formData': {'savePath' : 'upload'},
+         'onUploadSuccess' : function(file, data, response) {
+        	 //上传成功
+          //   alert('The file ' + file.name + ' was successfully uploaded with a response of ' + response + ':' + data);
+           var responseData=JSON.parse(data);
+             if(responseData.resultFlag){
+            	//$("#showImg").attr("src",responseData.resultData.fileUrl+"?"+(new Date()));
+            	$("#headImg").val(responseData.resultData.filePath);
+            	
+           }
+             
+             
+         }, 
+         'onUploadError' : function(file, errorCode, errorMsg, errorString) {
+        	 //上传失败
+             if(errorString=="IO Error"){
+           	  opFail("上传失败(错误码："+errorString+")");
+             }
+             
+         }
+     });
+	 
+	 if($("#simplePwd").val()=='true'){
+		 layer.msg("密码过于简单，请修改", {icon: 7,time:3000});
+		}
+	
+});
+
+$(function($){
+	
+	 $('#file_upload1').uploadify({
+        'swf':rooPath+'/uploadify/uploadify.swf',
+        "fileObjName":"uploadFiles",
+        'uploader' :'json_file_uploadOneFile.action;jsessionid=<%=session.getId()%>',
+        //文件存放子目录，如headImg,orderImg等
+        'formData': {'savePath' : 'upload'},
+        'onUploadSuccess' : function(file, data, response) {
+       	 //上传成功
+         //   alert('The file ' + file.name + ' was successfully uploaded with a response of ' + response + ':' + data);
+          var responseData=JSON.parse(data);
+            if(responseData.resultFlag){
+           	//$("#showImg").attr("src",responseData.resultData.fileUrl+"?"+(new Date()));
+           	$("#headImg1").val(responseData.resultData.filePath);
+           	
+          }
+            
+            
+        }, 
+        'onUploadError' : function(file, errorCode, errorMsg, errorString) {
+       	 //上传失败
+            if(errorString=="IO Error"){
+          	  opFail("上传失败(错误码："+errorString+")");
+            }
+            
+        }
+    });
+	 
+	 if($("#simplePwd").val()=='true'){
+		 layer.msg("密码过于简单，请修改", {icon: 7,time:3000});
+		}
+	
+}); 
+</script>
+
+ 
+</head>
+<body>
+  <form id="editForm">
+  <div class="edit">
+    <ul>
+    <s:hidden name="tblcompany.companyId"/>
+    <s:hidden name="tblcompany.dataStatus"/>
+    <s:hidden name="tblcompany.isVerification"/>
+     <li>
+        <span><i>公司名称</i><samp>:</samp>
+        <input  type="text" name="tblcompany.companyName" value="${tblcompany.companyName }"/><label class="require_lab"></label><samp></samp>
+        </samp>
+          <div class="d_list"></div>
+        </span>
+     
+        <span><i>公司电话</i><samp>:</samp>
+        <input  type="text" name="tblcompany.companyMobile" value="${tblcompany.companyMobile }"/><label class="require_lab"></label><samp></samp>
+          <div class="d_list"></div>
+        </span>
+      <li>
+      
+      <li>
+      <span><i>公司地址</i><samp>:</samp>
+        <input  type="text" name="tblcompany.companyAdress" value="${tblcompany.companyAdress }"/><label class="require_lab"></label><samp></samp>
+          <div class="d_list"></div>
+        </span>
+      
+      <span><i>公司管理员</i><samp>:</samp>
+        <input  type="text" name="tblcompany.companyAdmin" value="${tblcompany.companyAdmin }"/><label class="require_lab"></label><samp></samp>
+          <div class="d_list"></div>
+        </span>
+      </li>
+      
+     <%-- <li>
+        <span><i>审核</i><samp>:</samp>
+        <input  type="text" name="tblcompany.isVerification" /><samp></samp>
+          <div class="d_list"></div>
+        </span>
+      </li> --%>
+
+<%--       
+   <s:form action="fileUpload" method="post" enctype="multipart/form-data" namespace="/">
+<s:file name="myFile" label="MyFile" ></s:file>
+<s:textfield name="caption" label="Caption"></s:textfield>
+<s:submit label="提交"></s:submit>
+</s:form>
+       --%>
+    <!--  <li>
+        <td class="upload_btn">营业执照：</td>
+        <td>
+        <input type="file" id="imageUpload" name="headImage"/>
+        </td>
+      </li> 
+       -->
+      <li>
+	        <span><i>营业执照</i><samp>:</samp>
+	            <a class="upload_btn">选择文件</a>
+		        <input type="file" name="uploadFiles" id="file_upload" />
+		   
+	             <input type="hidden" id="headImg" name="tblcompany.charter"  value="<s:property value='tblcompany.charter'/>"/>
+	        </span>
+	        <s:if test='tblcompany.charter!=null&&tblcompany.charter!=""'>
+	         <img id="showImg" src="<%=basePath %><s:property value='tblcompany.charter'/>" width="130px" height="130px">
+	         </s:if>
+	      </li>
+       
+      <%--  <li>
+        <span><i>营业执照</i><samp>:</samp>
+        <input  type="text" name="tblcompany.charter" value="${tblcompany.charter }"/><label class="require_lab"></label><samp></samp>
+          <div class="d_list"></div>
+        </span> 
+      </li>  --%>
+      
+      
+      
+       
+       <%-- <li>
+       <span><i>数据状态</i><samp>:</samp>
+       <s:hidden name="tblcompany.dataStatus"></s:hidden>
+          <span class="prop_sp">
+            <em><input type="radio" />有</em>
+            <em><input type="radio" />无</em>
+          </span>
+      </span>
+      </li> --%>
+      
+      <%-- <li>
+      <span><i>建表时间</i><samp>:</samp>
+        <input id="startTime5" class="middle" value="<s:date name="tblcompany.createTime" format="yyyy-MM-dd HH:mm:ss"/>" name="tblcompany.createTime" type="text" />
+	        </span>
+          <div class="d_list"></div>
+      </span> --%>
+     
+      <li>
+      <span>
+      <i>公司类型</i>
+      <samp>:</samp>
+      <input  type="text" name="tblcompany.companyType" value="${tblcompany.companyType }"/><samp></samp>
+          <div class="d_list"></div>
+      
+      </span>
+      </li> 
+      
+      
+      <li>
+        <span><i>公司简介</i><samp>:</samp>
+        <textarea name="tblcompany.companyIntroduction">
+        <s:property value='tblcompany.companyIntroduction'/>
+        </textarea >
+        </span>
+        </li>
+        
+      <%-- <li>
+        <span><i>公司logo</i>
+     
+        <samp>:</samp><a class="upload_btn">添加<input type="file"  name="tblcompany.companyLogo" value="${tblcompany.companyLogo }"/></a>
+      </li> --%>
+      
+       <li>
+	        <span><i>公司logo</i><samp>:</samp>
+	            <a class="upload_btn">选择文件</a>
+		        <input type="file" name="uploadFiles" id="file_upload1" />
+	             <input type="hidden" id="headImg1" name="tblcompany.companyLogo"  value="<s:property value='tblcompany.companyLogo'/>"/>
+	        </span>
+	        <s:if test='tblcompany.companyLogo!=null&&tblcompany.companyLogo!=""'>
+	        <img id="showImg" src="<%=basePath %><s:property value='tblcompany.companyLogo'/>" width="130px" height="130px">
+	        </s:if>
+	      </li> 
+    
+    </ul>
+  </div>
+</form>
+
+
+  <div class="edit_btn"><a id="edit">保存</a><a id="close" class="btn_cancel" >取消</a></div>
+  
+ <!-- 保存遮罩层-->
+  <!--<div class="edit_cover"><p><img src="images/loading.gif"></p></div>-->
+
+</body>
+</html>

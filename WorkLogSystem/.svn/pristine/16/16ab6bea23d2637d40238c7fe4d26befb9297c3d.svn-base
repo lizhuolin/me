@@ -1,0 +1,54 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+ <%@ taglib prefix="s" uri="/struts-tags" %>
+  <%@ taglib prefix="pb" uri="http://http://www.poobo.com//tags/privilege-1.0" %>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>   
+ 
+<jsp:include page="/common/common.jsp"></jsp:include>
+<!-- 第一步：只需要引入自己独有的js即可    js统一放到js文件夹下面，并按模块建立单独文件夹-->
+<script src="<%=basePath %>/js/log/log.js"></script>
+     
+<div class="content">
+      <div class="con_btn">
+   <!--  第四步：   自定义操作按钮 start -->
+ 	<a id="back">返回</a>
+     <!--     自定义操作按钮 end -->  
+      
+      </div>
+
+      <div class="con_disc">
+        <table border="1" bordercolor="#ccc">
+          <!--  第五步： 展示数据 start -->
+          <tr>
+            <th><input type="checkbox" class="autoChecked" id="checkedAll"></th>
+           <!--  <s:if test="#session.USER.isUserPlatform">
+            <td>所属公司</td>
+            </s:if> -->
+            <td>项目名称</td>
+            <td>任务名称</td>
+            <td>工时</td>
+            <td>操作</td>
+          </tr>
+          <s:iterator value="pageList.dataList">
+          
+          <tr>
+	          <td><input type="checkbox" value="<s:property value="logDetailId"/>"></td>
+	          <!--<s:if test="#session.USER.isUserPlatform">
+            <td align="center"><s:property value="tblCompany.companyName"/></td>
+            </s:if>-->
+            <td align="center"><s:property value="tblProject.projectName"/></td>
+            <td align="center"><s:property value="tblTask.taskMsg"/></td>
+            <td align="center"><s:property value="logTime"/></td>
+            
+          </tr>
+          </s:iterator> 
+          <!--   展示数据 end -->
+        </table>
+      </div>
+</div>
+    
+<jsp:include page="/common/page.jsp"></jsp:include>
+<script src="<%=basePath %>common/comm.js" type="text/javascript"></script> 

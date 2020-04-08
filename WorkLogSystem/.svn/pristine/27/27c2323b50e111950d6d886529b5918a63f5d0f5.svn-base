@@ -1,0 +1,70 @@
+package com.poobo.reportwarn.action;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.poobo.core.action.BaseAction;
+import com.poobo.core.entity.TblReportwarn;
+import com.poobo.core.util.ResultData;
+import com.poobo.reportwarn.service.IReportWarnService;
+
+public class ReportWarnAction extends BaseAction<TblReportwarn> {
+
+	@Resource
+	private IReportWarnService reportwarnService;
+	private TblReportwarn reportwarn;
+	private String ids;
+	private ResultData resultData;
+
+	public String reportwarnList() {
+		pageList = reportwarnService.findReportwarnList(reportwarn, pageNow, pageSize);
+		return "reportwarnList";
+	}
+	
+
+	public String delete()
+	{
+		resultData=new ResultData();
+		if(StringUtils.isNotEmpty(ids))
+		{//更新数据状态
+			String[]  idList=ids.split("@");
+			reportwarnService.delReportWarnByIds(idList);
+			resultData.setResultFlag(true);
+		}
+		
+		return SUCCESS;
+		
+	}
+	public TblReportwarn getReportwarn() {
+		return reportwarn;
+	}
+
+	public void setReportwarn(TblReportwarn reportwarn) {
+		this.reportwarn = reportwarn;
+	}
+
+
+
+	public String getIds() {
+		return ids;
+	}
+
+
+
+	public void setIds(String ids) {
+		this.ids = ids;
+	}
+
+
+	public ResultData getResultData() {
+		return resultData;
+	}
+
+
+	public void setResultData(ResultData resultData) {
+		this.resultData = resultData;
+	}
+	
+	
+}

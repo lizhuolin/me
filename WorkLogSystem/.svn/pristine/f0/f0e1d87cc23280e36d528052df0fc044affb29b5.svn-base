@@ -1,0 +1,51 @@
+package com.poobo.timereport.dao.impl;
+
+import java.util.Calendar;
+import java.util.List;
+
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import com.poobo.core.dao.impl.BaseDaoImpl;
+import com.poobo.core.entity.TblProject;
+import com.poobo.core.entity.TblTimereport;
+import com.poobo.core.enums.EnumDataStatus;
+import com.poobo.timereport.dao.ITimeReportDao;
+
+
+public class TimeReportDaoImpl extends BaseDaoImpl<TblTimereport> implements ITimeReportDao{
+
+	@Override
+	public List<TblProject> findOneMonthProject() {
+		//Criteria  criteria =createCriteria(TblProject.class);
+		//定时报告开始时间
+		Calendar calStart = Calendar.getInstance();
+		Calendar calEnd = Calendar.getInstance();
+		
+		calStart.add(Calendar.MONTH, -1);//上月
+		calStart.set(Calendar.DAY_OF_MONTH, 1);//一号
+		calStart.set(Calendar.HOUR_OF_DAY,0);//0时
+		calStart.set(Calendar.MINUTE,0);//0分
+		calStart.set(Calendar.SECOND,0);//0秒
+		
+
+		calStart.set(Calendar.DAY_OF_MONTH, 1);//本月一号
+		calStart.set(Calendar.HOUR_OF_DAY,0);//0时
+		calStart.set(Calendar.MINUTE,0);//0分
+		calStart.set(Calendar.SECOND,0);//0秒
+		
+		Query query = getSession().createQuery("FROM  TblProject WHERE projectStartTime between ? and ?");
+		query.setDate(0, calStart.getTime());
+		query.setDate(1, calEnd.getTime());
+
+		return query.list();
+	}
+
+	@Override
+	public List<TblTimereport> findAll() {
+		Query query = getSession().createQuery("FROM TblTimereport");
+		return query.list();
+	}
+	
+}

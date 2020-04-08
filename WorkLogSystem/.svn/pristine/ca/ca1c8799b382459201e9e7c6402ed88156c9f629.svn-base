@@ -1,0 +1,8 @@
+package com.poobo.log.dao;
+
+import com.poobo.core.dao.IBaseDao;
+import com.poobo.core.entity.TblLog;
+
+public interface ILogDao extends IBaseDao<TblLog>{
+
+}

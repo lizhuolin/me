@@ -1,0 +1,86 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+ <%@ taglib prefix="s" uri="/struts-tags" %>
+
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"+ request.getServerName() + ":" + request.getServerPort()+ path + "/";
+%>
+
+
+<!DOCTYPE html >
+<html>
+<head lang = "en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no;">
+    <title>公告</title>
+    <link href="<%=basePath%>css/mobileStyle.css" rel="stylesheet" type="text/css">
+ </head>
+<%-- <script src="<%=basePath %>/js/notice/notice.js"></script> --%>
+
+<body>
+<div class="message_bg">
+	<div id="header_wrapper">
+    	<div class="index_text">公告信息</div>
+    	
+    </div><!--header_wrapper结束-->
+    <div id="body_wrapper">
+    	<section>
+        	<div class="bl_board">
+        	  <div id="D1pic1" class="fPic">  
+        <div class="fcon" style="display: none;">
+        	
+            </div></div></div>
+        </section>
+        <sesction>
+        
+        <s:iterator value="noticeList">
+            	<form>
+                	<a href="mobile/mobile_noticedetialList.action?notice.noticeId=<s:property value='noticeId'/>">
+                    <p>公告标题:<input type="text"  value="<s:property value="noticeTitle"/> " readonly>
+                                                                     公告内容：<input type="text"  value="<s:property value="noticeIntroduction"/>" readonly></p>
+                    </a>
+                </form>
+                </s:iterator>
+        </sesction>
+        
+          
+        
+            <section>
+        	<div class="bl_info">
+            	<form>
+                	<a href="msg_remind.html"><p><span>提醒信息</span> </p></a>
+                    <p><input id="mg_text"type="text" maxlength="10" value="加萨老师讲课 尽快链接阿大声道................" readonly>
+                    	<input id="mg_date" type="hours" value="2016/03/17"readonly></p></a>
+                </form>
+                <form>
+                	<a href="msg_remind.html"><p><span>提醒信息</span> </p>
+                    <p><input id="mg_text"type="text" maxlength="10" value="加萨老师讲课 尽快链接阿大声道................" readonly>
+                    	<input id="mg_date" type="hours" value="2016/03/17"readonly></p></a>
+                </form>
+                <form>
+                	<a href="msg_remind.html"><p><span>提醒信息</span> </p>
+                    <p><input id="mg_text"type="text" maxlength="10" value="加萨老师讲课 尽快链接阿大声道................" readonly>
+                    	<input id="mg_date" type="hours" value="2016/03/17"readonly></p></a>
+                </form>
+                <form>
+                	<a href="msg_remind.html"><p><span>提醒信息</span> </p>
+                    <p><input id="mg_text"type="text" maxlength="10" value="加萨老师讲课 尽快链接阿大声道................" readonly>
+                    	<input id="mg_date" type="hours" value="2016/03/17"readonly></p></a>
+                </form>
+                <form>
+                	<a href="msg_remind.html"><p><span>提醒信息</span> </p>
+                    <p><input id="mg_text"type="text" maxlength="10" value="加萨老师讲课 尽快链接阿大声道................" readonly>
+                    	<input id="mg_date" type="hours" value="2016/03/17"readonly></p></a>
+                </form>
+               
+            </div>
+        </section>
+    </div><!--body_wrapper结束--> 
+    <%@include file="/common/mobileBelow.jsp"%>
+    </div>
+   
+    
+</body>
+</html>
+

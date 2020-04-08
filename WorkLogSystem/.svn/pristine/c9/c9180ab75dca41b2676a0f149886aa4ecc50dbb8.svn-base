@@ -1,0 +1,19 @@
+package com.poobo.project.dao.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hibernate.Query;
+
+import com.poobo.core.dao.impl.BaseDaoImpl;
+import com.poobo.core.entity.TblProject;
+import com.poobo.core.entity.TblUserProject;
+import com.poobo.core.enums.EnumDataStatus;
+import com.poobo.project.dao.IProjectDao;
+
+
+public class ProjectDaoImpl extends BaseDaoImpl<TblProject>implements IProjectDao{
+
+	
+
+}

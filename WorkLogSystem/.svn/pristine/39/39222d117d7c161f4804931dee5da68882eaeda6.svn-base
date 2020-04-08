@@ -1,0 +1,104 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+ <%@ taglib prefix="s" uri="/struts-tags" %>
+
+<!DOCTYPE html >
+<html>
+<head lang = "en">
+<%@include file="/common/mobileCommon.jsp"%>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no;">
+    <title>项目</title>
+    <link href="<%=basePath%>css/mobileStyle.css" rel="stylesheet" type="text/css">
+ </head>
+
+<body style="background-color:#e6e6e6">
+	<div id="header_wrapper">
+    	<div class="index_text">项目</div>
+		<form  id="searchForm">
+    	<div class="selected">
+        <s:select id="users" list="userList" name="tblProject.projectManager.userId" listKey="userId" listValue="name" headerKey="" headerValue="负责人"></s:select>
+        <s:select id="projectName" list="projectList" listKey="projectId" name="tblProject.projectId"  listValue="projectName"  headerKey=""  headerValue ="项目名称"></s:select>
+        </div>
+		</form>
+    </div><!--header_wrapper结束-->
+    <div id="body_wrapper">
+    	<section class="form" id="projects">
+		<s:iterator value="projectList">
+        <div class="pj_name">
+            <div class="dian">●</div>
+			<input type="text"  value="<s:property value="projectName"/>" readonly />
+            </div>
+            
+          <a href="<%=basePath%>mobile/project/mobile_projectDetail4mobile.action?tblProject.projectId=<s:property value="projectId"/>"><div class="pj_other">
+            	<div class="pj_other_left">
+                <p><span>负责人：</span><input type="text" value="<s:property value="projectManager.name"/>"  readonly/></p>
+            	<p><span>项目状态:</span><s:if test="projectStatus==0" >未开始</s:if><s:elseif test="projectStatus==1">进行中</s:elseif><s:else>已结束</s:else></p>
+               	<p><span>项目目标:</span><s:property value="projectTarget"/></p>
+                <p><span>项目备注：</span><s:property value="projectRemaks"/></p>
+                <p><span>创建时间：</span><s:property value="projectStartTime"/></p>
+                </div>
+                
+                <div class="pj_other_right" >
+    				<div class="splash-inner">
+         			 <div class="loading-circle" >
+            			<p><span id="loadedNum"><s:property value="projectProgress"/>%</span></p>
+            			<canvas class="mask" id="loadingProgress" width="100" height="100"></canvas>
+           				 <canvas class="bg" width="100" height="100"></canvas>
+        				</div>
+    			</div>
+			</div>
+               
+            </div></a>
+         </s:iterator>
+        </section>
+        </div>
+     <%@include file="/common/mobileBelow.jsp"%>
+
+    </div><!--footer_wrapper结束-->
+     <script>
+    var slots={},c=document.getElementById('loadingProgress'),ctx=c.getContext('2d');
+    window.hasLoaded = 0;
+    window.loading = false;
+    window.ulp = ulp;
+    function ulp(percent){
+        window.loading = true;
+        var i = 0, draw = null;
+        draw = setInterval(function(){
+            if (window.hasLoaded > 100) {
+                window.loading = false;
+                clearInterval(draw);
+                draw = null;
+                return true;
+            }
+
+            if (i<percent) {
+                d();
+                i++;
+                window.hasLoaded += 1;
+            } else {
+                clearInterval(draw);
+                draw = null;
+            }
+        }, 100);
+    }
+
+    function d(){
+        var lp = document.getElementById('loadedNum');
+        lp.innerHTML = window.hasLoaded;
+
+        var loaded = window.hasLoaded * 2 / 100 * Math.PI, cw = 102, hcw = 51;
+        ctx.clearRect (0,0,cw,cw);
+        ctx.beginPath();
+        ctx.arc(hcw,hcw,hcw-4, 0, loaded, false);
+        ctx.lineWidth = 8;
+        ctx.strokeStyle = '#ff6000';
+        ctx.stroke();
+    }
+    ulp();
+</script>
+<script type="text/javascript" src="<%=basePath %>js/mobile/project/projectList.js"></script>
+</body>
+</html>
+
+

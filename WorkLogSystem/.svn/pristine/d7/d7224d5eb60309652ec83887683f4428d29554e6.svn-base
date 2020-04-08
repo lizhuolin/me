@@ -1,0 +1,93 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+ <%@ taglib prefix="s" uri="/struts-tags" %>
+
+<html>
+<head lang = "en">
+<%@include file="/common/mobileCommon.jsp"%>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no;">
+    <title>项目</title>
+    <link href="<%=basePath%>css/mobileStyle.css" rel="stylesheet" type="text/css">
+     <script type="text/javascript">
+    	//提交表单
+    	function doSubmit(){
+	    		//提交表单
+	    	//	document.write("运行了？");
+	    		//$("#form").submit();
+	    		document.forms[0].submit();
+	    		alert("保存成功");
+    	}
+    </script>
+ </head>
+
+<body>
+
+<div id="header_wrapper">
+    <div class="title">
+    	<span class="title_button"><a href="<%=basePath%>mobile/project/mobile_projectDetail4mobile.action?tblProject.projectId=<s:property value="tblProject.projectId"/>"><input type="button" ></a></span>
+ 		 <span class="title_text"><div class="text">项目计划详细信息</div></span>
+  </div>
+ </div><!--header_wrapper结束-->
+    <div id="body_wrapper">
+    	<div class="z_bj">
+    	<form id="form" name="form" action="<%=basePath %>mobile/project/mobile_mobileEdit.action" method="post" enctype="multipart/form-data">
+    	<s:hidden name="tblPlan.planId"/>
+		<s:hidden name="tblPlan.planCreater.userId"/>
+		<s:hidden name="tblPlan.planManager.userId"/>
+		 <s:hidden name="tblPlan.planCreateTime"/> 
+		 <s:hidden name="tblPlan.planStartTime"/> 
+		 <s:hidden name="tblPlan.planEndTime"/> 
+		 <s:hidden name="tblPlan.planRealEndTime"/> 
+		 <s:hidden name="tblPlan.planRealStartTime"/> 
+		  <s:hidden name="tblPlan.planRealTime"/> 
+		 <s:hidden name="tblPlan.createTime"/>
+		 <s:hidden name="tblPlan.dataStatus"/> 
+		 <s:hidden name="tblPlan.tblProject.projectId"/> 
+		 <s:hidden name="tblPlan.tblProjectChild.projectChildRealId"/> 
+    	<section class="sub_form">
+        
+            <div class="pj_plan">
+            <input type="text" name="tblPlan.planName" value="${tblPlan.planName }"  readonly/>
+            </div>
+            
+            <div class="sub_pj1">
+            	<p><span>负责人:</span><input type="text" name="tblPlan.planManager.name" value="${tblPlan.planManager.name }" readonly/></p>
+                <p><span>计划工时:</span><input type="text" name="tblPlan.planTime" value="${tblPlan.planTime }" readonly/></p>
+                <p><span>计划进度:</span><select name="tblPlan.projectProgress">
+            	<option value="0" <s:if test="tblPlan.projectProgress==0">selected="selected"</s:if>>0%</option>
+            	<option value="10"<s:if test="tblPlan.projectProgress==10">selected="selected"</s:if>>10%</option>
+            	<option value="20"<s:if test="tblPlan.projectProgress==20">selected="selected"</s:if>>20%</option>
+            	<option value="30"<s:if test="tblPlan.projectProgress==30">selected="selected"</s:if>>30%</option>
+            	<option value="40"<s:if test="tblPlan.projectProgress==40">selected="selected"</s:if>>40%</option>
+            	<option value="50"<s:if test="tblPlan.projectProgress==50">selected="selected"</s:if>>50%</option>
+            	<option value="60"<s:if test="tblPlan.projectProgress==60">selected="selected"</s:if>>60%</option>
+            	<option value="70"<s:if test="tblPlan.projectProgress==70">selected="selected"</s:if>>70%</option>
+            	<option value="80"<s:if test="tblPlan.projectProgress==80">selected="selected"</s:if>>80%</option>
+            	<option value="90"<s:if test="tblPlan.projectProgress==90">selected="selected"</s:if>>90%</option>
+            	<option value="100"<s:if test="tblPlan.projectProgress==100">selected="selected"</s:if>>100%</option>
+            </select></p>
+                <p><span>计划状态：</span><select name="tblPlan.planStatus">
+            <option value="0" <s:if test="tblPlan.planStatus==0">selected="selected"</s:if>>未开始</option>
+            <option value="1"<s:if test="tblPlan.planStatus==1">selected="selected"</s:if>>进行中</option>
+            <option value="2"<s:if test="tblPlan.planStatus==2">selected="selected"</s:if>>已结束</option>
+            </select></p>
+            <p><span>计划等级：</span><select name="tblPlan.planClass">
+            <option value="0" <s:if test="tblPlan.planClass==0">selected="selected"</s:if>>低</option>
+            <option value="1"<s:if test="tblPlan.planClass==1">selected="selected"</s:if>>一般</option>
+            <option value="2"<s:if test="tblPlan.planClass==2">selected="selected"</s:if>>高</option>
+            </select></p>
+                <p>计划开始－结束时间：<s:property value="tblPlan.planStartTime"/>--<s:property value="tblPlan.planEndTime"/></p>
+        		<p>实际开始－结束时间：<s:property value="tblPlan.planRealStartTime "/>--<s:property value="tblPlan.planRealEndTime" /></p>
+        		<p><span>计划内容:</span><textarea  type="text" name="tblPlan.planMsg" value="${tblPlan.planMsg }" rows="10" cols="50"></textarea></p>
+                <p><span>计划备注:</span><textarea  type="text" name="tblPlan.planRemarks" value="${tblPlan.planRemarks }" rows="10" cols="50"></textarea></p>
+		 </div>
+         <div class="saving"><p><input id="save" type="button" value="保存" onclick="doSubmit()"/><!-- <input id="cancel" type="button" value="取消">--></p></div> 
+        </section>
+        </form>
+        </div>
+         <%@include file="/common/mobileBelow.jsp"%>
+        
+</div>
+</body>
+</html>

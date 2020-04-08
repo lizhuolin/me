@@ -1,0 +1,67 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+
+        	<form id="form" name="form" action="<%=basePath %>mobile/log/mobile_mobileEdit.action" method="post" enctype="multipart/form-data">
+             	<s:iterator value="projectList" status="s">
+				 <div class="log_send">
+               <p><span><i>项目:</i><samp>:</samp>
+             		<input type="hidden" name="logDetailList[<s:property value="#s.index"/>].tblProject.projectId" value="<s:property value='projectId'/>" /> 
+					<s:property value='projectName'/>
+					</span>
+            		<span><i>项目工时:</i><samp>:</samp><select name="logDetailList[<s:property value="#s.index"/>].logTime" >
+                               <option value="0" >0工时</option>
+            				<option value="1">1工时</option>
+            				<option value="2">2工时</option>
+            				<option value="3">3工时</option>
+            				<option value="4">4工时</option>
+            				<option value="5">5工时</option>
+            				<option value="6">6工时</option>
+            				<option value="7">7工时</option>
+            				<option value="8">8工时</option>
+            				<option value="9">9工时</option>
+            				<option value="10">10工时</option>
+                               </select>
+                   </span></p>
+                 </div>
+				 </s:iterator>
+				 <s:iterator value="taskList" status="s">
+                 <div class="log_send">
+                 <p><span><i>任务</i><samp>:</samp>
+				<input type="hidden" name="tasklogDetailList[<s:property value="#s.index"/>].tblTask.taskId" value="<s:property value='taskId'/>" />
+				<s:property value='taskMsg'/>
+				</span>
+				<span><i>任务工时</i><samp>:</samp>
+					<select name="tasklogDetailList[<s:property value="#s.index"/>].logTime" >
+					<option value="0" >0工时</option>
+            		<option value="1">1工时</option>
+            		<option value="2">2工时</option>
+            		<option value="3">3工时</option>
+            		<option value="4">4工时</option>
+            		<option value="5">5工时</option>
+            		<option value="6">6工时</option>
+            		<option value="7">7工时</option>
+            		<option value="8">8工时</option>
+            		<option value="9">9工时</option>
+            		<option value="10">10工时</option>
+					</select>
+				</span></p>
+                 </div>
+				</s:iterator>
+                  <div class="log_acc">
+                 <p>日志附件：<a class="file">浏览<input type="file" name="image" id="image" onchange="ajaxFileUpload()" value="浏览"></a>
+                 <input type="hidden" id="headImg" name="tblLog.logPicture" value="<s:property value='tblLog.logPicture'/>">
+                 <s:if test='tblLog.logPicture!=null&&tblLog.logPicture!=""'>
+	          		<img id="showImg" src="<%=basePath %><s:property value='tblLog.logPicture'/>" >
+	         	</s:if><s:else> <img id="showImg"/></s:else>
+                 </p>
+                 </div>
+                 <div class="log_intro">
+                 	<p><span>日志简介：</span></p><p><textarea type="text" name="tblLog.logMsg" rows="5" cols="30"></textarea></p>
+		
+                 </div>
+                
+                 <div class="log_upload">
+                 <input type="button" value="上传" onclick="doSubmit()">
+                 </div>
+            </form>
+           

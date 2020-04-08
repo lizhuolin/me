@@ -1,0 +1,83 @@
+@charset "utf-8";
+/* CSS Document */
+
+.lg_bg {
+position:absolute; 
+top:0; 
+left:0; 
+height:110%; 
+width:100%; 
+background-image:url(../images/ui_bg.png); 
+background-position: center 0; 
+background-repeat: no-repeat; 
+background-attachment:fixed; 
+background-size: cover; 
+-webkit-background-size: cover;/* 兼容Webkit内核浏览器如Chrome和Safari */ 
+-o-background-size: cover;/* 兼容Opera */ 
+zoom: 1; 
+
+} 
+.zilogo {
+	margin-bottom: 10px;
+    margin-top: 5%;
+    font-size: 38px;
+    margin-left: 37%;
+    color: #6b6d6c;
+	font-family: "汉仪中圆简";
+}
+.lg_logo img {
+    margin-left: 38%;
+    width: 100px;
+    margin-bottom: 30px;
+}
+li {
+    list-style-type: none;
+}
+.lg_disc{
+	 margin-left: 37%;
+    /* margin-right: 30%; */
+    background-color: #d4d6e0;
+    width: 400px;
+	height: 370px;
+	
+}
+
+input[type="text"],input[type="password"] {
+    height: 40px;
+    border: none;
+	width: 250px;
+
+}
+.lg_disc span{ display:inline-block; vertical-align:top;margin-top: 50px;}
+span img {
+     height: 20px;
+    width: 16px;
+    background-color: #fff;
+    padding: 10px;
+	margin-left:15px;
+}
+.lg_logo {
+   padding-top: 50px;
+}
+.lg_btn{ width: 35%;
+    margin-top: 66px;
+    margin-left: 55%;}
+.lg_btn a{ display:block; width:100%; text-align:center; line-height:40px; background:#896fc8; border-radius:5px; font-size:23px; color:#fff;}
+.zc_btn{ width: 35%;
+    float: left;
+    margin-left: 10%;
+	margin-top: 50px;   }
+.zc_btn a{ display:block; width:100%; text-align:center; line-height:40px; background:#8dbcf2; border-radius:5px; font-size:23px; color:#fff;}
+.yytu {
+    margin-top: 40px;
+}
+.yytu img {
+    width: 400px;
+    margin-left: 37%;
+}
+
+.lg_disc label{ display:block; width:100%; text-align:center; color:red; font-size:12px;}
+
+a{
+  cursor:pointer;
+}

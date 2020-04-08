@@ -1,0 +1,173 @@
+package com.poobo.log.action;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.poobo.core.action.BaseAction;
+import com.poobo.core.entity.TblLog;
+import com.poobo.core.entity.TblLogDetail;
+import com.poobo.core.entity.TblProject;
+import com.poobo.core.entity.TblTask;
+import com.poobo.core.entity.TblUser;
+import com.poobo.core.entity.TblUserProject;
+import com.poobo.core.entity.TblUserProjectId;
+import com.poobo.core.enums.EnumDataStatus;
+import com.poobo.core.util.GetSessionData;
+import com.poobo.core.util.ResultData;
+import com.poobo.log.service.ILogDetailsService;
+import com.poobo.log.service.ILogService;
+import com.poobo.project.service.IProjectService;
+import com.poobo.task.service.ITaskService;
+
+
+public class LogAction extends BaseAction{
+	
+	@Resource
+	private ILogService logService;
+	@Resource
+	private IProjectService projectService;
+	@Resource
+	private ITaskService taskService;
+	@Resource
+	private ILogDetailsService logDetailsService;
+	private List<TblLog> logList;
+	private List<TblTask>taskList;
+	private List<TblProject> projectList;
+	private List<TblLogDetail> logDetailList;
+	private TblLogDetail logDetail;
+	private TblLog tblLog;
+	private String ids;
+	private TblUser user;
+	private ResultData resultData;
+	/**
+	 * 个人日志列表
+	 * @return
+	 */
+	public String logList(){
+		user=GetSessionData.getUser();
+		if(user.getIsUserPlatform()){
+			pageList=logService.getPageList(tblLog, pageNow, pageSize);
+		}else{
+			pageList=logService.getPageListByUserid(user.getUserId(),pageNow,pageSize);
+		}
+		return "logList";
+	}
+	
+	/**
+	 * 个人日志编辑
+	 * @return
+	 */
+	public String logEdit(){
+		projectList=new ArrayList<TblProject>();
+		logDetailList=new ArrayList<TblLogDetail>();
+		if(tblLog!=null && !StringUtils.isEmpty(tblLog.getLogId())){
+			tblLog=logService.findObjectById(tblLog.getLogId());
+		}
+		user=GetSessionData.getUser();
+		
+		Set<TblUserProject> set=user.getTblUserProjects();
+		Iterator i = set.iterator();
+		while(i.hasNext()){
+			TblUserProject tu=(TblUserProject) i.next();
+			TblUserProjectId id= tu.getId();
+			TblProject project=projectService.findObjectById(id.getTblProject().getProjectId());
+			projectList.add(project);
+		}
+		return"logEdit";
+	}
+	/**
+	 * 编辑
+	 * @return
+	 */
+	public String edit(){
+		resultData = new ResultData();
+		if(tblLog !=null && StringUtils.isEmpty(tblLog.getLogId()))
+		{
+			tblLog.setDataStatus(EnumDataStatus.NORMAL.getValue());
+			user=GetSessionData.getUser();
+			tblLog.setTblUser(user);
+			logService.save(tblLog);
+			
+		}
+		resultData.setResultFlag(true);
+		return SUCCESS;
+	}
+	public List<TblLog> getLogList() {
+		return logList;
+	}
+	public void setLogList(List<TblLog> logList) {
+		this.logList = logList;
+	}
+	public TblLog getTblLog() {
+		return tblLog;
+	}
+	public void setTblLog(TblLog tblLog) {
+		this.tblLog = tblLog;
+	}
+	public String getIds() {
+		return ids;
+	}
+	public void setIds(String ids) {
+		this.ids = ids;
+	}
+	public TblUser getUser() {
+		return user;
+	}
+	public void setUser(TblUser user) {
+		this.user = user;
+	}
+
+
+	public List<TblTask> getTaskList() {
+		return taskList;
+	}
+
+
+	public void setTaskList(List<TblTask> taskList) {
+		this.taskList = taskList;
+	}
+
+
+	public List<TblProject> getProjectList() {
+		return projectList;
+	}
+
+
+	public void setProjectList(List<TblProject> projectList) {
+		this.projectList = projectList;
+	}
+
+
+	public TblLogDetail getLogDetail() {
+		return logDetail;
+	}
+
+
+	public void setLogDetail(TblLogDetail logDetail) {
+		this.logDetail = logDetail;
+	}
+
+	public List<TblLogDetail> getLogDetailList() {
+		return logDetailList;
+	}
+
+	public void setLogDetailList(List<TblLogDetail> logDetailList) {
+		this.logDetailList = logDetailList;
+	}
+
+	public ResultData getResultData() {
+		return resultData;
+	}
+
+	public void setResultData(ResultData resultData) {
+		this.resultData = resultData;
+	}
+	
+	
+}

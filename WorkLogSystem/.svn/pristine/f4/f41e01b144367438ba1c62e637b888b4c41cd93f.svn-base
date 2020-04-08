@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="css/style.css" rel="stylesheet"  />
+<script src="js/jquery-1.10.2.min.js"></script>
+<script src="layer/layer.js"></script>
+<script src="js/bg.js"></script>
+<!--<script src="uploadify/jquery.uploadify.min.js"></script>
+<link rel="stylesheet" href="uploadify/uploadify.css">-->
+<title>订单参数</title>
+</head>
+<script>
+$(function(){
+	
+	$(".tog_list").children(".edit").hide();
+	$(".tog_list").eq(0).children(".tog_title").find("i").removeClass("icon-circle_down_on");
+	$(".tog_list").eq(0).children(".tog_title").find("i").addClass("icon-shang");
+	$(".tog_list").eq(0).children(".edit").show();
+
+	$(".tog_tab").click(function(){
+		if($(this).children("i").hasClass("icon-shang")){
+			$(this).children("i").removeClass("icon-shang");
+			$(this).children("i").addClass("icon-circle_down_on");
+			$(this).parent(".tog_title").siblings(".edit").slideUp();
+		}else{
+			$(this).children("i").removeClass("icon-circle_down_on");
+			$(this).children("i").addClass("icon-shang");
+			$(this).parent(".tog_title").siblings(".edit").slideDown();
+			$(this).parents(".tog_list").siblings().children(".tog_title").find("i").removeClass("icon-shang");
+			$(this).parents(".tog_list").siblings().children(".tog_title").find("i").addClass("icon-circle_down_on");
+			$(this).parents(".tog_list").siblings().children(".edit").slideUp();
+		}
+		
+	})
+
+})
+</script>
+<body>
+
+<div class="tog_list">
+  <div class="tog_title">
+    <span>订单属性</span><a class="tog_tab"><i class="iconfont icon-circle_down_on fr"></i></a>
+  </div>
+  <div class="edit">
+    <ul>
+      <li>
+        <span><i>订单属性</i><samp>:</samp>
+        <input class="red_border" type="text" readonly /><samp>(单位：kb)</samp><label class="error">请输入内容</label>
+          <div class="d_list"></div>
+        </span>
+        <span><i>订单类型</i><samp>:</samp><select><option>请选择</option></select></span>
+      </li>
+      <li>
+        <span><i>订单属性</i><samp>:</samp>
+          <span class="prop_sp">
+            <em><input type="checkbox" />订单</em>
+            <em><input type="checkbox" />订单</em>
+            <em><input type="checkbox" />订单</em>
+            <em><input type="checkbox" />订单属性</em>
+            <em><input type="checkbox" />订单属性</em>
+            <em><input type="checkbox" />订单属性</em>
+          </span>
+        </span>
+        <span><i>订单类型</i><samp>:</samp>
+          <span class="prop_sp">
+            <em><input type="radio" />订单</em>
+            <em><input type="radio" />订单</em>
+            <em><input type="radio" />订单属性</em>
+            <em><input type="radio" />订单属性</em>
+          </span>
+      </li>
+      <li>
+        <span><i>订单新属性</i><samp>:</samp><a class="upload_btn">选择文件</a>
+          <input type="file" />
+          <div class="files">
+            <input class="file_name" value="租赁平台测试问题_A1.0_20160105">
+            <a class="file_del"></a>
+          </div>
+        </span>
+        <span><i>订单类</i><samp>:</samp><input type="password" /></span>
+      </li>
+    </ul>
+  </div>
+  
+</div>
+
+
+<div class="tog_list">
+  <div class="tog_title">
+    <span>订单属性</span><a class="tog_tab"><i class="iconfont icon-circle_down_on fr"></i></a>
+  </div>
+  <div class="edit">
+    <ul>
+      <li>
+        <span><i>订单属性</i><samp>:</samp>
+        <input class="red_border" type="text" readonly /><samp>(单位：kb)</samp><label class="error">请输入内容</label>
+          <div class="d_list"></div>
+        </span>
+        <span><i>订单类型</i><samp>:</samp><select><option>请选择</option></select></span>
+      </li>
+      <li>
+        <span><i>订单属性</i><samp>:</samp>
+          <span class="prop_sp">
+            <em><input type="checkbox" />订单</em>
+            <em><input type="checkbox" />订单</em>
+            <em><input type="checkbox" />订单</em>
+            <em><input type="checkbox" />订单属性</em>
+            <em><input type="checkbox" />订单属性</em>
+            <em><input type="checkbox" />订单属性</em>
+          </span>
+        </span>
+        <span><i>订单类型</i><samp>:</samp>
+          <span class="prop_sp">
+            <em><input type="radio" />订单</em>
+            <em><input type="radio" />订单</em>
+            <em><input type="radio" />订单属性</em>
+            <em><input type="radio" />订单属性</em>
+          </span>
+      </li>
+      <li>
+        <span><i>订单新属性</i><samp>:</samp><a class="upload_btn">选择文件</a>
+          <input type="file" />
+          <div class="files">
+            <input class="file_name" value="租赁平台测试问题_A1.0_20160105">
+            <a class="file_del"></a>
+          </div>
+        </span>
+        <span><i>订单类</i><samp>:</samp><input type="password" /></span>
+      </li>
+    </ul>
+  </div>
+  
+</div>
+
+<div class="tog_list">
+  <div class="tog_title">
+    <span>订单属性</span><a class="tog_tab"><i class="iconfont icon-circle_down_on fr"></i></a>
+  </div>
+  <div class="edit">
+    <ul>
+      <li>
+        <span><i>订单属性</i><samp>:</samp>
+        <input class="red_border" type="text" readonly /><samp>(单位：kb)</samp><label class="error">请输入内容</label>
+          <div class="d_list"></div>
+        </span>
+        <span><i>订单类型</i><samp>:</samp><select><option>请选择</option></select></span>
+      </li>
+      <li>
+        <span><i>订单属性</i><samp>:</samp>
+          <span class="prop_sp">
+            <em><input type="checkbox" />订单</em>
+            <em><input type="checkbox" />订单</em>
+            <em><input type="checkbox" />订单</em>
+            <em><input type="checkbox" />订单属性</em>
+            <em><input type="checkbox" />订单属性</em>
+            <em><input type="checkbox" />订单属性</em>
+          </span>
+        </span>
+        <span><i>订单类型</i><samp>:</samp>
+          <span class="prop_sp">
+            <em><input type="radio" />订单</em>
+            <em><input type="radio" />订单</em>
+            <em><input type="radio" />订单属性</em>
+            <em><input type="radio" />订单属性</em>
+          </span>
+      </li>
+      <li>
+        <span><i>订单新属性</i><samp>:</samp><a class="upload_btn">选择文件</a>
+          <input type="file" />
+          <div class="files">
+            <input class="file_name" value="租赁平台测试问题_A1.0_20160105">
+            <a class="file_del"></a>
+          </div>
+        </span>
+        <span><i>订单类</i><samp>:</samp><input type="password" /></span>
+      </li>
+    </ul>
+  </div>
+  
+</div>
+
+<div class="edit_btn"><a>保存</a><a class="btn_cancel">取消</a></div>
+  
+
+</body>
+</html>

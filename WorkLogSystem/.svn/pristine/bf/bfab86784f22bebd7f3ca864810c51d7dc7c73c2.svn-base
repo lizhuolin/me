@@ -1,0 +1,59 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+ <%@ taglib prefix="s" uri="/struts-tags" %>
+
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"+ request.getServerName() + ":" + request.getServerPort()+ path + "/";
+%>
+
+<!DOCTYPE html >
+<html>
+<head lang = "en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no;">
+    <title>信息提醒</title>
+    <link href="<%=basePath%>css/mobileStyle.css" rel="stylesheet" type="text/css">
+ </head>
+
+<body>
+<div class="remind_bg">
+<div id="header_wrapper">
+    <div class="title">
+    	<span class="title_button"><a href="mobile_noticeList.action"><input type="button" ></a></span>
+ 		 <span class="title_text"><div class="text">信息提醒</div></span>
+  </div>
+ </div><!--header_wrapper结束-->
+    <div id="body_wrapper">
+    	
+        <section>
+        	<div class="msg_list">
+        	<form>
+            	<div class="kongxi">
+            <p><span>任务名称：</span><input type="text" value="酒会策划" readonly><img src=""></p></div>
+            <p><span>负责人：</span><input type="text" value="汤圆" readonly></p>
+            <p><span>创建时间：</span><input type="date" value="20160605" readonly></p>
+            <p><span>开始时间-结束时间：</span><input type="date"readonly>-<input type="date"readonly></p>
+            <p><span>任务描述：</span></p><textarea type="text" rows="10" cols="50" readonly></textarea>
+            </form>
+            </div>
+        </section>
+         
+    	
+        </div><!--body_wrapper结束-->
+       <div id="footer_wrapper"> 
+    	<footer>
+  			<div class="message"><a class="select">消息</a></div>
+  			<div class="project"><a href="index.html">项目</a></div>
+  			<div class="log"><a href="log.html">日志</a></div>
+  			<div class="task"><a href="task.html">任务</a></div>
+  			<div class="user"><a href="user.html">个人</a></div>
+  			<div class="clear"></div>
+		</footer>
+
+    </div><!--footer_wrapper结束-->
+   </div>
+</body>
+</html>
+
+

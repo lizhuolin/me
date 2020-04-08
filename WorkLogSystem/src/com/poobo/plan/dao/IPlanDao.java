@@ -1,0 +1,14 @@
+package com.poobo.plan.dao;
+
+import java.util.List;
+
+import com.poobo.core.dao.IBaseDao;
+import com.poobo.core.entity.TblPlan;
+
+public interface IPlanDao extends IBaseDao<TblPlan>{
+
+	List<TblPlan> findAllByProjectId(String projectId);
+
+	List<TblPlan> findAllByProjectChildId(String projectChildRealId);
+
+}

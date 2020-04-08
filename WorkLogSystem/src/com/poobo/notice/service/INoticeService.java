@@ -1,0 +1,32 @@
+package com.poobo.notice.service;
+
+
+import java.util.List;
+
+import com.poobo.core.entity.TblDept;
+import com.poobo.core.entity.TblNotice;
+import com.poobo.core.entity.TblRole;
+import com.poobo.core.entity.TblUser;
+import com.poobo.core.service.IBaseService;
+import com.poobo.core.util.PageController;
+
+
+public interface INoticeService extends IBaseService<TblNotice>{
+
+	PageController<TblNotice> getPageList(TblNotice tblorganization, int pageNow, int pageSize);
+
+	void delNoticeByIds(String[] idList);
+	/**
+	 * 根据角色条件查询角色列表
+	 * @param notice
+	 * @param pageNow
+	 * @param pageSize
+	 * @return
+	 */
+	public PageController<TblNotice> findNoticeList(TblNotice notice, int pageNow,
+			int pageSize);
+
+	List<TblNotice> findNotices(String companyId);
+
+	List<TblNotice> findNote();
+}

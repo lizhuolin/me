@@ -1,0 +1,147 @@
+package com.poobo.reportwarn.action;
+
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
+
+/*
+ * @author zhiliang.lan 2016年3月16日上午10:31:17
+ *
+ */
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.struts2.ServletActionContext;
+
+import com.poobo.company.service.CompanyService;
+import com.poobo.core.action.BaseAction;
+import com.poobo.core.entity.TblCompany;
+import com.poobo.core.entity.TblReportwarn;
+import com.poobo.core.entity.TblUser;
+import com.poobo.core.enums.EnumDataStatus;
+import com.poobo.core.util.ResultData;
+import com.poobo.reportwarn.service.IReportwarnService;
+
+public class ReportwarnAction extends BaseAction {
+	
+	@Resource
+	private IReportwarnService reportwarnService;
+	@Resource
+	private CompanyService companyService;
+	private ResultData resultData;
+	private TblReportwarn tblReportwarn;
+	private List<TblUser> userList;
+	private TblReportwarn reportwarn;
+	private String ids;
+	
+	
+	public String list(){
+		pageList = reportwarnService.getPageList(tblReportwarn, pageNow, pageSize);
+		return "list";
+	}
+	
+	public String reportwarnList(){
+		pageList = reportwarnService.getPageList(tblReportwarn, pageNow, pageSize);
+		return "reportwarnList";
+	}
+	/*
+	 * 去任务编辑页面
+	 * @return
+	 */
+	public String reportwarnEdit(){
+		if(null!=tblReportwarn&&StringUtils.isNotEmpty(tblReportwarn.getReportwarnId())){
+			//编辑
+			System.out.println();
+			tblReportwarn=reportwarnService.findObjectById(tblReportwarn.getReportwarnId());
+		}
+		//TODO  获取
+		
+		return "reportwarnEdit";
+	}
+	
+	/*
+	 * 执行任务编辑
+	 * @return
+	 */
+	public String doReportwarnEdit(){
+		resultData = new ResultData();
+		
+		if(StringUtils.isEmpty(tblReportwarn.getReportwarnId())){
+			//新增
+			//if()
+			/*//TODO 公司ID
+			//reportwarnService.save(reportwarn);
+			TblUser user =  (TblUser) ServletActionContext.getRequest().getSession().getAttribute("USER");
+			TblCompany company = companyService.findObjectById(user.getTblCompany().getCompanyId());
+			tblReportwarn.setDataStatus(EnumDataStatus.NORMAL.getValue());
+			//获取当前时间并保存
+			Date date = new Date();       
+			Timestamp time = new Timestamp(date.getTime());
+			tblReportwarn.setCreateTime(time);
+			reportwarnService.newReportwarn(tblReportwarn);*/
+		}else{
+			//编辑
+			reportwarnService.update(tblReportwarn);
+		}
+		
+		resultData.setResultFlag(true);
+		return SUCCESS;
+	}
+	
+	
+	/*
+	 * 删除任务
+	 * @return
+	 */
+	public String doReportwarnDelete()
+	{
+		resultData=new ResultData();
+		if(StringUtils.isNotEmpty(ids))
+		{//更新数据状态
+			String[]  idList=ids.split("@");
+			reportwarnService.delReportwarnByIds(idList);
+			resultData.setResultFlag(true);
+		}
+		
+		return SUCCESS;
+		
+	}
+	
+	
+	public ResultData getResultData() {
+		return resultData;
+	}
+
+	public void setResultData(ResultData resultData) {
+		this.resultData = resultData;
+	}
+
+	public TblReportwarn getTblReportwarn() {
+		//EnumDataStatus.NORMAL.getValue();
+		return tblReportwarn;
+	}
+
+	public void setTblReportwarn(TblReportwarn tblReportwarn) {
+		this.tblReportwarn = tblReportwarn;
+	}
+
+	public List<TblUser> getUserList() {
+		return userList;
+	}
+
+	public void setUserList(List<TblUser> userList) {
+		this.userList = userList;
+	}
+
+	public String getIds() {
+		return ids;
+	}
+
+	public void setIds(String ids) {
+		this.ids = ids;
+	}
+}
+
+	
+	

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="css/style.css" rel="stylesheet"  />
+<script src="js/jquery-1.10.2.min.js"></script>
+<script src="layer/layer.js"></script>
+<title>列表设置</title>
+</head>
+<body>
+  
+  <div class="set">
+  <div class="select_all"><input name="top" type="checkbox" checked>全选</div>
+    <span><input name="top" type="checkbox" checked><i>操作</i></span>
+    <span><input name="top" type="checkbox" checked><i>序号</i></span>
+    <span><input name="top" type="checkbox" checked><i>仓位</i></span>
+    <span><input name="top" type="checkbox" checked><i>机柜数量</i></span>
+    <span><input name="top" type="checkbox" checked><i>机柜编码</i></span>
+    <span><input name="top" type="checkbox" checked><i>机柜类型</i></span>
+    <span><input name="top" type="checkbox" checked><i>机柜状态</i></span>
+    <span><input name="top" type="checkbox" checked><i>备注</i></span>
+  </div>
+
+  <div class="edit_btn"><a>保存</a><a>取消</a></div>
+  
+</body>
+</html>

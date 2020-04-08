@@ -1,0 +1,147 @@
+package com.poobo.project.action;
+
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.struts2.ServletActionContext;
+
+import com.poobo.core.action.BaseAction;
+import com.poobo.core.entity.TblProject;
+import com.poobo.core.entity.TblProjectChild;
+import com.poobo.core.entity.TblUser;
+import com.poobo.core.enums.EnumDataStatus;
+import com.poobo.core.util.GetSessionData;
+import com.poobo.core.util.ResultData;
+import com.poobo.project.service.IProjectChildService;
+import com.poobo.project.service.IProjectService;
+import com.poobo.user.service.IUserService;
+
+public class ChildProjectAction extends BaseAction {
+	
+	@Resource
+	private IProjectService projectService;
+	@Resource
+	private IProjectChildService projectChildService;
+	@Resource
+	private IUserService userService;
+	private List<TblProjectChild>projectChildList;
+	private List<TblUser> userList;
+	private String ids,projectId;
+	private TblProjectChild tblProjectChild;
+	private TblProject tblProject;
+	private ResultData resultData;
+	private TblUser user;
+	/**
+	 * 跳转到子项目列表
+	 * @return
+	 */
+	public String projectChildList(){
+		projectId=tblProject.getProjectId();
+		pageList  = projectChildService.getPageList(tblProjectChild, pageNow, pageSize,projectId);
+		return "projectChildList";
+	}
+	public String projectEditChild(){
+		if(tblProject!=null){	
+			projectId=tblProject.getProjectId();
+			tblProject=projectService.findObjectById(projectId);
+		}else if(tblProjectChild!=null){
+			tblProjectChild=projectChildService.findObjectById(tblProjectChild.getProjectChildRealId());
+			projectId=tblProjectChild.getTblProject().getProjectId();
+			tblProject=projectService.findObjectById(projectId);
+		}
+			user=(TblUser)ServletActionContext.getRequest().getSession().getAttribute("USER");
+			String companyId=user.getTblCompany().getCompanyId();
+			userList=userService.getUserListByCompanyId(companyId);
+		
+		return "projectEditChild";	
+	}
+	
+	/**
+	 * 编辑
+	 * @return
+	 */
+	public String edit(){
+		resultData = new ResultData();
+		if (tblProjectChild != null && StringUtils.isEmpty(tblProjectChild.getProjectChildRealId())) {
+			
+			tblProjectChild.setDataStatus(EnumDataStatus.NORMAL.getValue());
+			//projcetChildCreater
+			Timestamp d = new Timestamp(System.currentTimeMillis()); 
+			tblProjectChild.setCreteTime(d);
+			user=GetSessionData.getUser();
+			tblProjectChild.setCreater(user);
+			projectChildService.save(tblProjectChild);
+		}else if(tblProjectChild != null && !StringUtils.isEmpty(tblProjectChild.getProjectChildRealId())){
+			tblProjectChild.setDataStatus(EnumDataStatus.NORMAL.getValue());
+			projectChildService.update(tblProjectChild);
+		}
+		resultData.setResultFlag(true);
+		return SUCCESS;
+	}
+	public String doDelete(){
+		resultData=new ResultData();
+		if(StringUtils.isNotEmpty(ids))
+		{//更新数据状态
+			String[]  idList=ids.split("@");
+			projectChildService.delProjectByIds(idList);
+			resultData.setResultFlag(true);
+		}
+		return SUCCESS;
+	}
+	
+	
+	
+	public List<TblUser> getUserList() {
+		return userList;
+	}
+	public void setUserList(List<TblUser> userList) {
+		this.userList = userList;
+	}
+	public TblUser getUser() {
+		return user;
+	}
+	public void setUser(TblUser user) {
+		this.user = user;
+	}
+	public List<TblProjectChild> getProjectChildList() {
+		return projectChildList;
+	}
+	public void setProjectChildList(List<TblProjectChild> projectChildList) {
+		this.projectChildList = projectChildList;
+	}
+	public String getIds() {
+		return ids;
+	}
+	public void setIds(String ids) {
+		this.ids = ids;
+	}
+	public String getProjectId() {
+		return projectId;
+	}
+	public void setProjectId(String projectId) {
+		this.projectId = projectId;
+	}
+	public TblProjectChild getTblProjectChild() {
+		return tblProjectChild;
+	}
+	public void setTblProjectChild(TblProjectChild tblProjectChild) {
+		this.tblProjectChild = tblProjectChild;
+	}
+	public ResultData getResultData() {
+		return resultData;
+	}
+	public void setResultData(ResultData resultData) {
+		this.resultData = resultData;
+	}
+
+	public TblProject getTblProject() {
+		return tblProject;
+	}
+	public void setTblProject(TblProject tblProject) {
+		this.tblProject = tblProject;
+	}
+}

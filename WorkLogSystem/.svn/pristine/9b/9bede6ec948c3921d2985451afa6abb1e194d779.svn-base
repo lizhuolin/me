@@ -1,0 +1,357 @@
+package com.poobo.project.action;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.opensymphony.xwork2.ActionContext;
+import com.poobo.company.service.CompanyService;
+import com.poobo.core.action.BaseAction;
+import com.poobo.core.entity.TblCompany;
+import com.poobo.core.entity.TblPlan;
+import com.poobo.core.entity.TblProject;
+import com.poobo.core.entity.TblProjectChild;
+import com.poobo.core.entity.TblReportwarn;
+import com.poobo.core.entity.TblTask;
+import com.poobo.core.entity.TblUser;
+import com.poobo.core.entity.TblUserProject;
+import com.poobo.core.entity.TblUserProjectId;
+import com.poobo.core.enums.EnumDataStatus;
+import com.poobo.core.util.GetSessionData;
+import com.poobo.core.util.ResultData;
+import com.poobo.plan.service.IPlanService;
+import com.poobo.project.service.IProjectChildService;
+import com.poobo.project.service.IProjectService;
+import com.poobo.user.service.IUserService;
+
+
+/**
+ * 
+ * @author zhuolin.li 2016年3月8日下午4:17:39
+ *
+ */
+public class ProjectAction  extends BaseAction {
+	@Resource
+	private IProjectService projectService;
+	@Resource
+	private IUserService userService; 
+	@Resource
+	private CompanyService companyService;
+	@Resource
+	private IProjectChildService projectChildService;
+	@Resource
+	private IPlanService planService;
+	private List<TblProject> projectList;
+	private List<TblPlan> planList;
+	private List<TblProjectChild>projectChildList;
+	private TblProject tblProject;
+	private ResultData resultData;
+	private List<TblUser> userList,project_userList;
+	private TblUser user;
+	private String ids;
+	private TblReportwarn tblReportwarns;
+	private String projectManager;
+	private TblPlan tblPlan;
+	/**
+	 * 将员工从项目组中移出
+	 * @return
+	 */
+	public String deletePs(){
+		resultData=new ResultData();
+		if(ids!=null)
+		{
+			//获取用户id
+			String[]  idList=ids.split("@");
+			for(int i=0;i<idList.length;i++)
+			{
+				String id=idList[i];
+				projectService.delUserProject(id);
+			}
+		}
+		resultData.setResultFlag(true);
+		return SUCCESS;
+	}
+	/**
+	 * 将员工从公司列表添加到项目组
+	 * @return
+	 */
+	public String addPerson(){
+		resultData=new ResultData();
+		if(StringUtils.isNotEmpty(ids)&&tblProject!=null)
+		{
+			//获取用户id
+			String[]  idList=ids.split("@");
+			tblProject=projectService.findObjectById(tblProject.getProjectId());
+			HashSet<TblUserProject> set=new HashSet<TblUserProject>();
+			for(int i = 0; i < idList.length; i++)
+			{
+				TblUser u=userService.findObjectById(idList[i]);
+				set.add(new TblUserProject(new TblUserProjectId(tblProject,u)));
+			}
+			tblProject.setTblUserProjects(set);
+			projectService.update(tblProject);
+			resultData.setResultFlag(true);
+		}
+		return SUCCESS;
+	}
+	
+	/**
+	 * 跳转到项目人员页面
+	 * @return
+	 */
+	
+	public String personList(){
+		//userProject=(List<TblUserProject>) tblProject.getTblUserProjects();
+		if(tblProject!=null)
+		{
+			project_userList=new ArrayList<TblUser>();
+			tblProject=projectService.findObjectById(tblProject.getProjectId());
+			String companyId=tblProject.getTblCompany().getCompanyId();
+			if(tblProject.getTblUserProjects()!=null && tblProject.getTblUserProjects().size() != 0)
+			{
+				Set<TblUserProject> set=tblProject.getTblUserProjects();
+			
+				Iterator i = set.iterator();
+				//遍历set
+				while(i.hasNext())
+				{
+					TblUserProject tu=(TblUserProject) i.next();
+					TblUserProjectId id= tu.getId();
+					TblUser u2=userService.findObjectById(id.getTblUser().getUserId());
+					project_userList.add(u2);
+				}
+			}
+			pageList=userService.getProjectPersonList(companyId, pageNow, pageSize);
+		}
+		return "personList";
+	}
+	/**
+	 * 跳转到项目列表
+	 * @return
+	 */
+	public String projectList() {
+		user=GetSessionData.getUser();
+		if(user.getIsUserPlatform()){
+			pageList  = projectService.getPageList(tblProject, pageNow, pageSize);
+			List<TblProject> list = pageList.getDataList();
+			for (int i = 0; i < list.size(); i++) {
+				TblCompany company = companyService.findObjectById(list.get(i).getTblCompany().getCompanyId());
+				list.get(i).setTblCompany(company);
+			}
+			pageList.setDataList(list);
+		}else{
+			String companyId=user.getTblCompany().getCompanyId();
+			pageList =projectService.getAllProjectByCompanyId(companyId,pageNow, pageSize);
+		}
+		return "projectList";
+	}
+	/**
+	 * 跳转到项目编辑页面
+	 * @return
+	 */
+	public String projectEdit() {
+		if(tblProject != null && !StringUtils.isEmpty(tblProject.getProjectId()))
+		{
+			tblProject = projectService.findObjectById(tblProject.getProjectId());
+		}
+		user=GetSessionData.getUser();
+		String companyId=user.getTblCompany().getCompanyId();
+		userList=userService.getUserListByCompanyId(companyId);
+		return "projectEdit";
+	}
+	/**
+	 * 编辑项目
+	 * @return
+	 */
+	public String edit(){
+		resultData = new ResultData();
+		if (tblProject != null && StringUtils.isEmpty(tblProject.getProjectId())) {
+			tblProject.setDataStatus(EnumDataStatus.NORMAL.getValue());
+			user=GetSessionData.getUser();
+			tblProject.setTblCompany(user.getTblCompany());
+			tblProject.setProjectCreater(user);
+			projectService.save(tblProject);
+		}else if(tblProject != null && !StringUtils.isEmpty(tblProject.getProjectId())){
+			tblProject.setDataStatus(EnumDataStatus.NORMAL.getValue());
+			
+			projectService.update(tblProject);
+		}
+		resultData.setResultFlag(true);
+
+		return SUCCESS;
+	}
+	/**
+	 * 删除项目
+	 * @return
+	 */
+	public String delete(){
+		resultData=new ResultData();
+		if(StringUtils.isNotEmpty(ids))
+		{//更新数据状态
+			String[]  idList=ids.split("@");
+			projectService.delProjectByIds(idList);
+			resultData.setResultFlag(true);
+		}
+		
+		return SUCCESS;
+	}
+	/**
+	 * 手机项目管理页 
+	 * @return
+	 */
+	public String projectList4mobile(){
+		user=GetSessionData.getUser();
+		String companyId=user.getTblCompany().getCompanyId();
+		projectList=projectService.findProjectList4Mobile(tblProject,rowIndex, pageSize,companyId);
+		List<TblProject>  tempList = projectService.findProjectList4Mobile(null, rowIndex, pageSize,companyId);
+		userList = new ArrayList<TblUser>();
+		for(TblProject project : tempList){
+			userList.add(project.getProjectManager());
+		}
+		return "projectList4mobile";
+	}
+	/**
+	 * 手机项目
+	 */
+	public String ajaxprojectList4Mobile(){
+		user=GetSessionData.getUser();
+		String companyId=user.getTblCompany().getCompanyId();
+		projectList = projectService.findProjectList4Mobile(tblProject, rowIndex, pageSize,companyId);
+		List<TblProject>  tempList = projectService.findProjectList4Mobile(null, rowIndex, pageSize,companyId);
+		userList = new ArrayList<TblUser>();
+		for(TblProject project : tempList){
+			userList.add(project.getProjectManager());
+		}
+		return "ajaxprojectList4Mobile";
+	}
+	/**
+	 * 返回项目详情页面
+	 * @return
+	 */
+	public String projectDetail4mobile(){
+		if(tblProject!=null){
+			tblProject=projectService.findObjectById(tblProject.getProjectId());
+			projectChildList=projectChildService.findAllByProjectId(tblProject.getProjectId());
+			planList=planService.findAllbyProjectid(tblProject.getProjectId());
+		}
+		return "projectDetail4mobile";
+	}
+	/**
+	 * 返回手机端项目计划详情页
+	 * @return
+	 */
+	public String planDetail4mobile(){
+		if(tblPlan!=null){
+			tblPlan=planService.findObjectById(tblPlan.getPlanId());
+			tblProject=projectService.findObjectById(tblPlan.getTblProject().getProjectId());
+		}
+		return "planDetail4mobile";
+	}
+	/**
+	 * 手机编辑
+	 */
+	public String mobileEdit(){
+		resultData = new  ResultData();
+		if(tblPlan != null){
+			if(StringUtils.isEmpty(tblPlan.getPlanId())){
+			
+		 planService.save(tblPlan);
+		}else {
+			planService.update(tblPlan);
+		}
+			resultData.setResultFlag(true);
+		}
+		return SUCCESS;
+	}
+	/**
+	 * 跳转到项目列表
+	 * @return
+	 */
+	public String analysisList() {
+		pageList = projectService.findProjectList(tblProject, pageNow, pageSize);
+		return "analysisList";
+	}
+	
+	public void setProjectList(List<TblProject> projectList) {
+		this.projectList = projectList;
+	}
+
+	public TblProject getTblProject() {
+		return tblProject;
+	}
+	public void setTblProject(TblProject tblProject) {
+		this.tblProject = tblProject;
+	}
+	public List<TblProjectChild> getProjectChildList() {
+		return projectChildList;
+	}
+	public void setProjectChildList(List<TblProjectChild> projectChildList) {
+		this.projectChildList = projectChildList;
+	}
+	public String getIds() {
+		return ids;
+	}
+	public void setIds(String ids) {
+		this.ids = ids;
+	}
+	public ResultData getResultData() {
+		return resultData;
+	}
+	public void setResultData(ResultData resultData) {
+		this.resultData = resultData;
+	}
+	public TblUser getUser() {
+		return user;
+	}
+	public void setUser(TblUser user) {
+		this.user = user;
+	}
+	public List<TblUser> getUserList() {
+		return userList;
+	}
+	public void setUserList(List<TblUser> userList) {
+		this.userList = userList;
+	}
+	public TblReportwarn getTblReportwarns() {
+		return tblReportwarns;
+	}
+	public void setTblReportwarns(TblReportwarn tblReportwarns) {
+		this.tblReportwarns = tblReportwarns;
+	}
+	
+	public List<TblProject> getProjectList() {
+		return projectList;
+	}
+	public List<TblUser> getProject_userList() {
+		return project_userList;
+	}
+	public void setProject_userList(List<TblUser> project_userList) {
+		this.project_userList = project_userList;
+	}
+	public String getProjectManager() {
+		return projectManager;
+	}
+	public void setProjectManager(String projectManager) {
+		this.projectManager = projectManager;
+	}
+	public List<TblPlan> getPlanList() {
+		return planList;
+	}
+	public void setPlanList(List<TblPlan> planList) {
+		this.planList = planList;
+	}
+	public TblPlan getTblPlan() {
+		return tblPlan;
+	}
+	public void setTblPlan(TblPlan tblPlan) {
+		this.tblPlan = tblPlan;
+	}
+	
+	
+}

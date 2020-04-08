@@ -1,0 +1,84 @@
+package com.poobo.notice.service.impl;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Service;
+
+import com.poobo.core.entity.TblDept;
+import com.poobo.core.entity.TblNotice;
+import com.poobo.core.entity.TblRole;
+import com.poobo.core.entity.TblUser;
+import com.poobo.core.enums.EnumDataStatus;
+import com.poobo.core.service.impl.BaseServiceImpl;
+import com.poobo.core.util.GetSessionData;
+import com.poobo.core.util.PageController;
+import com.poobo.dept.dao.IDeptDao;
+import com.poobo.dept.service.IDeptService;
+import com.poobo.notice.dao.INoticeDao;
+import com.poobo.notice.service.INoticeService;
+
+
+@Service("noticeService")
+public class NoticeServiceImpl extends BaseServiceImpl<TblNotice> implements INoticeService{
+	
+	private INoticeDao noticeDao;
+	@Resource 
+	public void setNoticeDao(INoticeDao noticeDao) {
+		super.setBaseDao(noticeDao);
+		this.noticeDao = noticeDao;
+	}
+
+
+
+	@Override
+	public void delNoticeByIds(String[] idList) {
+		// TODO Auto-generated method stub
+		for(String id:idList){
+			TblNotice notice=noticeDao.findObjectById(id);
+			notice.setDataStatus(EnumDataStatus.DEL.getValue());
+			//初始化任务未开始
+			noticeDao.merge(notice);
+		}
+	}
+
+
+
+	@Override
+	public PageController<TblNotice> findNoticeList(TblNotice notice,
+			int pageNow, int pageSize) {
+		Criteria criteria = noticeDao.createCriteria(TblNotice.class);
+		if(!GetSessionData.getUser().getIsUserPlatform()){
+			criteria.add(Restrictions.eq("tblCompany", GetSessionData.getUser().getTblCompany()));
+		}
+		
+		criteria.add(Restrictions.eq("dataStatus", EnumDataStatus.NORMAL.getValue()));
+		criteria.addOrder(Order.desc("noticeCreatetime"));
+		if(null != notice){
+		  criteria.add(Restrictions.ilike("noticeMsg", "%" + notice.getNoticeMsg() +"%"));
+		  //criteria.add(Restrictions.eq("isEffect",role.getIsEffect()));
+		}
+		TblUser user =GetSessionData.getUser();
+		return noticeDao.findPageByCriteria(criteria, pageNow, pageSize);
+	}
+
+
+
+	/*@Override
+	public PageController<TblNotice> findNoticeListByUserId(String userId,
+			int pageNow, int pageSize) {
+		Criteria criteria = noticeDao.createCriteria(TblNotice.class);
+		return noticeDao.findNoticeListByUserId(criteria, pageNow, pageSize);
+	}*/
+	
+
+
+	
+
+}
+
+	

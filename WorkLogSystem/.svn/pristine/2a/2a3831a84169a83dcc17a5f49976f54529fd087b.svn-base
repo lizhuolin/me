@@ -1,0 +1,57 @@
+<!DOCTYPE html >
+<html>
+<head lang = "en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no;">
+    <title>项目</title>
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+ </head>
+
+<body>
+
+<div id="header_wrapper">
+    <div class="title">
+    	<span class="title_button"><a href="subproject.html"><input type="button" ></a></span>
+ 		 <span class="title_text"><div class="text">项目计划详细信息</div></span>
+  </div>
+ </div><!--header_wrapper结束-->
+    <div id="body_wrapper">
+    	<div class="z_bj">
+    	<section class="sub_form">
+        
+            <div class="pj_plan">
+            <input type="text" value="赛场选择"  readonly/>
+            </div>
+            
+            <div class="sub_pj1">
+            	<p><span>负责人:</span><input type="text" value="宋岩"readonly>
+                <p><span>工时:</span><input type="text" value="3小时"readonly>
+                <p><span>计划进度:</span><select disabled="disabled">              
+                	<option>10%</option>
+                    <option>50%</option>
+                    <option>100%</option>
+                </select></p>
+                <p><span>项目简介：</span><textarea type="text" rows="10" cols="50" readonly></textarea></p>
+                <p>计划开始－结束时间：<input type="date" readonly>-<input type="date" readonly></p>
+        		<p>实际开始－结束时间：<input type="date" readonly>-<input type="date" readonly></p>
+                <p><span>备注:</span><input type="text" value="********"readonly>
+		 </div>
+         <div class="saving">
+            	<p><input id="save"type="button" value="保存"><input id="cancel" type="button" value="取消"></p>
+        </section>
+      
+        </div>
+       <div id="footer_wrapper">
+    	<footer>
+  			<div class="message"><a href="message.html">消息</a></div>
+  			<div class="project"><a class="select">项目</a></div>
+  			<div class="log"><a href="log.html">日志</a></div>
+  			<div class="task"><a href="task.html">任务</a></div>
+  			<div class="user"><a href="user.html">个人</a></div>
+  			<div class="clear"></div>
+		</footer>
+
+    </div><!--footer_wrapper结束-->
+   
+</body>
+</html>

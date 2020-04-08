@@ -1,0 +1,151 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+ <%@ taglib prefix="s" uri="/struts-tags" %>
+
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"+ request.getServerName() + ":" + request.getServerPort()+ path + "/";
+%>
+
+<!DOCTYPE html >
+<html>
+<head lang = "en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no;">
+    <title>任务</title>
+       <script type="text/javascript" src="<%=basePath %>js/jquery/jquery-1.8.3.min.js"></script>
+    <script src="<%=basePath %>common/ajaxfileupload.js"></script>
+    <script src="<%=basePath %>js/layer/layer.js"></script>
+     <script src="<%=basePath %>common/comm.js"></script>
+    <link href="<%=basePath%>css/mobileStyle.css" rel="stylesheet" 
+
+type="text/css">
+    <script src="<%=basePath %>js/user/edit.js"></script> 
+    <script type="text/javascript">
+function ajaxFileUpload() {
+    $.ajaxFileUpload({
+            url:rooPath + '/fileoperate/fileoperate_imageUpload.action',//用于文件上传的服务器端请求地址
+            secureuri:false,//一般设置为false
+            fileElementId:'image',//文件上传空间的id属性  <input type="file" id="file" name="file" />
+            dataType: 'json',//返回值类型 一般设置为json
+            data : {"childPath" : "user"},
+            success: function (data, status){  //服务器成功响应处理函数
+            	 if (typeof(data.error) != 'undefined') {
+                     if (data.error != '') {
+                    	 opFail(data.error);
+                     } else {
+                    	$("#headImg").val(data.imagePath);
+                     	$("#showImg").attr("src",rooPath + "/" +data.imagePath);
+             	        opSuccess(data.message);
+                     }
+                 }
+            	
+             	
+            },
+            error: function (data, status, e){//服务器响应失败处理函数
+            	opFail(data.message);
+            }
+        });
+    return false;
+}
+function doSubmit(){
+	//提交表单
+	
+	$("#form").submit();
+	alert("修改成功");
+}
+function loginOut(){
+	layer.confirm('是否退出', {
+		btn : [ '是', '否' ]
+	// 按钮
+	},function() {
+		location.assign("mobile_mobileLoginOut.action"); 
+	
+	});
+	
+}
+ </script>
+ </head>
+
+<body style="background-color:#f0f0f0">
+
+	<div id="header_wrapper">
+    	<div class="index_text">个人</div>
+    	
+    </div><!--header_wrapper结束-->
+    <div id="body_wrapper">
+    	<section>
+        	<div class="user_img">
+            <p>
+            <s:if test='user.image!=null&&user.image!=""'>
+	          <img id="showImg" src="<%=basePath %><s:property value='user.image'/>" >
+	         </s:if><s:else> <img id="showImg"/></s:else>
+            </p><span><s:property value='user.username'/></span>
+            <%-- <input type="text"  name="user.username" value="<s:property value='user.username'/>" readonly> --%>
+            </div>
+        </section>
+        <section>
+        	<div class="user_form">
+        <form id="form" name="form" action="<%=basePath %>mobile/user/mobile_mobileEdit.action" method="post" enctype="multipart/form-data">
+        	<input type="hidden" name="user.userId" value="<s:property value="user.userId"/>" />
+		    <s:hidden name="user.createTime"/>
+		    <s:hidden name="user.dataStatus"/>
+		    <s:hidden name="user.userType"/>
+		    <s:hidden name="user.isUserPlatform"/>
+		    <s:hidden name="user.tblCompany.companyId"/>
+		    <s:hidden name="user.tblDept.deptId"/>
+        <s:hidden name="user.password"/>
+        
+            	<p><span>公司名称：</span><input type="text" name="user.tblCompany.companyName"  value="<s:property value="user.tblCompany.companyName"/>" readonly></p>
+                <hr size="1" width="100%" color="#cacaca" noshade="noshade" />
+                 <p><span>用户名称：</span><input type="text" name="user.name" value="${user.name }" readonly/></p>
+                <hr size="1" width="100%" color="#cacaca" noshade="noshade" />
+                <p><span>身份证：</span><input type="number" name="user.idcard" value="<s:property value="user.idcard" />" readonly></p>
+            	<hr size="1" width="100%" color="#cacaca" noshade="noshade" />
+                <p><span>登录账号：</span><input class="middle" type="text" name="user.username" value="${user.username }" readonly/></p>
+                <hr size="1" width="100%" color="#cacaca" noshade="noshade" />
+              <%--   <p><span>密码：</span><input class="middle" type="password" name="user.password" value="${user.password }" /></p>
+                <hr size="1" width="100%" color="#cacaca" noshade="noshade" /> --%>
+            	<p><span>性别：</span><s:radio list="#{'0':'男','1':'女'}" name="user.sex" /></p>
+                </p>
+                <hr size="1" width="100%" color="#cacaca" noshade="noshade" />
+                 <p><span>公司职位：</span><s:iterator value="#session.ROLES">
+                <input type="text" name="roleName" value="<s:property value="roleName"/>" readonly>
+                </s:iterator>
+                </p>
+                <hr size="1" width="100%" color="#cacaca" noshade="noshade" />
+                <p><span>电话：</span><input type="number" name="user.mobile" value="<s:property value="user.mobile"/>"></p>
+                <hr size="1" width="100%" color="#cacaca" noshade="noshade" />
+                 <p><span>个人邮箱：</span><input type="email"  name="user.email" value="<s:property value="user.email"/>"></p>
+                <hr size="1" width="100%" color="#cacaca" noshade="noshade" />
+                 <p>
+                <span>图像：</span>
+                 <a class="file">选择文件<input type="file" name="image" id="image" onchange="ajaxFileUpload()"/></a>
+                <input type="hidden" id="headImg" name="user.image" value="<s:property value='user.image'/>">
+                
+                </p>
+                <hr size="1" width="100%" color="#cacaca" noshade="noshade" />
+                </form>
+            </div>
+        </section>
+        <section>
+        	<div class="alter">
+            	<input id="btnB2" type="button" value="修改"  onClick="doSubmit()">
+                <input id="loginOut" type="button" value="退出登录" onclick="loginOut()"/>
+            </div>
+        </section>
+        </div><!--body_wrapper结束-->  
+    <div id="footer_wrapper">
+    	<footer>
+  			<div class="message"><a href="<%=basePath%>mobile/notice/mobile_noticeList.action">消息</a></div>
+  			<div class="project"><a href="<%=basePath%>mobile/project/mobile_projectList4mobile.action">项目</a></div>
+  			<div class="log"><a href="<%=basePath%>mobile/log/mobile_log.action">日志</a></div>
+  			<div class="task"><a href="<%=basePath%>mobile/task/mobile_taskList4Mobile.action">任务</a></div>
+  			<div class="user"><a href="<%=basePath%>mobile/user/mobile_userList.action">个人</a></div>
+  			<div class="clear"></div>
+		</footer>
+
+    </div><!--footer_wrapper结束-->
+   
+</body>
+</html>

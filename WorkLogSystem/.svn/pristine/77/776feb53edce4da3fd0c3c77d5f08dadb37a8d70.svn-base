@@ -1,0 +1,144 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+ <%@ taglib prefix="s" uri="/struts-tags" %>
+
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"+ request.getServerName() + ":" + request.getServerPort()+ path + "/";
+%>
+<html>
+<head lang = "en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no;">
+    <title>任务</title>
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    
+ </head>
+
+<body style="background-color:#e6e6e6">
+
+	<div id="header_wrapper">
+    	<div class="index_text">任务</div>
+    	<div class="selected">
+        <form  id="searchForm">
+	    		<s:select id="users" list="userList" name="tblTask.taskResponsible.userId" listKey="userId" listValue="name" headerKey="" headerValue="负责人"></s:select>
+	    		<s:select id="taskMsg" list="taskList"  name="tblTask.taskMsg" listKey="taskMsg"  listValue="taskMsg" headerKey=""  headerValue ="任务名称"></s:select>
+		</form>
+        <section class="form" id="tasks">
+        	<s:iterator value="taskList">
+            <div class="task_plan">
+            <a href="mobile/task/mobile_task_detailList.action?tblTask.taskId=<s:property value="taskId"/>">
+            <input type="text" value=<s:property value="taskMsg"/>  readonly/></a>
+            </div>
+            
+       
+            <div class="task_other">
+            	<div class="other_left">
+            	<p><span>负责人:</span><s:property value="taskResponsible.name"/></p>
+               	<p><span>任务目标：</span><s:property value="taskTarget"/></p>
+                <p><span>创建时间：</span><s:property value="createTime"/></p>
+               	</div>
+                
+            <div class="other_right" >
+    			<div class="splash-inner">
+      
+        			<div class="loading-circle" >
+            			<p><span id="loadedNum" ><s:property value="taskProgress"/></span></p>
+            			<canvas class="mask" id="loadingProgress" width="100" height="100"></canvas>
+           				 <canvas class="bg" width="100" height="100"></canvas>
+        				</div>
+    			</div>
+			</div>
+            </div>
+            
+          </s:iterator>
+          </section>
+        </div>
+    </div><!--header_wrapperç»æ-->
+    <div id="body_wrapper">
+    	<section class="form">
+        
+            <div class="task_plan">
+            <div class="dian">â</div><input type="text" value="æ©å¤©è½®"  readonly/>
+           
+            </div>
+            
+            <a href="task_detail.html"><div class="task_other">
+            	<div class="other_left">
+                
+            	<p><span>负责人</span><input type="text" value=taskResponsible.name"readonly></p>
+               	<p><span>任务目标</span><input type="text" value="taskTarget"readonly></p>
+                <p><span>创建时间</span><input type="text" value="createTime"readonly></p>
+               	</div>
+                
+            <div class="other_right" >
+    			<div class="splash-inner">
+      
+        			<div class="loading-circle" >
+            			<p><span id="loadedNum"><s:property value="taskProgress"/></span></p>
+            			<canvas class="mask" id="loadingProgress" width="100" height="100"></canvas>
+           				 <canvas class="bg" width="100" height="100"></canvas>
+        				</div>
+    			</div>
+			</div>
+            </div></a>
+         
+        </section>
+     
+         
+      
+        </div><!--header_wrapper结束-->
+        <div id="footer_wrapper">
+    	<footer>
+  			<div class="message"><a href="message.html">消息</a></div>
+  			<div class="project"><a href="<%=basePath%>mobile/project/mobile_projectList4mobile.action">项目</a></div>
+  			<div class="log"><a href="<%=basePath%>mobile/log/mobile_log.action">日志</a></div>
+  			<div class="task"><a href="<%=basePath%>mobile/task/mobile_taskList4Mobile.action">任务</a></div>
+  			<div class="user"><a href="user.html">个人</a></div>
+  			<div class="clear"></div>
+		</footer>
+
+    </div><!--footer_wrapper结束-->
+    <script>
+    var slots={},c=document.getElementById('loadingProgress'),ctx=c.getContext('2d');
+    window.hasLoaded = 0;
+    window.loading = false;
+    window.ulp = ulp;
+    function ulp(percent){
+        window.loading = true;
+        var i = 0, draw = null;
+        draw = setInterval(function(){
+            if (window.hasLoaded > 100) {
+                window.loading = false;
+                clearInterval(draw);
+                draw = null;
+                return true;
+            }
+
+            if (i<percent) {
+                d();
+                i++;
+                window.hasLoaded += 1;
+            } else {
+                clearInterval(draw);
+                draw = null;
+            }
+        }, 100);
+    }
+
+    function d(){
+        var lp = document.getElementById('loadedNum');
+        lp.innerHTML = window.hasLoaded;
+
+        var loaded = window.hasLoaded * 2 / 100 * Math.PI, cw = 102, hcw = 51;
+        ctx.clearRect (0,0,cw,cw);
+        ctx.beginPath();
+        ctx.arc(hcw,hcw,hcw-4, 0, loaded, false);
+        ctx.lineWidth = 8;
+        ctx.strokeStyle = '#ff6000';
+        ctx.stroke();
+    }
+    ulp(88);
+</script>
+</body>
+</html>

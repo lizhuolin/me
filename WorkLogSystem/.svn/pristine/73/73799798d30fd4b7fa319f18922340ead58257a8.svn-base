@@ -1,0 +1,13 @@
+package com.poobo.log.service;
+
+import com.poobo.core.entity.TblLog;
+import com.poobo.core.service.IBaseService;
+import com.poobo.core.util.PageController;
+
+public interface ILogService extends IBaseService<TblLog>{
+
+	PageController <TblLog> getPageListByUserid(String userId,int pageNow, int pageSize);
+
+	PageController <TblLog> findLogList(TblLog tblLog, int pageNow, int pageSize);
+
+}

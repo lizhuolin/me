@@ -1,0 +1,56 @@
+package com.poobo.changelog.service.impl;
+
+import javax.annotation.Resource;
+
+import org.hibernate.Criteria;
+import org.springframework.stereotype.Service;
+
+import com.poobo.changelog.dao.IChangelogDao;
+import com.poobo.changelog.service.IChangelogService;
+import com.poobo.core.entity.TblChangelog;
+import com.poobo.core.entity.TblCompany;
+import com.poobo.core.entity.TblUser;
+import com.poobo.core.enums.EnumDataStatus;
+import com.poobo.core.service.impl.BaseServiceImpl;
+import com.poobo.core.util.DateTimeUtil;
+import com.poobo.core.util.PageController;
+
+@Service("changelogService")
+public class ChangelogServiceImpl extends BaseServiceImpl<TblChangelog> implements IChangelogService{
+	
+	private IChangelogDao changelogDao;
+	@Resource
+	public void setChangelogDao(IChangelogDao changelogDao){
+		super.setBaseDao(changelogDao);
+		this.changelogDao=changelogDao;
+	}
+	@Override
+	public PageController<TblChangelog> getPageList(TblChangelog logs, int pageNow, int pageSize) {
+		Criteria criteria=changelogDao.createCriteria(IChangelogDao.class);
+		//criteria.add(Restrictions.eq());
+		return changelogDao.findPageByCriteria(criteria, pageNow, pageSize);
+	}
+	
+	public  void logRemable(String userId ,String companyId,String changelogContent,Integer changelogType, String changelogRemaks,String changelogmodel){
+		
+		TblUser tblUser=new TblUser();
+		tblUser.setUserId(userId);
+		
+		TblCompany tblCompany=new TblCompany();
+		tblCompany.setCompanyId(companyId);
+		
+		
+		TblChangelog changelog=new TblChangelog();
+		changelog.setTblUser(tblUser);
+		changelog.setTblCompany(tblCompany);
+		changelog.setChangelogContent(changelogContent);
+		changelog.setChangelogType(changelogType);
+		changelog.setChangelogTime(DateTimeUtil.getNowTimestamp());
+		changelog.setChangelogRemaks(changelogRemaks);
+		changelog.setChangelogmodel(changelogmodel);
+		changelog.setDataStatus(EnumDataStatus.NORMAL.getValue());
+		changelogDao.save(changelog);
+	}
+	
+}
+
